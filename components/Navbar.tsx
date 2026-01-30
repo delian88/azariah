@@ -106,19 +106,19 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 top-0 bg-slate-950 z-[60] flex flex-col items-center justify-center space-y-8 animate-in fade-in duration-300">
-           <button className="absolute top-8 right-8 text-white" onClick={() => setIsOpen(false)}>
-             <X size={40} />
+        <div className="fixed inset-0 top-0 bg-white/98 backdrop-blur-2xl z-[60] flex flex-col items-center justify-center space-y-6 animate-in slide-in-from-top duration-500">
+           <button className="absolute top-6 right-6 text-slate-900 hover:text-lime-600 transition-colors" onClick={() => setIsOpen(false)}>
+             <X size={36} />
            </button>
-           <Logo variant="dark" className="h-20 mb-10" />
+           <Logo variant="light" className="h-16 mb-6" />
            {navLinks.map((item) => (
             <a
               key={item.label}
               href={item.href}
               onClick={(e) => handleLinkClick(e, item.href)}
-              className="text-4xl font-black text-white hover:text-lime-500 transition-colors tracking-tighter"
+              className="text-2xl font-black text-slate-900 hover:text-lime-600 transition-colors tracking-tighter uppercase"
             >
               {item.label}
             </a>
@@ -126,7 +126,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           <a
             href="#contact"
             onClick={(e) => handleLinkClick(e, '#contact')}
-            className="mt-10 px-12 py-5 bg-lime-500 text-slate-950 text-xl font-black uppercase tracking-widest rounded-sm"
+            className="mt-6 px-10 py-4 bg-lime-500 text-slate-950 text-sm font-black uppercase tracking-widest rounded-sm shadow-xl hover:bg-slate-900 hover:text-white transition-all"
           >
             Work With Us
           </a>
