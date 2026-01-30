@@ -10,16 +10,16 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const PARTNERS = [
-  "Grey Consortium UK",
-  "Grey Consortium South Africa",
-  "Grey Cinema UK",
-  "Knight of Columbus - St. Mathews Council Baltimore",
-  "Luxurious Decorations - London",
-  "Foundation of Luv",
-  "World AI Force",
-  "Premegage Tech Solution",
-  "NYCN - North America",
-  "BlackbyAngel"
+  { name: "Grey Consortium UK", url: "https://www.greyconsortium.com" },
+  { name: "Grey Consortium South Africa", url: "https://www.greyconsortium.com" },
+  { name: "Grey Cinema UK", url: "https://greytvchannel.co.uk/greycinema/" },
+  { name: "Knight of Columbus - St. Mathews Council Baltimore" },
+  { name: "Luxurious Decorations - London", url: "https://www.luxuriousdecorations.com" },
+  { name: "Foundation of Luv", url: "https://FoundationofLuv.org" },
+  { name: "World AI Force" },
+  { name: "Premegage Tech Solution", url: "https://www.premegagetech.com" },
+  { name: "NYCN - North America" },
+  { name: "BlackbyAngel", url: "https://blackbyangel.my.canva.site/" }
 ];
 
 export const WHAT_WE_DO = [
@@ -135,7 +135,7 @@ export const WHY_CHOOSE_AMG = {
 export const WHO_SERVED = [
   'Start-ups & MSMEs seeking growth, readiness, and business development support',
   'Government & Public Agencies executing programs and modernization initiatives',
-  'Nonprofits & Foundations building strategy, capacity, and community impact',
+  'Nonprofits & foundations building strategy, capacity, and community impact',
   'International partners (U.S., EU, UK, Africa) expanding their footprint',
   'Tech & engineering firms innovating and scaling new solutions',
   'Creative & mission-driven brands looking for advocacy or branded storytelling'

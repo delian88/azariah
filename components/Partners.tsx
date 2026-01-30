@@ -16,14 +16,35 @@ const Partners: React.FC = () => {
       <div className="relative flex">
         {/* Sliding Container */}
         <div className="flex animate-marquee whitespace-nowrap items-center">
-          {displayPartners.map((partner, index) => (
-            <div 
-              key={index} 
-              className="mx-12 text-lg md:text-xl font-black text-slate-300 hover:text-slate-900 transition-colors uppercase tracking-tighter"
-            >
-              {partner}
-            </div>
-          ))}
+          {displayPartners.map((partner, index) => {
+            const content = (
+              <div 
+                key={index} 
+                className={`mx-12 text-lg md:text-xl font-black transition-all uppercase tracking-tighter ${
+                  partner.url 
+                  ? 'text-slate-400 hover:text-blue-600 cursor-pointer underline decoration-transparent hover:decoration-blue-600 underline-offset-8' 
+                  : 'text-slate-300 hover:text-slate-900'
+                }`}
+              >
+                {partner.name}
+              </div>
+            );
+
+            if (partner.url) {
+              return (
+                <a 
+                  key={index}
+                  href={partner.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block"
+                >
+                  {content}
+                </a>
+              );
+            }
+            return content;
+          })}
         </div>
       </div>
 
@@ -33,7 +54,7 @@ const Partners: React.FC = () => {
           100% { transform: translateX(-50%); }
         }
         .animate-marquee {
-          animation: marquee 40s linear infinite;
+          animation: marquee 50s linear infinite;
         }
         .animate-marquee:hover {
           animation-play-state: paused;
