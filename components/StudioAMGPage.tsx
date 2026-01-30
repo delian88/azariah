@@ -4,7 +4,7 @@ import {
   Camera, Play, Film, Tv, Megaphone, Sparkles, ArrowRight, 
   MessageSquare, Users, Target, Heart, Globe, Clapperboard,
   MonitorPlay, Mic2, Share2, Layers, Workflow, ShieldCheck,
-  CheckCircle2, XCircle, Zap, ExternalLink
+  CheckCircle2, XCircle, Zap, ExternalLink, Quote, FileText, Send
 } from 'lucide-react';
 
 const StudioAMGPage: React.FC = () => {
@@ -44,6 +44,17 @@ const StudioAMGPage: React.FC = () => {
       category: "Narrative Short",
       image: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=2006",
       impact: "Winner of the 'Innovation in Storytelling' Award 2023."
+    }
+  ];
+
+  const TESTIMONIALS = [
+    {
+      quote: "Studio AMG helped us tell a story we never had the words for. Their film tripled our fundraising reach.",
+      author: "Nonprofit Director"
+    },
+    {
+      quote: "Their ability to translate government programs into relatable stories is unmatched.",
+      author: "Public Agency Official"
     }
   ];
 
@@ -414,20 +425,69 @@ const StudioAMGPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
-      {/* FINAL CTA */}
-      <SectionWrapper bg="dark" className="text-center py-32">
-         <div className="max-w-4xl mx-auto space-y-12">
+      {/* SECTION 7 — TESTIMONIALS */}
+      <SectionWrapper bg="white">
+        <div className="space-y-16">
+          <div className="text-center space-y-4 max-w-3xl mx-auto">
+             <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 uppercase text-shine">What Our Partners Say</h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+             {TESTIMONIALS.map((t, i) => (
+               <div key={i} className="relative p-10 bg-slate-50 border border-slate-100 rounded-sm italic text-slate-700 hover:shadow-xl transition-all duration-500">
+                  <Quote className="absolute -top-4 -left-4 w-12 h-12 text-blue-600/10 fill-blue-600/10" />
+                  <p className="text-xl md:text-2xl font-medium leading-relaxed mb-8 relative z-10">
+                    “{t.quote}”
+                  </p>
+                  <div className="flex items-center gap-3 not-italic">
+                    <div className="w-8 h-1 bg-lime-500"></div>
+                    <span className="text-xs font-black uppercase tracking-widest text-slate-900">— {t.author}</span>
+                  </div>
+               </div>
+             ))}
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* SECTION 8 — CLEAR CALL TO ACTION */}
+      <SectionWrapper bg="dark" className="relative overflow-hidden py-32 md:py-48">
+         <div className="absolute inset-0 bg-blue-600/5 -z-10 animate-pulse"></div>
+         <div className="max-w-5xl mx-auto text-center space-y-12 relative z-10">
             <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none text-shine-white">
-              Let’s Tell Your Impact Story
+              Ready to Bring Your Story to Life?
             </h2>
-            <p className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed">
-              We help you move from visibility to influence. Whether it's a documentary film or a global 
-              advocacy campaign, we build media that works.
+            <p className="text-xl md:text-3xl text-slate-400 font-medium leading-relaxed max-w-3xl mx-auto">
+              Let’s build a narrative that inspires action, strengthens your brand, and amplifies your impact.
             </p>
-            <div className="flex flex-col md:flex-row justify-center items-center gap-8 pt-6">
-               <button className="px-14 py-7 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-2xl uppercase tracking-widest text-sm flex items-center gap-4">
-                 Book a Creative Discovery Call <ArrowRight className="w-5 h-5" />
+            <div className="flex flex-col md:flex-row justify-center items-center gap-8 pt-8">
+               <button className="w-full md:w-auto px-14 py-7 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-2xl uppercase tracking-widest text-sm flex items-center justify-center gap-4 group">
+                 Start Your Creative Project <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                </button>
+               <button className="w-full md:w-auto px-14 py-7 border-2 border-white/20 text-white font-black rounded-sm hover:bg-white hover:text-slate-900 transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-4 group">
+                 Request a Media Proposal <FileText className="w-5 h-5" />
+               </button>
+            </div>
+            
+            <div className="pt-16 grid grid-cols-2 md:grid-cols-4 gap-4 opacity-50">
+               {[
+                 'Strategy First',
+                 'Documentary Quality',
+                 'Global Distribution',
+                 'Measurable Impact'
+               ].map((benefit, i) => (
+                 <div key={i} className="text-[10px] font-black uppercase tracking-widest text-slate-500 border-l border-slate-800 pl-4 text-left">
+                   {benefit}
+                 </div>
+               ))}
+            </div>
+         </div>
+      </SectionWrapper>
+
+      {/* FINAL CTA (MODIFIED/REPLACED BY SECTION 8 STYLE) */}
+      <SectionWrapper bg="white" className="text-center py-20 border-t border-slate-50">
+         <div className="flex flex-col items-center gap-4">
+            <div className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">
+              Studio AMG • Part of Azariah Management Group
             </div>
          </div>
       </SectionWrapper>
