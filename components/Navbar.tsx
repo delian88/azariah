@@ -17,17 +17,16 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-6'
+      scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-2' : 'bg-transparent py-4'
     }`}>
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-slate-900 flex items-center justify-center rounded-sm">
-            <span className="text-white font-bold text-xl">A</span>
-          </div>
-          <span className={`font-bold text-xl tracking-tight ${scrolled ? 'text-slate-900' : 'text-slate-900'}`}>
-            AZARIAH <span className="font-light">MANAGEMENT</span>
-          </span>
-        </div>
+        <a href="#home" className="flex items-center">
+          <img 
+            src="/logo.png" 
+            alt="Azariah Management Group Logo" 
+            className="h-14 w-auto object-contain transition-all"
+          />
+        </a>
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center space-x-8">

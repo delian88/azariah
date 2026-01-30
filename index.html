@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Azariah Management Group | Strategic Excellence</title>
+    <link rel="icon" type="image/png" href="/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +20,7 @@
         .perspective-1000 {
             perspective: 1000px;
         }
-        /* Custom scrollbar for modern feel */
+        /* Custom scrollbar */
         ::-webkit-scrollbar {
           width: 8px;
         }
@@ -32,6 +33,17 @@
         }
         ::-webkit-scrollbar-thumb:hover {
           background: #64748b;
+        }
+        
+        /* Entrance animation classes */
+        .reveal {
+          opacity: 0;
+          transform: translateY(20px);
+          transition: all 0.7s ease-out;
+        }
+        .reveal.active {
+          opacity: 1;
+          transform: translateY(0);
         }
     </style>
 <script type="importmap">
@@ -50,7 +62,6 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- Explicit module script for Vite and Vercel build pipelines -->
     <script type="module" src="/index.tsx"></script>
 </body>
 </html>

@@ -10,53 +10,50 @@ import Footer from './components/Footer';
 
 const App: React.FC = () => {
   useEffect(() => {
-    // Basic reveal animation on scroll using Intersection Observer
     const observerOptions = {
-      threshold: 0.1
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
     };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          entry.target.classList.remove('opacity-0', 'translate-y-10');
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target);
         }
       });
     }, observerOptions);
 
     const revealElements = document.querySelectorAll('.reveal');
-    revealElements.forEach(el => {
-      el.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-700', 'ease-out');
-      observer.observe(el);
-    });
+    revealElements.forEach(el => observer.observe(el));
 
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div className="min-h-screen bg-white selection:bg-slate-900 selection:text-white">
+    <div className="min-h-screen bg-white selection:bg-slate-900 selection:text-white overflow-x-hidden">
       <Navbar />
       
       <main>
-        <div className="reveal">
+        <section className="reveal">
           <Hero />
-        </div>
+        </section>
         
-        <div className="reveal">
+        <section className="reveal">
           <Services />
-        </div>
+        </section>
         
-        <div className="reveal">
+        <section className="reveal">
           <StrategicAI />
-        </div>
+        </section>
         
-        <div className="reveal">
+        <section className="reveal">
           <About />
-        </div>
+        </section>
         
-        <div className="reveal">
+        <section className="reveal">
           <Contact />
-        </div>
+        </section>
       </main>
       
       <Footer />
