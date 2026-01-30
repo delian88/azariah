@@ -22,6 +22,8 @@ const SLIDES = [
   }
 ];
 
+const AUTO_SCROLL_INTERVAL = 8000;
+
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -30,9 +32,9 @@ const Hero: React.FC = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       nextSlide();
-    }, 9000);
+    }, AUTO_SCROLL_INTERVAL);
     return () => clearInterval(timer);
-  }, [currentSlide]);
+  }, [currentSlide, isTransitioning]);
 
   const nextSlide = () => {
     if (isTransitioning) return;
@@ -45,6 +47,13 @@ const Hero: React.FC = () => {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    setTimeout(() => setIsTransitioning(false), 800);
+  };
+
+  const handleDotClick = (index: number) => {
+    if (isTransitioning || index === currentSlide) return;
+    setIsTransitioning(true);
+    setCurrentSlide(index);
     setTimeout(() => setIsTransitioning(false), 800);
   };
 
@@ -104,27 +113,36 @@ const Hero: React.FC = () => {
 
       {/* Slider Controls */}
       <div className="absolute bottom-12 left-6 md:left-12 z-30 flex items-center gap-6">
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           {SLIDES.map((_, i) => (
             <button
               key={i}
-              onClick={() => setCurrentSlide(i)}
-              className={`h-1.5 transition-all duration-300 rounded-full ${
-                i === currentSlide ? 'w-12 bg-lime-500' : 'w-4 bg-white/30 hover:bg-white/50'
+              onClick={() => handleDotClick(i)}
+              className={`relative h-1.5 overflow-hidden transition-all duration-300 rounded-full ${
+                i === currentSlide ? 'w-16 bg-white/20' : 'w-4 bg-white/20 hover:bg-white/40'
               }`}
-            />
+            >
+              {i === currentSlide && (
+                <div 
+                  key={currentSlide} // Reset animation on slide change
+                  className="absolute inset-0 bg-lime-500 animate-progress origin-left"
+                />
+              )}
+            </button>
           ))}
         </div>
         <div className="flex gap-4">
           <button 
             onClick={prevSlide}
-            className="p-3 border border-white/20 text-white rounded-full hover:bg-white hover:text-slate-900 transition-all backdrop-blur-md"
+            disabled={isTransitioning}
+            className="p-3 border border-white/20 text-white rounded-full hover:bg-white hover:text-slate-900 transition-all backdrop-blur-md disabled:opacity-50"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button 
             onClick={nextSlide}
-            className="p-3 border border-white/20 text-white rounded-full hover:bg-white hover:text-slate-900 transition-all backdrop-blur-md"
+            disabled={isTransitioning}
+            className="p-3 border border-white/20 text-white rounded-full hover:bg-white hover:text-slate-900 transition-all backdrop-blur-md disabled:opacity-50"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
