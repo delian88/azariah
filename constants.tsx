@@ -16,6 +16,21 @@ export const WHAT_WE_DO = [
     icon: 'briefcase'
   },
   {
+    title: 'Cyber Security & Risk Management',
+    description: 'Protecting organizational digital assets through advanced threat detection, governance, and resilient security frameworks.',
+    icon: 'shield-alert'
+  },
+  {
+    title: 'Website & Digital Platform Development',
+    description: 'Building high-performance, accessible, and scalable digital platforms tailored to your brand\'s specific needs.',
+    icon: 'globe'
+  },
+  {
+    title: 'Software Engineering & Systems Design',
+    description: 'Designing and developing robust custom software solutions, from enterprise systems to specialized applications.',
+    icon: 'code-2'
+  },
+  {
     title: 'Corporate & Nonprofit Social Responsibility',
     description: 'Designing community-focused programs, partnerships, and measurable CSR initiatives that align with your mission.',
     icon: 'shield-check'
@@ -58,7 +73,7 @@ export const HOW_WE_WORK = [
 export const DIVISIONS = [
   'Consulting Division',
   'Projects & Infrastructure Division',
-  'Innovation & Technology Division',
+  'Innovation & Technology Division (Engineering & Cyber)',
   'Community & Social Impact Division',
   'Studio AMG (Creative & Media Division)'
 ];
@@ -99,7 +114,7 @@ export const SIGNATURE_PROGRAMS = [
 export const WHY_CHOOSE_AMG = {
   strengths: [
     'Tailored consulting for every growth stage',
-    'Deep expertise in innovation, transformation & execution',
+    'Deep expertise in engineering, transformation & execution',
     'Integrated consulting + media ecosystem',
     'Real-world government & private-sector experience',
     'Community-centered, relationship-driven approach',
