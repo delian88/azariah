@@ -66,21 +66,21 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-      scrolled || isInternalView ? 'bg-white/95 backdrop-blur-xl shadow-lg py-3' : 'bg-transparent py-6'
+      scrolled || isInternalView ? 'bg-white/95 backdrop-blur-xl shadow-lg py-2 md:py-3' : 'bg-transparent py-4 md:py-6'
     }`}>
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 flex justify-between items-center">
         <a href="#home" onClick={(e) => handleLinkClick(e, '#home')} className="flex items-center group">
-          <Logo className="h-10 md:h-12 transition-transform group-hover:scale-105 duration-500" />
+          <Logo className="h-9 md:h-11 lg:h-12 transition-transform group-hover:scale-105 duration-500" />
         </a>
 
-        {/* Desktop Links */}
-        <div className="hidden lg:flex items-center space-x-10">
+        {/* Desktop & Tablet Links */}
+        <div className="hidden md:flex items-center md:space-x-4 lg:space-x-10">
           {navLinks.map((item) => (
             <a
               key={item.label}
               href={item.href}
               onClick={(e) => handleLinkClick(e, item.href)}
-              className={`text-[13px] font-black uppercase tracking-widest link-underline transition-colors ${
+              className={`font-black uppercase tracking-widest link-underline transition-colors md:text-[10px] lg:text-[13px] ${
                 scrolled || isInternalView ? 'text-slate-600 hover:text-slate-900' : 'text-slate-200 hover:text-white'
               } ${currentView === 'services' && item.href === '#services-page' ? 'text-lime-600' : ''} 
                 ${currentView === 'about' && item.href === '#about-page' ? 'text-blue-600' : ''} 
@@ -93,22 +93,22 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           <a
             href="#contact"
             onClick={(e) => handleLinkClick(e, '#contact')}
-            className="px-8 py-3 bg-slate-900 text-white text-[12px] font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center group shadow-xl"
+            className="md:px-4 lg:px-8 md:py-2.5 lg:py-3 bg-slate-900 text-white font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center group shadow-xl md:text-[9px] lg:text-[12px]"
           >
             Work With Us
-            <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            <ChevronRight className="w-4 h-4 ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
 
-        {/* Mobile Toggle */}
-        <button className={`lg:hidden p-2 transition-colors ${scrolled || isInternalView ? 'text-slate-900' : 'text-white'}`} onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={32} /> : <Menu size={32} />}
+        {/* Mobile Toggle (hidden on tablet and desktop) */}
+        <button className={`md:hidden p-2 transition-colors ${scrolled || isInternalView ? 'text-slate-900' : 'text-white'}`} onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
       {/* Mobile Menu Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 top-0 bg-white/98 backdrop-blur-2xl z-[60] flex flex-col items-center justify-center space-y-6 animate-in slide-in-from-top duration-500">
+        <div className="fixed inset-0 top-0 bg-white/98 backdrop-blur-2xl z-[60] flex flex-col items-center justify-center space-y-6 animate-in slide-in-from-top duration-500 md:hidden">
            <button className="absolute top-6 right-6 text-slate-900 hover:text-lime-600 transition-colors" onClick={() => setIsOpen(false)}>
              <X size={36} />
            </button>

@@ -15,7 +15,7 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12", variant = 'light' }) =>
   const whiteText = "#ffffff";
 
   return (
-    <div className={`flex items-center gap-2 md:gap-4 ${className}`}>
+    <div className={`flex items-center gap-2 md:gap-3 lg:gap-4 ${className}`}>
       {/* Precision Pixel Globe SVG based on the provided image */}
       <svg 
         viewBox="0 0 120 120" 
@@ -83,14 +83,14 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12", variant = 'light' }) =>
       {/* Accurate Typography */}
       <div className="flex flex-col justify-center leading-[1.1] select-none">
         {/* AZARIAH */}
-        <div className="flex items-center font-black tracking-tight text-2xl md:text-4xl">
+        <div className="flex items-center font-black tracking-tight text-xl md:text-2xl lg:text-4xl">
           <span style={{ color: isDark ? whiteText : bluePrimary }}>AZAR</span>
           <span style={{ color: greenBrand }}>IAH</span>
         </div>
         
         {/* MANAGEMENT */}
         <div 
-          className="text-[8px] md:text-[12px] font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase"
+          className="text-[6px] md:text-[8px] lg:text-[12px] font-bold tracking-[0.2em] md:tracking-[0.3em] lg:tracking-[0.4em] uppercase"
           style={{ color: isDark ? "#94a3b8" : greyManagement }}
         >
           Management
@@ -98,7 +98,7 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12", variant = 'light' }) =>
         
         {/* GROUP */}
         <div 
-          className="text-lg md:text-2xl font-black tracking-[0.1em] md:tracking-[0.15em] uppercase"
+          className="text-sm md:text-lg lg:text-2xl font-black tracking-[0.1em] md:tracking-[0.15em] uppercase"
           style={{ color: isDark ? whiteText : bluePrimary }}
         >
           Group
