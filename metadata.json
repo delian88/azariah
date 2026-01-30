@@ -1,0 +1,8 @@
+{
+  "name": "Azariah Management Group",
+  "description": "A high-performance management consultancy firm website featuring strategic insights, operational excellence, and an AI-powered business advisor.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
