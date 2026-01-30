@@ -11,15 +11,15 @@ const SLIDES = [
   },
   {
     video: 'https://player.vimeo.com/external/371433917.sd.mp4?s=694406a461b40213032d8478418f430635489814&profile_id=164&oauth2_token_id=57447761',
-    poster: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=2070',
     title: 'Innovation.',
+    poster: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=2070',
     subtitle: 'Future-Ready Solutions',
     description: 'Scaling organizations effectively by integrating cutting-edge technology and AI-driven insights.'
   },
   {
     video: 'https://player.vimeo.com/external/403810419.sd.mp4?s=e52f5979f046e8c89c8a071c33f274a7b7a42142&profile_id=164&oauth2_token_id=57447761',
-    poster: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=2070',
     title: 'Impact.',
+    poster: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=2070',
     subtitle: 'Community Development',
     description: 'Building solutions that strengthen communities and unlock sustainable growth through creative storytelling.'
   }
@@ -30,7 +30,8 @@ const AUTO_SCROLL_INTERVAL = 8000;
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const videoRefs = SLIDES.map(() => useRef<HTMLVideoElement>(null));
+  // Correctly handle multiple video refs without violating hook rules
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -62,6 +63,7 @@ const Hero: React.FC = () => {
 
   return (
     <section id="home" className="relative h-screen w-full overflow-hidden bg-slate-900">
+      {/* Background Videos Slider */}
       {SLIDES.map((slide, index) => (
         <div
           key={index}
@@ -71,7 +73,8 @@ const Hero: React.FC = () => {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/70 to-transparent z-10"></div>
           <video
-            ref={videoRefs[index]}
+            // Fix: ensure ref callback returns void instead of assigned element to satisfy TypeScript
+            ref={el => { videoRefs.current[index] = el; }}
             src={slide.video}
             poster={slide.poster}
             autoPlay
@@ -83,6 +86,7 @@ const Hero: React.FC = () => {
         </div>
       ))}
 
+      {/* Content Overlay */}
       <div className="relative z-20 h-full max-w-7xl mx-auto px-6 md:px-12 flex items-center">
         <div className="max-w-3xl space-y-8">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-lime-500 text-slate-900 rounded-sm text-[10px] font-black tracking-[0.25em] uppercase shadow-xl animate-in fade-in slide-in-from-left-4 duration-700">
@@ -113,6 +117,7 @@ const Hero: React.FC = () => {
         </div>
       </div>
 
+      {/* Slider Controls */}
       <div className="absolute bottom-12 left-6 md:left-12 z-30 flex items-center gap-6">
         <div className="flex gap-3">
           {SLIDES.map((_, i) => (

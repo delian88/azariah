@@ -1,9 +1,8 @@
-
-import { GoogleGenAI, Type } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+import { GoogleGenAI } from "@google/genai";
 
 export const getStrategicInsight = async (problem: string) => {
+  // Initialize GoogleGenAI instance right before the call to ensure the latest environment variables/API keys are used
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
@@ -11,10 +10,11 @@ export const getStrategicInsight = async (problem: string) => {
       config: {
         temperature: 0.7,
         topP: 0.9,
-        maxOutputTokens: 1000,
+        // Removed maxOutputTokens to prevent potential response truncation or blocking issues
       }
     });
 
+    // Access .text property directly as per @google/genai guidelines
     return response.text;
   } catch (error) {
     console.error("Gemini API Error:", error);
