@@ -13,6 +13,7 @@ import AboutPage from './components/AboutPage';
 import ProgramsPage from './components/ProgramsPage';
 import StudioAMGPage from './components/StudioAMGPage';
 import ChatBot from './components/ChatBot';
+import Partners from './components/Partners';
 
 type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio';
 
@@ -103,6 +104,8 @@ const App: React.FC = () => {
               <Hero />
             </div>
             
+            <Partners />
+
             <div className="reveal">
               <About />
             </div>

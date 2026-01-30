@@ -9,6 +9,19 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Contact', href: '#contact' }
 ];
 
+export const PARTNERS = [
+  "Grey Consortium UK",
+  "Grey Consortium South Africa",
+  "Grey Cinema UK",
+  "Knight of Columbus - St. Mathews Council Baltimore",
+  "Luxurious Decorations - London",
+  "Foundation of Luv",
+  "World AI Force",
+  "Premegage Tech Solution",
+  "NYCN - North America",
+  "BlackbyAngel"
+];
+
 export const WHAT_WE_DO = [
   {
     title: 'Corporate Social Responsibility',
