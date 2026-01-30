@@ -1,6 +1,6 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
-import { ShieldCheck, Cpu, Briefcase, Heart, Camera, Globe, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Cpu, Briefcase, Heart, Camera, Globe, ArrowRight, CheckCircle2, Users, BarChart3, Target, Share2 } from 'lucide-react';
 import { WHAT_WE_DO, DIVISIONS } from '../constants';
 
 const ServicesPage: React.FC = () => {
@@ -59,11 +59,63 @@ const ServicesPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
+      {/* SECTION 2 — SERVICE CATEGORY #1: CSR CONSULTING */}
+      <SectionWrapper bg="light" className="relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-100/50 -skew-x-12 translate-x-1/2 z-0"></div>
+        <div className="grid lg:grid-cols-2 gap-20 items-center relative z-10">
+          <div className="order-2 lg:order-1 space-y-12">
+            <div className="grid sm:grid-cols-2 gap-6">
+              {[
+                { icon: Target, text: "CSR strategy development & execution" },
+                { icon: Users, text: "Community impact framework design" },
+                { icon: Globe, text: "Partnership development (local, national, global)" },
+                { icon: Heart, text: "Grantmaking & philanthropic program support" },
+                { icon: BarChart3, text: "CSR reporting, metrics, and storytelling" },
+                { icon: Share2, text: "Employee engagement & volunteerism" }
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-4 p-6 bg-white border border-slate-200 rounded-sm hover:border-lime-500 transition-all group">
+                  <div className="p-2 bg-slate-50 rounded-sm group-hover:bg-lime-500 transition-colors">
+                    <item.icon className="w-5 h-5 text-slate-900 group-hover:text-white" />
+                  </div>
+                  <span className="text-sm font-bold text-slate-700 leading-tight">{item.text}</span>
+                </div>
+              ))}
+            </div>
+            
+            <div className="p-8 bg-slate-900 text-white rounded-sm border-l-8 border-lime-500 shadow-2xl">
+               <div className="text-[10px] font-black uppercase tracking-widest text-lime-400 mb-2">The Outcome</div>
+               <p className="text-lg font-medium italic">
+                 "A CSR function that is strategic, credible, and deeply connected to the communities you serve."
+               </p>
+            </div>
+          </div>
+
+          <div className="order-1 lg:order-2 space-y-8">
+            <div className="w-16 h-1 bg-lime-500 mb-6"></div>
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none text-shine">
+              Corporate Social Responsibility Consulting
+            </h2>
+            <p className="text-xl text-slate-600 leading-relaxed font-medium">
+              We design and execute CSR strategies that strengthen communities, align with corporate values,
+              and deliver measurable results. 
+            </p>
+            <p className="text-slate-500 font-medium">
+              In an era of rising expectations, we help organizations move beyond "giving back" to building sustainable ecosystems of shared value.
+            </p>
+            <div className="pt-6">
+              <button className="inline-flex items-center gap-3 text-sm font-black uppercase tracking-widest text-slate-900 group">
+                Download CSR Blueprint <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </SectionWrapper>
+
       {/* CORE SERVICES BREAKDOWN */}
-      <SectionWrapper bg="light">
+      <SectionWrapper bg="white">
         <div className="space-y-16">
           <div className="text-center space-y-4 max-w-3xl mx-auto">
-             <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 uppercase">Detailed Service Pillars</h2>
+             <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 uppercase text-shine">Detailed Service Pillars</h2>
              <p className="text-slate-500 text-lg">Integrated solutions that scale with your organizational maturity.</p>
           </div>
 
