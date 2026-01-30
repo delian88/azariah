@@ -11,8 +11,9 @@ import Logo from './components/Logo';
 import ServicesPage from './components/ServicesPage';
 import AboutPage from './components/AboutPage';
 import ProgramsPage from './components/ProgramsPage';
+import StudioAMGPage from './components/StudioAMGPage';
 
-type ViewState = 'home' | 'services' | 'about' | 'programs';
+type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -92,6 +93,8 @@ const App: React.FC = () => {
         return <AboutPage />;
       case 'programs':
         return <ProgramsPage />;
+      case 'studio':
+        return <StudioAMGPage />;
       default:
         return (
           <>

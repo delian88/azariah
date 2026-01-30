@@ -3,8 +3,8 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import Logo from './Logo';
 
 interface NavbarProps {
-  onNavigate?: (view: 'home' | 'services' | 'about' | 'programs') => void;
-  currentView?: 'home' | 'services' | 'about' | 'programs';
+  onNavigate?: (view: 'home' | 'services' | 'about' | 'programs' | 'studio') => void;
+  currentView?: 'home' | 'services' | 'about' | 'programs' | 'studio';
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
@@ -32,6 +32,10 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
       e.preventDefault();
       onNavigate?.('programs');
       setIsOpen(false);
+    } else if (href === '#studio-page') {
+      e.preventDefault();
+      onNavigate?.('studio');
+      setIsOpen(false);
     } else if (href === '#home') {
       e.preventDefault();
       onNavigate?.('home');
@@ -55,6 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
     { label: 'About Us', href: '#about-page' },
     { label: 'Services', href: '#services-page' },
     { label: 'Programs', href: '#programs-page' },
+    { label: 'Studio AMG', href: '#studio-page' },
   ];
 
   const isInternalView = currentView !== 'home';
@@ -77,7 +82,10 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
               onClick={(e) => handleLinkClick(e, item.href)}
               className={`text-[13px] font-black uppercase tracking-widest link-underline transition-colors ${
                 scrolled || isInternalView ? 'text-slate-600 hover:text-slate-900' : 'text-slate-200 hover:text-white'
-              } ${currentView === 'services' && item.href === '#services-page' ? 'text-lime-600' : ''} ${currentView === 'about' && item.href === '#about-page' ? 'text-blue-600' : ''} ${currentView === 'programs' && item.href === '#programs-page' ? 'text-lime-600' : ''}`}
+              } ${currentView === 'services' && item.href === '#services-page' ? 'text-lime-600' : ''} 
+                ${currentView === 'about' && item.href === '#about-page' ? 'text-blue-600' : ''} 
+                ${currentView === 'programs' && item.href === '#programs-page' ? 'text-lime-600' : ''}
+                ${currentView === 'studio' && item.href === '#studio-page' ? 'text-blue-600' : ''}`}
             >
               {item.label}
             </a>
