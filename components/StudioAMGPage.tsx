@@ -190,14 +190,17 @@ const StudioAMGPage: React.FC = () => {
          <div className="absolute inset-0 bg-blue-600/5 -z-10 animate-pulse"></div>
          <div className="max-w-5xl mx-auto text-center space-y-12 relative z-10 reveal">
             <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none text-shine-white">
-              Tell Your Story.
+              Ready to Bring Your Story to Life?
             </h2>
+            <p className="text-xl md:text-3xl text-slate-400 font-medium leading-relaxed max-w-3xl mx-auto">
+              Let’s build a narrative that inspires action, strengthens your brand, and amplifies your impact.
+            </p>
             <div className="flex flex-col md:flex-row justify-center items-center gap-8 pt-8">
                <button className="w-full md:w-auto px-14 py-7 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-2xl uppercase tracking-widest text-xs flex items-center justify-center gap-4 group hover:-translate-y-2">
-                 Start Creative Project <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                 Start Your Creative Project <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                </button>
                <button className="w-full md:w-auto px-14 py-7 border-2 border-white/20 text-white font-black rounded-sm hover:bg-white hover:text-slate-900 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-4 group hover:-translate-y-2">
-                 Request Proposal <FileText className="w-5 h-5" />
+                 Request a Media Proposal <FileText className="w-5 h-5" />
                </button>
             </div>
          </div>

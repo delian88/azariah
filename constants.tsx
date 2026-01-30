@@ -11,43 +11,33 @@ export const NAV_ITEMS: NavItem[] = [
 
 export const WHAT_WE_DO = [
   {
-    title: 'Consulting & Business Strategy',
-    description: 'Guiding organizations through growth planning, business development, governance, and operational transformation.',
-    icon: 'briefcase'
-  },
-  {
-    title: 'Cyber Security & Risk Management',
-    description: 'Protecting organizational digital assets through advanced threat detection, governance, and resilient security frameworks.',
-    icon: 'shield-alert'
-  },
-  {
-    title: 'Website & Digital Platform Development',
-    description: 'Building high-performance, accessible, and scalable digital platforms tailored to your brand\'s specific needs.',
-    icon: 'globe'
-  },
-  {
-    title: 'Software Engineering & Systems Design',
-    description: 'Designing and developing robust custom software solutions, from enterprise systems to specialized applications.',
-    icon: 'code-2'
-  },
-  {
-    title: 'Corporate & Nonprofit Social Responsibility',
-    description: 'Designing community-focused programs, partnerships, and measurable CSR initiatives that align with your mission.',
+    title: 'Corporate Social Responsibility',
+    description: 'Designing and executing CSR strategies that strengthen communities and deliver measurable results.',
     icon: 'shield-check'
   },
   {
+    title: 'Nonprofit Strategy & Capacity',
+    description: 'Helping nonprofits move from overwhelmed to operationally strong through planning and program design.',
+    icon: 'briefcase'
+  },
+  {
+    title: 'Government & Public Sector',
+    description: 'Supporting agencies with strategic planning, program management, and interagency coordination.',
+    icon: 'landmark'
+  },
+  {
     title: 'Innovation & AI Strategy',
-    description: 'Helping start-ups, MSMEs, and enterprises adopt future-ready tools, emerging technologies, and scalable digital systems.',
+    description: 'Guiding organizations through AI readiness, digital transformation, and future-proof tech systems.',
     icon: 'cpu'
   },
   {
-    title: 'Community Impact & Program Development',
-    description: 'Building wellness, empowerment, mental health, and community development initiatives that uplift people.',
-    icon: 'heart'
+    title: 'Cyber Security & Software Engineering',
+    description: 'Protecting digital assets and engineering robust custom platforms and systems.',
+    icon: 'code-2'
   },
   {
-    title: 'Creative Media & Storytelling (Studio AMG)',
-    description: 'Producing advocacy-driven media, docu-series, branded content, and campaigns that amplify voices.',
+    title: 'Community Impact & Storytelling',
+    description: 'Creating powerful content and initiatives that elevate missions and inspire community action.',
     icon: 'camera'
   }
 ];

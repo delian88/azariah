@@ -14,9 +14,31 @@ const Footer: React.FC = () => {
             Azariah Management Group: Turning purpose into progress through strategic consulting, technology, and social impact.
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center hover:bg-white hover:text-slate-900 transition-all"><Linkedin className="w-4 h-4" /></a>
-            <a href="#" className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center hover:bg-white hover:text-slate-900 transition-all"><Twitter className="w-4 h-4" /></a>
-            <a href="#" className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center hover:bg-white hover:text-slate-900 transition-all"><Instagram className="w-4 h-4" /></a>
+            <a 
+              href="https://www.linkedin.com/company/azariahmanagementgroup/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="LinkedIn"
+              className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center hover:bg-white hover:text-slate-900 transition-all"
+            >
+              <Linkedin className="w-4 h-4" />
+            </a>
+            <a 
+              href="https://www.instagram.com/azariahmanagementgroup/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="Instagram"
+              className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center hover:bg-white hover:text-slate-900 transition-all"
+            >
+              <Instagram className="w-4 h-4" />
+            </a>
+            <a 
+              href="#" 
+              className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center hover:bg-white hover:text-slate-900 transition-all"
+              aria-label="Twitter"
+            >
+              <Twitter className="w-4 h-4" />
+            </a>
           </div>
         </div>
 
