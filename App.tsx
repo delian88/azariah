@@ -9,10 +9,13 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Logo from './components/Logo';
 import ServicesPage from './components/ServicesPage';
+import AboutPage from './components/AboutPage';
+
+type ViewState = 'home' | 'services' | 'about';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState<'home' | 'services'>('home');
+  const [view, setView] = useState<ViewState>('home');
 
   useEffect(() => {
     // Initial loading delay for brand visibility
@@ -48,7 +51,7 @@ const App: React.FC = () => {
   }, [loading, view]);
 
   // Handle internal navigation
-  const navigateTo = (newView: 'home' | 'services') => {
+  const navigateTo = (newView: ViewState) => {
     setView(newView);
     window.scrollTo(0, 0);
   };
@@ -63,6 +66,14 @@ const App: React.FC = () => {
           <div className="h-full bg-[#005696] animate-[loading_2s_ease-in-out_infinite]"></div>
         </div>
         <style>{`
+          @keyframes pulse-logo {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+          }
+          .animate-pulse-logo {
+            animation: pulse-logo 2s ease-in-out infinite;
+          }
           @keyframes loading {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
@@ -72,12 +83,14 @@ const App: React.FC = () => {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-white selection:bg-slate-900 selection:text-white overflow-x-hidden">
-      <Navbar onNavigate={navigateTo} currentView={view} />
-      
-      <main>
-        {view === 'home' ? (
+  const renderContent = () => {
+    switch(view) {
+      case 'services':
+        return <ServicesPage />;
+      case 'about':
+        return <AboutPage />;
+      default:
+        return (
           <>
             <div className="reveal">
               <Hero />
@@ -103,9 +116,16 @@ const App: React.FC = () => {
               <Contact />
             </div>
           </>
-        ) : (
-          <ServicesPage />
-        )}
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-white selection:bg-slate-900 selection:text-white overflow-x-hidden">
+      <Navbar onNavigate={navigateTo} currentView={view} />
+      
+      <main>
+        {renderContent()}
       </main>
       
       <Footer />

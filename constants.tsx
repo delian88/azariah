@@ -2,10 +2,9 @@ import { NavItem } from './types';
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Home', href: '#home' },
-  { label: 'Who We Are', href: '#about' },
-  { label: 'What We Do', href: '#what-we-do' },
+  { label: 'About Us', href: '#about-page' },
+  { label: 'Services', href: '#services-page' },
   { label: 'Programs', href: '#programs' },
-  { label: 'Strategic AI', href: '#ai' },
   { label: 'Contact', href: '#contact' }
 ];
 
@@ -113,6 +112,15 @@ export const WHY_CHOOSE_AMG = {
     'Multidisciplinary team spanning strategy, technology, culture, and media'
   ]
 };
+
+export const WHO_SERVED = [
+  'Start-ups & MSMEs seeking growth, readiness, and business development support',
+  'Government & Public Agencies executing programs and modernization initiatives',
+  'Nonprofits & Foundations building strategy, capacity, and community impact',
+  'International partners (U.S., EU, UK, Africa) expanding their footprint',
+  'Tech & engineering firms innovating and scaling new solutions',
+  'Creative & mission-driven brands looking for advocacy or branded storytelling'
+];
 
 export const WHO_WE_SERVE = {
   primary: [

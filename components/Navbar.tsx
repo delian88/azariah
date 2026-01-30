@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronRight } from 'lucide-react';
-import { NAV_ITEMS } from '../constants';
 import Logo from './Logo';
 
 interface NavbarProps {
-  onNavigate?: (view: 'home' | 'services') => void;
-  currentView?: 'home' | 'services';
+  onNavigate?: (view: 'home' | 'services' | 'about') => void;
+  currentView?: 'home' | 'services' | 'about';
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
@@ -25,14 +24,17 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
       e.preventDefault();
       onNavigate?.('services');
       setIsOpen(false);
+    } else if (href === '#about-page') {
+      e.preventDefault();
+      onNavigate?.('about');
+      setIsOpen(false);
     } else if (href === '#home') {
       e.preventDefault();
       onNavigate?.('home');
       setIsOpen(false);
-    } else if (currentView === 'services') {
-      // If we are on services page and click a section link, go home first
+    } else if (currentView !== 'home') {
+      // If we are on internal page and click a section link, go home first
       onNavigate?.('home');
-      // Timeout to allow scroll after view switch
       setTimeout(() => {
         const id = href.replace('#', '');
         const element = document.getElementById(id);
@@ -46,15 +48,16 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
 
   const navLinks = [
     { label: 'Home', href: '#home' },
+    { label: 'About Us', href: '#about-page' },
     { label: 'Services', href: '#services-page' },
-    { label: 'Who We Are', href: '#about' },
     { label: 'Programs', href: '#programs' },
-    { label: 'Strategic AI', href: '#ai' },
   ];
+
+  const isInternalView = currentView !== 'home';
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-      scrolled || currentView === 'services' ? 'bg-white/95 backdrop-blur-xl shadow-lg py-3' : 'bg-transparent py-6'
+      scrolled || isInternalView ? 'bg-white/95 backdrop-blur-xl shadow-lg py-3' : 'bg-transparent py-6'
     }`}>
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
         <a href="#home" onClick={(e) => handleLinkClick(e, '#home')} className="flex items-center group">
@@ -69,8 +72,8 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
               href={item.href}
               onClick={(e) => handleLinkClick(e, item.href)}
               className={`text-[13px] font-black uppercase tracking-widest link-underline transition-colors ${
-                scrolled || currentView === 'services' ? 'text-slate-600 hover:text-slate-900' : 'text-slate-200 hover:text-white'
-              } ${currentView === 'services' && item.href === '#services-page' ? 'text-lime-600' : ''}`}
+                scrolled || isInternalView ? 'text-slate-600 hover:text-slate-900' : 'text-slate-200 hover:text-white'
+              } ${currentView === 'services' && item.href === '#services-page' ? 'text-lime-600' : ''} ${currentView === 'about' && item.href === '#about-page' ? 'text-blue-600' : ''}`}
             >
               {item.label}
             </a>
@@ -86,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
         </div>
 
         {/* Mobile Toggle */}
-        <button className={`lg:hidden p-2 transition-colors ${scrolled || currentView === 'services' ? 'text-slate-900' : 'text-white'}`} onClick={() => setIsOpen(!isOpen)}>
+        <button className={`lg:hidden p-2 transition-colors ${scrolled || isInternalView ? 'text-slate-900' : 'text-white'}`} onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={32} /> : <Menu size={32} />}
         </button>
       </div>
