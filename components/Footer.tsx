@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter } from 'lucide-react';
 import Logo from './Logo';
@@ -11,8 +10,8 @@ const Footer: React.FC = () => {
           <div className="flex items-center">
             <Logo variant="dark" className="h-12" />
           </div>
-          <p className="text-slate-400 leading-relaxed">
-            Revolutionizing management consultancy through data-driven insights and radical operational transparency.
+          <p className="text-slate-400 leading-relaxed text-sm">
+            Azariah Management Group: Turning purpose into progress through strategic consulting, technology, and social impact.
           </p>
           <div className="flex space-x-4">
             <a href="#" className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center hover:bg-white hover:text-slate-900 transition-all"><Linkedin className="w-4 h-4" /></a>
@@ -22,30 +21,30 @@ const Footer: React.FC = () => {
         </div>
 
         <div>
-          <h4 className="text-white font-bold mb-6 text-lg uppercase tracking-wider text-sm">Services</h4>
-          <ul className="space-y-4">
-            <li><a href="#" className="hover:text-white transition-colors">Strategic Planning</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Digital Transformation</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Operations Audit</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Human Capital</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Investment Advisory</a></li>
+          <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-xs">Services</h4>
+          <ul className="space-y-4 text-sm">
+            <li><a href="#" className="hover:text-white transition-colors">Business Consulting</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Innovation Strategy</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Social Impact Design</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Studio AMG Media</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Digital Readiness</a></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="text-white font-bold mb-6 text-lg uppercase tracking-wider text-sm">Company</h4>
-          <ul className="space-y-4">
-            <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Our Process</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Case Studies</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+          <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-xs">Company</h4>
+          <ul className="space-y-4 text-sm">
+            <li><a href="#about" className="hover:text-white transition-colors">Who We Are</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Our Impact</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Client Stories</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Partnerships</a></li>
+            <li><a href="#contact" className="hover:text-white transition-colors">Contact</a></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="text-white font-bold mb-6 text-lg uppercase tracking-wider text-sm">Contact Us</h4>
-          <ul className="space-y-4">
+          <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-xs">Contact Us</h4>
+          <ul className="space-y-4 text-sm">
             <li className="flex items-center space-x-3">
               <MapPin className="w-5 h-5 text-slate-500" />
               <span>1200 Wall Street, NY 10005</span>
@@ -62,11 +61,11 @@ const Footer: React.FC = () => {
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-sm text-slate-500">
-        <p>© 2024 Azariah Management Group. All rights reserved.</p>
+      <div className="max-w-7xl mx-auto pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-500 uppercase tracking-widest font-bold">
+        <p>© 2024 Azariah Management Group (AMG). All rights reserved.</p>
         <div className="flex space-x-6 mt-4 md:mt-0">
-          <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+          <a href="#" className="hover:text-white transition-colors">Privacy</a>
+          <a href="#" className="hover:text-white transition-colors">Terms</a>
           <a href="#" className="hover:text-white transition-colors">Cookies</a>
         </div>
       </div>

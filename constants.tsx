@@ -1,34 +1,33 @@
-
 import { NavItem, ServiceCard, StatItem, ProjectItem } from './types';
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Home', href: '#home' },
+  { label: 'Who We Are', href: '#about' },
   { label: 'Services', href: '#services' },
   { label: 'Strategic AI', href: '#ai' },
-  { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' }
 ];
 
 export const SERVICES: ServiceCard[] = [
   {
-    title: 'Strategic Planning',
-    description: 'We develop robust roadmaps that align organizational objectives with market opportunities for long-term growth.',
-    icon: 'target'
+    title: 'Management Consulting',
+    description: 'Strategic advisory and business consulting to help corporations and non-profits scale effectively with clarity and capacity.',
+    icon: 'briefcase'
   },
   {
-    title: 'Operational Excellence',
-    description: 'Streamlining processes and optimizing workflows to enhance efficiency and reduce organizational friction.',
-    icon: 'zap'
+    title: 'Innovation & Tech',
+    description: 'AI integration, digital readiness, and modernization strategies to ensure your organization is future-proof.',
+    icon: 'cpu'
   },
   {
-    title: 'Financial Advisory',
-    description: 'Data-driven financial strategies to maximize capital efficiency and navigate complex market environments.',
-    icon: 'trending-up'
+    title: 'Social Impact',
+    description: 'Community program design and social impact strategy for leaders who want to build responsibly and create meaningful impact.',
+    icon: 'globe'
   },
   {
-    title: 'Leadership Development',
-    description: 'Empowering the next generation of executives through specialized coaching and organizational design.',
-    icon: 'users'
+    title: 'Studio AMG',
+    description: 'Creative storytelling and advocacy media to help your organization grow with purpose-driven communication.',
+    icon: 'camera'
   }
 ];
 
@@ -36,7 +35,7 @@ export const STATS: StatItem[] = [
   { label: 'Years Experience', value: '15', suffix: '+' },
   { label: 'Successful Projects', value: '250', suffix: '+' },
   { label: 'Global Partners', value: '45', suffix: '' },
-  { label: 'ROI Improvement', value: '30', suffix: '%' }
+  { label: 'Impact Score', value: '98', suffix: '%' }
 ];
 
 export const PROJECTS: ProjectItem[] = [
