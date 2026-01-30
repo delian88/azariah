@@ -71,7 +71,7 @@ const Hero: React.FC = () => {
         <div className="max-w-3xl space-y-8">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-lime-500 text-slate-900 rounded-sm text-[10px] font-black tracking-[0.25em] uppercase shadow-xl animate-in fade-in slide-in-from-left-4 duration-700">
             <Globe2 className="w-3 h-3" />
-            Strategy • Innovation • Community Impact
+            Purpose. Innovation. Impact.
           </div>
 
           <div className="space-y-2 overflow-hidden">
@@ -85,12 +85,12 @@ const Hero: React.FC = () => {
 
           <p className="text-xl text-slate-200 leading-relaxed font-medium max-w-xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
             At Azariah Management Group (AMG), we help corporations, nonprofits, governments, and
-            emerging enterprises turn purpose into measurable progress.
+            emerging enterprises turn purpose into measurable progress. Through strategy, innovation, and creative storytelling, we build solutions that strengthen communities, scale organizations, and unlock sustainable growth.
           </p>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6 pt-4">
             <button className="px-10 py-5 bg-white text-slate-900 font-black rounded-sm hover:bg-lime-500 hover:text-slate-900 transition-all flex items-center justify-center group shadow-2xl">
-              Book a 20-Minute Discovery Call
+              → Book a 20-Minute Discovery Call
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>

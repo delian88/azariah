@@ -26,26 +26,32 @@ const About: React.FC = () => {
         </div>
 
         <div className="order-1 lg:order-2 space-y-8">
+          <div className="inline-block px-3 py-1 bg-slate-100 text-slate-900 text-[10px] font-black uppercase tracking-widest mb-2">Who We Are</div>
           <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
             A Strategic Partner for Growth, Innovation & Social Impact
           </h2>
           <p className="text-lg text-slate-600 leading-relaxed">
-            AMG is a social enterprise and strategic consulting firm operating at the intersection of corporate innovation, community development, and creative media. We partner with leaders who want to build responsibly, scale effectively, and create meaningful impact.
+            AMG is a social enterprise and strategic consulting firm operating at the intersection of corporate innovation, community development, and creative media. We partner with leaders who want to build responsibly, scale effectively, and create meaningful impact—locally and globally.
           </p>
           
           <div className="space-y-4 pt-2">
+            <p className="font-bold text-slate-900 text-sm uppercase tracking-wider">Our work blends:</p>
             {[
               "Management & business consulting",
-              "Innovation & technology strategy (AI, digital readiness)",
+              "Innovation & technology strategy (AI, digital readiness, modernization)",
               "Community and social impact program design",
               "Creative storytelling and advocacy through Studio AMG"
             ].map((pillar) => (
               <div key={pillar} className="flex items-start gap-3">
-                <CheckCircle2 className="w-6 h-6 text-[#84cc16] shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-[#84cc16] shrink-0 mt-0.5" />
                 <span className="text-slate-700 font-medium">{pillar}</span>
               </div>
             ))}
           </div>
+          
+          <p className="text-slate-500 italic text-sm border-l-2 border-slate-200 pl-4">
+            This integrated model helps your organization grow with clarity, capacity, and purpose.
+          </p>
 
           <div className="grid grid-cols-2 gap-x-8 gap-y-10 pt-4 border-t border-slate-100">
             {STATS.map((stat) => (
