@@ -10,8 +10,9 @@ import Footer from './components/Footer';
 import Logo from './components/Logo';
 import ServicesPage from './components/ServicesPage';
 import AboutPage from './components/AboutPage';
+import ProgramsPage from './components/ProgramsPage';
 
-type ViewState = 'home' | 'services' | 'about';
+type ViewState = 'home' | 'services' | 'about' | 'programs';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -89,6 +90,8 @@ const App: React.FC = () => {
         return <ServicesPage />;
       case 'about':
         return <AboutPage />;
+      case 'programs':
+        return <ProgramsPage />;
       default:
         return (
           <>
