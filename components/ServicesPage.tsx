@@ -1,6 +1,13 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
-import { ShieldCheck, Cpu, Briefcase, Heart, Camera, Globe, ArrowRight, CheckCircle2, Users, BarChart3, Target, Share2 } from 'lucide-react';
+import { 
+  ShieldCheck, Cpu, Briefcase, Heart, Camera, Globe, ArrowRight, CheckCircle2, 
+  Users, BarChart3, Target, Share2, Search, ClipboardList, Coins, Layout, 
+  MessageSquare, Sparkles, Landmark, Puzzle, ClipboardCheck, FileText, Zap, Users2,
+  Rocket, Workflow, RefreshCcw, Brain, Settings, Layers,
+  MapPin, HeartPulse, GraduationCap, LineChart, Compass, Lightbulb,
+  Video, Play, Mic, Film, Megaphone, Clapperboard, Calendar
+} from 'lucide-react';
 import { WHAT_WE_DO, DIVISIONS } from '../constants';
 
 const ServicesPage: React.FC = () => {
@@ -111,8 +118,275 @@ const ServicesPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
+      {/* SECTION 3 — SERVICE CATEGORY #2: NONPROFIT STRATEGY */}
+      <SectionWrapper bg="white" className="relative overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="space-y-8">
+            <div className="w-16 h-1 bg-blue-600 mb-6"></div>
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none text-shine">
+              Nonprofit Strategy & Capacity Building
+            </h2>
+            <p className="text-xl text-slate-600 leading-relaxed font-medium">
+              We help nonprofits move from overwhelmed to operationally strong through strategic planning,
+              program design, and structural support.
+            </p>
+            
+            <div className="p-8 bg-blue-50 border border-blue-100 rounded-sm relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-4 opacity-10">
+                 <ShieldCheck className="w-20 h-20 text-blue-900" />
+               </div>
+               <div className="text-[10px] font-black uppercase tracking-widest text-blue-800 mb-2">The Mission</div>
+               <p className="text-lg font-bold text-slate-800">
+                 "Transforming visibility into investment-ready stability."
+               </p>
+            </div>
+
+            <div className="pt-4">
+              <button className="px-10 py-5 bg-slate-900 text-white font-black rounded-sm hover:bg-blue-600 transition-all shadow-xl uppercase tracking-widest text-xs">
+                Strengthen Your Organization
+              </button>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            {[
+              { icon: Search, title: "Organizational Assessments", desc: "Gap analysis and operational health checks." },
+              { icon: ClipboardList, title: "Strategic Planning", desc: "Practical 3-5 year growth and impact roadmaps." },
+              { icon: Coins, title: "Fundraising Support", desc: "Grant-readiness and revenue diversification." },
+              { icon: Layout, title: "Program Design", desc: "Scalable execution and evaluation frameworks." },
+              { icon: MessageSquare, title: "Communications & PR", desc: "Advocacy-driven storytelling and visibility." },
+              { icon: Users, title: "Board Governance", desc: "Leadership development and structural excellence." }
+            ].map((item, i) => (
+              <div key={i} className="p-6 bg-slate-50 border border-slate-100 rounded-sm hover:bg-white hover:border-blue-600 hover:shadow-xl transition-all group">
+                <item.icon className="w-6 h-6 text-blue-600 mb-4 group-hover:scale-110 transition-transform" />
+                <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight mb-2">{item.title}</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* SECTION 4 — SERVICE CATEGORY #3: GOVERNMENT & PUBLIC SECTOR */}
+      <SectionWrapper bg="light" className="relative overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="order-2 lg:order-1 grid sm:grid-cols-2 gap-6">
+            {[
+              { icon: ClipboardCheck, title: "Program Management", desc: "Precision execution of complex public initiatives." },
+              { icon: Users2, title: "Community Engagement", desc: "Inclusive strategies to build public trust & rapport." },
+              { icon: Puzzle, title: "Interagency Coordination", desc: "Streamlining collaboration across departments." },
+              { icon: Zap, title: "Public Innovation", desc: "Modernizing service delivery with digital solutions." },
+              { icon: Landmark, title: "Partnership Development", desc: "Linking federal, state, and local stakeholders." },
+              { icon: FileText, title: "Policy Alignment", desc: "Designing programs that meet strict compliance & reporting." }
+            ].map((item, i) => (
+              <div key={i} className="group bg-white p-6 border-b-4 border-slate-200 hover:border-lime-500 transition-all shadow-sm">
+                <item.icon className="w-8 h-8 text-slate-900 mb-4 group-hover:text-blue-700 transition-colors" />
+                <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-2">{item.title}</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="order-1 lg:order-2 space-y-8">
+            <div className="w-16 h-1 bg-slate-900 mb-6"></div>
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none text-shine">
+              Government & Public Sector Consulting
+            </h2>
+            <p className="text-xl text-slate-600 leading-relaxed font-medium">
+              We support government agencies with strategic planning, program management, community engagement, and cross-sector partnership development.
+            </p>
+            
+            <div className="p-8 bg-slate-900 text-white rounded-sm">
+               <div className="text-[10px] font-black uppercase tracking-widest text-lime-400 mb-2">Public Benefit</div>
+               <p className="text-lg font-medium italic">
+                 "Effective programs, stronger public trust, and improved service delivery."
+               </p>
+            </div>
+            
+            <div className="pt-4">
+              <button className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-slate-900 group">
+                Review Public Sector Capabilities <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* SECTION 5 — SERVICE CATEGORY #4: INNOVATION & AI STRATEGY */}
+      <SectionWrapper bg="white" className="relative overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="space-y-8">
+            <div className="w-16 h-1 bg-blue-500 mb-6"></div>
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none text-shine">
+              Innovation, AI Strategy & Technology Transformation
+            </h2>
+            <p className="text-xl text-slate-600 leading-relaxed font-medium">
+              We help organizations adopt emerging technologies, build AI readiness, and modernize their
+              systems for the future.
+            </p>
+            
+            <div className="space-y-6">
+              {[
+                { icon: Brain, title: "AI Readiness Assessments", desc: "Evaluating infrastructure, data quality, and ethical considerations." },
+                { icon: Rocket, title: "Innovation Roadmaps", desc: "Phase-by-phase planning for tech adoption and scale." },
+                { icon: RefreshCcw, title: "Digital Transformation", desc: "Modernizing legacy systems for high-performance operations." }
+              ].map((item, i) => (
+                <div key={i} className="flex gap-6 group">
+                   <div className="shrink-0 p-4 bg-slate-50 rounded-sm group-hover:bg-slate-900 transition-all">
+                      <item.icon className="w-6 h-6 text-blue-600 group-hover:text-white" />
+                   </div>
+                   <div className="space-y-1">
+                      <h4 className="text-lg font-black text-slate-900 tracking-tight uppercase">{item.title}</h4>
+                      <p className="text-slate-500 text-sm font-medium">{item.desc}</p>
+                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative">
+             <div className="absolute inset-0 bg-blue-600/5 blur-3xl rounded-full animate-pulse"></div>
+             <div className="relative bg-slate-900 p-10 md:p-16 rounded-sm shadow-2xl border border-slate-800 space-y-10">
+                <div className="grid grid-cols-2 gap-4">
+                   {[
+                     { icon: Workflow, label: "Workflow Automation" },
+                     { icon: Settings, label: "Process Optimization" },
+                     { icon: Layers, label: "Tech Program Design" },
+                     { icon: Sparkles, label: "Startup Support" }
+                   ].map((feat, i) => (
+                     <div key={i} className="p-6 border border-slate-700 hover:border-blue-500 transition-all text-center space-y-3">
+                        <feat.icon className="w-6 h-6 text-blue-400 mx-auto" />
+                        <span className="block text-[10px] font-black text-white uppercase tracking-widest">{feat.label}</span>
+                     </div>
+                   ))}
+                </div>
+
+                <div className="p-6 bg-blue-600/10 border-l-4 border-blue-500">
+                   <div className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-2">The Outcome</div>
+                   <p className="text-white font-bold leading-tight">
+                     "Smarter operations, increased efficiency, and future-proof capabilities."
+                   </p>
+                </div>
+
+                <button className="w-full py-5 bg-white text-slate-950 font-black uppercase tracking-widest text-xs hover:bg-blue-500 hover:text-white transition-all">
+                   Audit Your AI Readiness
+                </button>
+             </div>
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* SECTION 6 — SERVICE CATEGORY #5: COMMUNITY IMPACT & DEVELOPMENT */}
+      <SectionWrapper bg="light" className="relative overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="order-2 lg:order-1 grid sm:grid-cols-2 gap-6">
+            {[
+              { icon: Search, title: "Needs Assessments", desc: "In-depth research to understand local operational realities." },
+              { icon: Compass, title: "Impact Initiative Design", desc: "Creating tailored programs that drive meaningful change." },
+              { icon: HeartPulse, title: "Wellness Programs", desc: "Focusing on social support, mental health, and community wellness." },
+              { icon: GraduationCap, title: "Youth & Workforce", desc: "Empowerment initiatives that build future leadership." },
+              { icon: Globe, title: "Global Partnerships", desc: "Bridging international resources with local execution." },
+              { icon: LineChart, title: "Impact Reporting", desc: "Rigorous monitoring and evaluation of social transformation." }
+            ].map((item, i) => (
+              <div key={i} className="p-8 bg-white border border-slate-100 shadow-sm hover:shadow-xl hover:border-lime-500 transition-all group rounded-sm">
+                <item.icon className="w-10 h-10 text-slate-900 mb-4 group-hover:scale-110 group-hover:text-blue-600 transition-all" />
+                <h4 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-2">{item.title}</h4>
+                <p className="text-xs text-slate-500 leading-relaxed font-medium">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="order-1 lg:order-2 space-y-8">
+            <div className="w-16 h-1 bg-lime-500 mb-6"></div>
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none text-shine">
+              Community Impact & Development
+            </h2>
+            <p className="text-xl text-slate-600 leading-relaxed font-medium">
+              We design and implement initiatives that strengthen communities, improve quality of life, and
+              create long-term impact.
+            </p>
+            
+            <div className="p-8 bg-white border-l-8 border-slate-900 shadow-2xl">
+               <div className="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-2">The Transformation</div>
+               <p className="text-lg font-bold text-slate-800 italic">
+                 "Programs that empower people and create measurable transformation."
+               </p>
+            </div>
+            
+            <div className="pt-4">
+               <button className="px-10 py-5 bg-slate-900 text-white font-black uppercase tracking-widest text-xs rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center gap-3">
+                 Explore Impact Framework <ArrowRight className="w-4 h-4" />
+               </button>
+            </div>
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* SECTION 7 — SERVICE CATEGORY #6: CREATIVE STORYTELLING & MEDIA PRODUCTION */}
+      <SectionWrapper bg="white" className="relative overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="space-y-8">
+            <div className="w-16 h-1 bg-blue-400 mb-6"></div>
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none text-shine">
+              Creative Storytelling & Media Production (Studio AMG)
+            </h2>
+            <p className="text-xl text-slate-600 leading-relaxed font-medium">
+              We create powerful content that elevates your mission, inspires action, and expands your reach.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { icon: Video, title: "Advocacy & Documentary", desc: "Compelling narratives that highlight mission-driven results." },
+                { icon: Sparkles, title: "Animation & Branding", desc: "Creative visuals that bring complex ideas to life." },
+                { icon: Play, title: "Program Launch Videos", desc: "High-impact media to kickstart your new initiatives." },
+                { icon: Megaphone, title: "Social Storytelling", desc: "Targeted campaigns designed for digital engagement." },
+                { icon: Mic, title: "Podcast Production", desc: "Professional branded series for deep-dive discussions." },
+                { icon: Clapperboard, title: "Media Strategy", desc: "Coherent narrative development across all platforms." }
+              ].map((item, i) => (
+                <div key={i} className="flex flex-col gap-3 p-6 bg-slate-50 border border-slate-100 group hover:bg-white hover:border-blue-400 hover:shadow-xl transition-all">
+                  <item.icon className="w-8 h-8 text-blue-500 group-hover:scale-110 transition-transform" />
+                  <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">{item.title}</h4>
+                  <p className="text-xs text-slate-500 leading-relaxed font-medium">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative p-2 bg-slate-900 rounded-sm shadow-2xl">
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl"></div>
+            <div className="bg-slate-800 p-8 md:p-12 space-y-8 border border-slate-700">
+               <div className="flex justify-between items-center">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                    <div className="text-[10px] font-black text-white uppercase tracking-widest">Studio Active</div>
+                  </div>
+                  <Film className="w-6 h-6 text-slate-500" />
+               </div>
+               
+               <div className="space-y-4">
+                  <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Beyond Deliverables</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">
+                    Strategy + Storytelling in one ecosystem. We don't just produce media; we build campaigns that align with your strategic growth targets.
+                  </p>
+               </div>
+
+               <div className="p-6 bg-blue-500/10 border-l-4 border-blue-400">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-2">The Outcome</div>
+                  <p className="text-white font-bold italic text-lg leading-tight">
+                    "Authentic storytelling that drives visibility, credibility, and engagement."
+                  </p>
+               </div>
+
+               <button className="w-full py-5 bg-white text-slate-950 font-black uppercase tracking-widest text-xs hover:bg-blue-400 hover:text-white transition-all">
+                  View Studio Showreel
+               </button>
+            </div>
+          </div>
+        </div>
+      </SectionWrapper>
+
       {/* CORE SERVICES BREAKDOWN */}
-      <SectionWrapper bg="white">
+      <SectionWrapper bg="light">
         <div className="space-y-16">
           <div className="text-center space-y-4 max-w-3xl mx-auto">
              <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 uppercase text-shine">Detailed Service Pillars</h2>
@@ -186,20 +460,31 @@ const ServicesPage: React.FC = () => {
          </div>
       </SectionWrapper>
 
-      {/* CTA SECTION */}
-      <SectionWrapper bg="white" className="text-center py-32">
-         <div className="max-w-4xl mx-auto space-y-10">
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none text-shine">Ready to Build Your Impact-Driven Future?</h2>
-            <p className="text-xl text-slate-500 font-medium">
-              Whether you're a startup seeking AI strategy or a corporation looking for CSR excellence, our team is ready to execute.
+      {/* SECTION 8 — CALL-TO-ACTION BLOCK */}
+      <SectionWrapper bg="white" className="text-center py-32 relative overflow-hidden">
+         <div className="absolute inset-0 bg-slate-50 opacity-30 -skew-y-3 origin-right"></div>
+         <div className="max-w-4xl mx-auto space-y-12 relative z-10">
+            <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none text-shine">
+              Let’s Build Something Transformative Together
+            </h2>
+            <p className="text-xl md:text-2xl text-slate-600 font-medium leading-relaxed">
+              Whether you're growing your nonprofit, expanding your CSR strategy, modernizing your
+              organization, or scaling community impact—AMG provides the expertise to move your mission
+              forward.
             </p>
-            <div className="flex flex-col md:flex-row justify-center gap-6">
-               <a href="#contact" className="px-12 py-6 bg-slate-900 text-white font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-2xl uppercase tracking-widest">
-                 Book Discovery Call
+            <div className="flex flex-col md:flex-row justify-center items-center gap-8 pt-6">
+               <a 
+                 href="#contact" 
+                 className="group px-14 py-7 bg-slate-900 text-white font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-2xl uppercase tracking-[0.1em] text-sm flex items-center gap-4 border-b-4 border-slate-700 active:translate-y-1 active:border-b-0"
+               >
+                 Book a 20-Minute Discovery Call
+                 <Calendar className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                </a>
-               <button className="px-12 py-6 bg-white text-slate-900 border-2 border-slate-900 font-black rounded-sm hover:bg-slate-50 transition-all uppercase tracking-widest">
-                 View Case Studies
-               </button>
+               <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 flex items-center gap-2">
+                 <span className="w-8 h-px bg-slate-200"></span>
+                 Impact Ready
+                 <span className="w-8 h-px bg-slate-200"></span>
+               </div>
             </div>
          </div>
       </SectionWrapper>
