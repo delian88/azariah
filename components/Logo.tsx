@@ -9,49 +9,86 @@ interface LogoProps {
 const Logo: React.FC<LogoProps> = ({ className = "h-12", variant = 'light' }) => {
   const isDark = variant === 'dark';
   
+  // Brand Colors
+  const bluePrimary = isDark ? "#60a5fa" : "#005696"; // Deep corporate blue
+  const greenBrand = "#84cc16"; // Signature green
+  const greyText = isDark ? "#94a3b8" : "#71717a"; // Management grey
+  const whiteText = "#ffffff";
+  const darkText = "#0f172a";
+
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
+    <div className={`flex items-center gap-4 ${className}`}>
+      {/* Refined 3D-effect Pixel Globe SVG */}
       <svg 
         viewBox="0 0 100 100" 
-        className="h-full w-auto"
-        fill="none" 
+        className="h-full w-auto drop-shadow-sm"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Stylized Pixelated Globe */}
-        <circle cx="50" cy="50" r="45" fill={isDark ? "#1e293b" : "#f8fafc"} stroke={isDark ? "#334155" : "#e2e8f0"} strokeWidth="0.5" />
+        <defs>
+          <radialGradient id="globeGrad" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
+            <stop offset="0%" stopColor={isDark ? "#1e293b" : "#ffffff"} />
+            <stop offset="100%" stopColor={isDark ? "#0f172a" : "#f1f5f9"} />
+          </radialGradient>
+        </defs>
         
-        {/* Blue Pixels */}
-        <rect x="25" y="35" width="6" height="6" rx="1" fill="#2563eb" />
-        <rect x="35" y="25" width="6" height="6" rx="1" fill="#3b82f6" />
-        <rect x="45" y="20" width="6" height="6" rx="1" fill="#2563eb" />
-        <rect x="20" y="45" width="6" height="6" rx="1" fill="#1d4ed8" />
-        <rect x="30" y="55" width="6" height="6" rx="1" fill="#3b82f6" />
-        <rect x="25" y="65" width="6" height="6" rx="1" fill="#2563eb" />
-        <rect x="40" y="75" width="6" height="6" rx="1" fill="#1d4ed8" />
-        <rect x="55" y="80" width="6" height="6" rx="1" fill="#3b82f6" />
+        {/* Subtle Sphere Base */}
+        <circle cx="50" cy="50" r="46" fill="url(#globeGrad)" />
         
-        {/* Green Pixels */}
-        <rect x="65" y="25" width="6" height="6" rx="1" fill="#84cc16" />
-        <rect x="75" y="35" width="6" height="6" rx="1" fill="#65a30d" />
-        <rect x="80" y="50" width="6" height="6" rx="1" fill="#84cc16" />
-        <rect x="70" y="65" width="6" height="6" rx="1" fill="#65a30d" />
-        <rect x="60" y="55" width="6" height="6" rx="1" fill="#bef264" />
-        <rect x="50" y="40" width="6" height="6" rx="1" fill="#84cc16" />
+        {/* Blue Grid/Pixels - Structured for depth */}
+        <g fill={bluePrimary}>
+          <rect x="22" y="38" width="8" height="8" rx="1" opacity="0.9" />
+          <rect x="32" y="28" width="8" height="8" rx="1" opacity="0.8" />
+          <rect x="42" y="22" width="8" height="8" rx="1" opacity="1" />
+          <rect x="18" y="50" width="8" height="8" rx="1" opacity="0.7" />
+          <rect x="28" y="60" width="8" height="8" rx="1" opacity="0.9" />
+          <rect x="40" y="72" width="8" height="8" rx="1" opacity="0.8" />
+          <rect x="12" y="42" width="6" height="6" rx="1" opacity="0.5" />
+          <rect x="55" y="82" width="8" height="8" rx="1" opacity="0.6" />
+        </g>
+        
+        {/* Green Grid/Pixels - Brand highlights */}
+        <g fill={greenBrand}>
+          <rect x="62" y="24" width="8" height="8" rx="1" />
+          <rect x="74" y="36" width="8" height="8" rx="1" />
+          <rect x="82" y="50" width="8" height="8" rx="1" opacity="0.9" />
+          <rect x="70" y="64" width="8" height="8" rx="1" opacity="0.8" />
+          <rect x="58" y="52" width="8" height="8" rx="1" />
+          <rect x="48" y="38" width="8" height="8" rx="1" opacity="0.7" />
+          <rect x="52" y="15" width="6" height="6" rx="1" opacity="0.5" />
+        </g>
       </svg>
       
-      <div className="flex flex-col justify-center leading-none">
+      {/* Clean Professional Typography */}
+      <div className="flex flex-col justify-center select-none">
+        {/* AZARIAH */}
         <div className="flex items-center">
-          <span className={`text-xl md:text-2xl font-black tracking-tighter ${isDark ? 'text-white' : 'text-slate-900'}`}>
-            AZARI
+          <span 
+            className="text-2xl md:text-3xl font-extrabold tracking-tighter"
+            style={{ color: isDark ? whiteText : bluePrimary }}
+          >
+            AZAR
           </span>
-          <span className="text-xl md:text-2xl font-black tracking-tighter text-[#84cc16]">
-            AH
+          <span 
+            className="text-2xl md:text-3xl font-extrabold tracking-tighter"
+            style={{ color: greenBrand }}
+          >
+            IAH
           </span>
         </div>
-        <span className={`text-[8px] md:text-[10px] font-bold tracking-[0.2em] uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+        
+        {/* MANAGEMENT */}
+        <span 
+          className="text-[9px] md:text-[11px] font-medium tracking-[0.45em] uppercase leading-none mt-0.5"
+          style={{ color: greyText }}
+        >
           Management
         </span>
-        <span className={`text-[10px] md:text-[12px] font-black tracking-[0.1em] uppercase ${isDark ? 'text-blue-400' : 'text-blue-700'}`}>
+        
+        {/* GROUP */}
+        <span 
+          className="text-sm md:text-base font-black tracking-[0.15em] uppercase leading-tight"
+          style={{ color: isDark ? bluePrimary : bluePrimary }}
+        >
           Group
         </span>
       </div>
