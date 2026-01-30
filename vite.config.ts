@@ -5,11 +5,14 @@ export default defineConfig({
   plugins: [react()],
   define: {
     // Standardizing the way process.env is handled for Gemini SDK in the browser
-    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || ''),
+    'process.env': {
+      API_KEY: JSON.stringify(process.env.API_KEY || '')
+    }
   },
   build: {
     outDir: 'dist',
-    sourcemap: false
+    sourcemap: false,
+    target: 'esnext'
   },
   server: {
     port: 3000,
