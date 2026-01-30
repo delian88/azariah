@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
+import Logo from './Logo';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,12 +21,8 @@ const Navbar: React.FC = () => {
       scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-2' : 'bg-transparent py-4'
     }`}>
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
-        <a href="#home" className="flex items-center">
-          <img 
-            src="/logo.png" 
-            alt="Azariah Management Group Logo" 
-            className="h-14 w-auto object-contain transition-all"
-          />
+        <a href="#home" className="flex items-center group">
+          <Logo className="h-12 md:h-14 transition-transform group-hover:scale-105 duration-300" />
         </a>
 
         {/* Desktop Links */}
@@ -49,14 +46,14 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Toggle */}
-        <button className="md:hidden text-slate-900" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X /> : <Menu />}
+        <button className="md:hidden text-slate-900 p-2" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white border-b border-slate-100 p-6 md:hidden flex flex-col space-y-4 shadow-xl">
+        <div className="absolute top-full left-0 right-0 bg-white border-b border-slate-100 p-6 md:hidden flex flex-col space-y-4 shadow-xl animate-in slide-in-from-top-4 duration-300">
           {NAV_ITEMS.map((item) => (
             <a
               key={item.label}
@@ -67,6 +64,13 @@ const Navbar: React.FC = () => {
               {item.label}
             </a>
           ))}
+          <a
+            href="#contact"
+            onClick={() => setIsOpen(false)}
+            className="w-full py-4 bg-slate-900 text-white text-center font-bold rounded-sm"
+          >
+            Get Started
+          </a>
         </div>
       )}
     </nav>

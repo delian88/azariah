@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter } from 'lucide-react';
+import Logo from './Logo';
 
 const Footer: React.FC = () => {
   return (
@@ -8,12 +9,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
         <div className="space-y-6">
           <div className="flex items-center">
-            {/* The filter ensures the logo is clear on a dark background */}
-            <img 
-              src="/logo.png" 
-              alt="Azariah Management Group" 
-              className="h-12 w-auto object-contain brightness-0 invert opacity-90" 
-            />
+            <Logo variant="dark" className="h-12" />
           </div>
           <p className="text-slate-400 leading-relaxed">
             Revolutionizing management consultancy through data-driven insights and radical operational transparency.
