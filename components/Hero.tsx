@@ -30,7 +30,6 @@ const AUTO_SCROLL_INTERVAL = 8000;
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  // Correctly handle multiple video refs without violating hook rules
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   useEffect(() => {
@@ -73,7 +72,6 @@ const Hero: React.FC = () => {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/70 to-transparent z-10"></div>
           <video
-            // Fix: ensure ref callback returns void instead of assigned element to satisfy TypeScript
             ref={el => { videoRefs.current[index] = el; }}
             src={slide.video}
             poster={slide.poster}
@@ -88,44 +86,44 @@ const Hero: React.FC = () => {
 
       {/* Content Overlay */}
       <div className="relative z-20 h-full max-w-7xl mx-auto px-6 md:px-12 flex items-center">
-        <div className="max-w-3xl space-y-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-lime-500 text-slate-900 rounded-sm text-[10px] font-black tracking-[0.25em] uppercase shadow-xl animate-in fade-in slide-in-from-left-4 duration-700">
+        <div className="max-w-3xl space-y-6 md:space-y-8">
+          <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 bg-lime-500 text-slate-900 rounded-sm text-[10px] font-black tracking-[0.25em] uppercase shadow-xl animate-in fade-in slide-in-from-left-4 duration-700">
             <Globe2 className="w-3 h-3" />
             Purpose. Innovation. Impact.
           </div>
 
           <div className="space-y-2 overflow-hidden">
-            <h1 className="text-7xl md:text-9xl font-black text-white leading-[0.85] tracking-tighter">
+            <h1 className="text-5xl sm:text-7xl md:text-9xl font-black text-white leading-[0.85] tracking-tighter transition-all duration-700">
               {SLIDES[currentSlide].title}
             </h1>
-            <p className="text-2xl md:text-3xl font-bold text-lime-400 tracking-tight">
+            <p className="text-xl md:text-3xl font-bold text-lime-400 tracking-tight">
               {SLIDES[currentSlide].subtitle}
             </p>
           </div>
 
-          <p className="text-xl text-slate-200 leading-relaxed font-medium max-w-xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <p className="text-base md:text-xl text-slate-200 leading-relaxed font-medium max-w-xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
             At Azariah Management Group (AMG), we help corporations, nonprofits, governments, and
             emerging enterprises turn purpose into measurable progress. Through strategy, innovation, and creative storytelling, we unlock sustainable growth.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6 pt-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-            <button className="px-10 py-5 bg-white text-slate-900 font-black rounded-sm hover:bg-lime-500 hover:text-slate-900 transition-all flex items-center justify-center group shadow-2xl">
-              → Book a 20-Minute Discovery Call
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+            <button className="px-6 md:px-10 py-4 md:py-5 bg-white text-slate-900 font-black rounded-sm hover:bg-lime-500 hover:text-slate-900 transition-all flex items-center justify-center group shadow-2xl text-sm md:text-base">
+              → Book Discovery Call
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
       </div>
 
       {/* Slider Controls */}
-      <div className="absolute bottom-12 left-6 md:left-12 z-30 flex items-center gap-6">
-        <div className="flex gap-3">
+      <div className="absolute bottom-10 md:bottom-12 left-6 md:left-12 z-30 flex items-center gap-6">
+        <div className="flex gap-2 md:gap-3">
           {SLIDES.map((_, i) => (
             <button
               key={i}
               onClick={() => handleDotClick(i)}
-              className={`relative h-1.5 overflow-hidden transition-all duration-300 rounded-full ${
-                i === currentSlide ? 'w-16 bg-white/20' : 'w-4 bg-white/20 hover:bg-white/40'
+              className={`relative h-1 md:h-1.5 overflow-hidden transition-all duration-300 rounded-full ${
+                i === currentSlide ? 'w-10 md:w-16 bg-white/20' : 'w-3 md:w-4 bg-white/20 hover:bg-white/40'
               }`}
             >
               {i === currentSlide && (
@@ -137,20 +135,20 @@ const Hero: React.FC = () => {
             </button>
           ))}
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-2 md:gap-4">
           <button 
             onClick={prevSlide}
             disabled={isTransitioning}
-            className="p-3 border border-white/20 text-white rounded-full hover:bg-white hover:text-slate-900 transition-all backdrop-blur-md disabled:opacity-50"
+            className="p-2 md:p-3 border border-white/20 text-white rounded-full hover:bg-white hover:text-slate-900 transition-all backdrop-blur-md disabled:opacity-50"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
           </button>
           <button 
             onClick={nextSlide}
             disabled={isTransitioning}
-            className="p-3 border border-white/20 text-white rounded-full hover:bg-white hover:text-slate-900 transition-all backdrop-blur-md disabled:opacity-50"
+            className="p-2 md:p-3 border border-white/20 text-white rounded-full hover:bg-white hover:text-slate-900 transition-all backdrop-blur-md disabled:opacity-50"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
           </button>
         </div>
       </div>

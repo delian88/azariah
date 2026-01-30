@@ -1,57 +1,129 @@
-import { NavItem, ServiceCard, StatItem, ProjectItem } from './types';
+import { NavItem } from './types';
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Home', href: '#home' },
   { label: 'Who We Are', href: '#about' },
-  { label: 'Services', href: '#services' },
+  { label: 'What We Do', href: '#what-we-do' },
+  { label: 'Programs', href: '#programs' },
   { label: 'Strategic AI', href: '#ai' },
   { label: 'Contact', href: '#contact' }
 ];
 
-export const SERVICES: ServiceCard[] = [
+export const WHAT_WE_DO = [
   {
-    title: 'Management Consulting',
-    description: 'Strategic advisory and business consulting to help corporations and non-profits scale effectively with clarity and capacity.',
+    title: 'Consulting & Business Strategy',
+    description: 'Guiding organizations through growth planning, business development, governance, and operational transformation.',
     icon: 'briefcase'
   },
   {
-    title: 'Innovation & Tech',
-    description: 'AI integration, digital readiness, and modernization strategies to ensure your organization is future-proof.',
+    title: 'Corporate & Nonprofit Social Responsibility',
+    description: 'Designing community-focused programs, partnerships, and measurable CSR initiatives that align with your mission.',
+    icon: 'shield-check'
+  },
+  {
+    title: 'Innovation & AI Strategy',
+    description: 'Helping start-ups, MSMEs, and enterprises adopt future-ready tools, emerging technologies, and scalable digital systems.',
     icon: 'cpu'
   },
   {
-    title: 'Social Impact',
-    description: 'Community program design and social impact strategy for leaders who want to build responsibly and create meaningful impact.',
-    icon: 'globe'
+    title: 'Community Impact & Program Development',
+    description: 'Building wellness, empowerment, mental health, and community development initiatives that uplift people.',
+    icon: 'heart'
   },
   {
-    title: 'Studio AMG',
-    description: 'Creative storytelling and advocacy media to help your organization grow with purpose-driven communication.',
+    title: 'Creative Media & Storytelling (Studio AMG)',
+    description: 'Producing advocacy-driven media, docu-series, branded content, and campaigns that amplify voices.',
     icon: 'camera'
   }
 ];
 
-export const STATS: StatItem[] = [
-  { label: 'Years Experience', value: '15', suffix: '+' },
-  { label: 'Successful Projects', value: '250', suffix: '+' },
-  { label: 'Global Partners', value: '45', suffix: '' },
-  { label: 'Impact Score', value: '98', suffix: '%' }
-];
-
-export const PROJECTS: ProjectItem[] = [
+export const HOW_WE_WORK = [
   {
-    title: 'Global Supply Chain Audit',
-    category: 'Operations',
-    image: 'https://picsum.photos/seed/mgmt1/800/600'
+    step: '1',
+    title: 'Listen & Learn',
+    description: 'We understand your mission, community, and operational realities.'
   },
   {
-    title: 'FinTech Growth Strategy',
-    category: 'Finance',
-    image: 'https://picsum.photos/seed/mgmt2/800/600'
+    step: '2',
+    title: 'Co-Create Solutions',
+    description: 'We design tailored strategies that merge innovation, impact, and execution.'
   },
   {
-    title: 'Executive Leadership Retreat',
-    category: 'Leadership',
-    image: 'https://picsum.photos/seed/mgmt3/800/600'
+    step: '3',
+    title: 'Measure & Scale Impact',
+    description: 'We help you track outcomes, strengthen partnerships, and build long-term sustainability.'
   }
 ];
+
+export const DIVISIONS = [
+  'Consulting Division',
+  'Projects & Infrastructure Division',
+  'Innovation & Technology Division',
+  'Community & Social Impact Division',
+  'Studio AMG (Creative & Media Division)'
+];
+
+export const SIGNATURE_PROGRAMS = [
+  {
+    title: 'Start Point',
+    description: 'Docu-series highlighting emerging CEOs & founders.',
+    tags: ['Media', 'Entrepreneurship']
+  },
+  {
+    title: 'Captain Chiffon',
+    description: 'Children’s animated superhero promoting courage & compassion.',
+    tags: ['Animation', 'Social Good']
+  },
+  {
+    title: 'Family First',
+    description: 'Media platform for family unity & emotional wellness.',
+    tags: ['Wellness', 'Media']
+  },
+  {
+    title: 'G.A.M.E.',
+    description: 'Global African Market Enterprise – Diaspora innovation & trade ecosystem.',
+    tags: ['Trade', 'Innovation']
+  },
+  {
+    title: 'AI Force Hub',
+    description: 'Ethical AI collaboration & training center.',
+    tags: ['Technology', 'Training']
+  },
+  {
+    title: 'BlackbyAngel Initiative',
+    description: 'Mental health, relationships & community empowerment.',
+    tags: ['Advocacy', 'Health']
+  }
+];
+
+export const WHY_CHOOSE_AMG = {
+  strengths: [
+    'Tailored consulting for every growth stage',
+    'Deep expertise in innovation, transformation & execution',
+    'Integrated consulting + media ecosystem',
+    'Real-world government & private-sector experience',
+    'Community-centered, relationship-driven approach',
+    'Proven global partnerships (U.S., Europe, Africa)',
+    'Ability to take clients from feasibility → readiness → execution'
+  ],
+  differentiators: [
+    'Strategy + storytelling in one ecosystem',
+    'Strong investment in small businesses & community development',
+    'Measurable impact frameworks',
+    'Multidisciplinary team spanning strategy, technology, culture, and media'
+  ]
+};
+
+export const WHO_WE_SERVE = {
+  primary: [
+    'Start-ups & MSMEs',
+    'Government agencies & public sector programs',
+    'Nonprofits & foundations',
+    'International organizations (U.S., EU, UK, Africa)'
+  ],
+  secondary: [
+    'Tech & engineering firms',
+    'Enterprises undergoing modernization',
+    'Creative industries seeking advocacy or branded media'
+  ]
+};

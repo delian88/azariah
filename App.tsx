@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
 import About from './components/About';
+import Programs from './components/Programs';
 import StrategicAI from './components/StrategicAI';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
@@ -18,7 +19,7 @@ const App: React.FC = () => {
     }, 2000);
 
     const observerOptions = {
-      threshold: 0.15,
+      threshold: 0.1,
       rootMargin: '0px 0px -50px 0px'
     };
 
@@ -32,8 +33,10 @@ const App: React.FC = () => {
     }, observerOptions);
 
     if (!loading) {
-      const revealElements = document.querySelectorAll('.reveal');
-      revealElements.forEach(el => observer.observe(el));
+      setTimeout(() => {
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach(el => observer.observe(el));
+      }, 100);
     }
 
     return () => {
@@ -76,6 +79,10 @@ const App: React.FC = () => {
         
         <div className="reveal">
           <Services />
+        </div>
+
+        <div className="reveal">
+          <Programs />
         </div>
         
         <div className="reveal">
