@@ -8,9 +8,11 @@ import StrategicAI from './components/StrategicAI';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Logo from './components/Logo';
+import ServicesPage from './components/ServicesPage';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useState<'home' | 'services'>('home');
 
   useEffect(() => {
     // Initial loading delay for brand visibility
@@ -43,7 +45,13 @@ const App: React.FC = () => {
       clearTimeout(timer);
       observer.disconnect();
     };
-  }, [loading]);
+  }, [loading, view]);
+
+  // Handle internal navigation
+  const navigateTo = (newView: 'home' | 'services') => {
+    setView(newView);
+    window.scrollTo(0, 0);
+  };
 
   if (loading) {
     return (
@@ -66,32 +74,38 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white selection:bg-slate-900 selection:text-white overflow-x-hidden">
-      <Navbar />
+      <Navbar onNavigate={navigateTo} currentView={view} />
       
       <main>
-        <div className="reveal">
-          <Hero />
-        </div>
-        
-        <div className="reveal">
-          <About />
-        </div>
-        
-        <div className="reveal">
-          <Services />
-        </div>
+        {view === 'home' ? (
+          <>
+            <div className="reveal">
+              <Hero />
+            </div>
+            
+            <div className="reveal">
+              <About />
+            </div>
+            
+            <div className="reveal">
+              <Services onExploreMore={() => navigateTo('services')} />
+            </div>
 
-        <div className="reveal">
-          <Programs />
-        </div>
-        
-        <div className="reveal">
-          <StrategicAI />
-        </div>
-        
-        <div className="reveal">
-          <Contact />
-        </div>
+            <div className="reveal">
+              <Programs />
+            </div>
+            
+            <div className="reveal">
+              <StrategicAI />
+            </div>
+            
+            <div className="reveal">
+              <Contact />
+            </div>
+          </>
+        ) : (
+          <ServicesPage />
+        )}
       </main>
       
       <Footer />
