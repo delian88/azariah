@@ -4,40 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Azariah Management Group | Strategic Excellence</title>
-    <!-- Optimized SVG Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23005696'/%3E%3Cstop offset='100%25' stop-color='%2384cc16'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='48' fill='url(%23a)'/%3E%3Crect x='30' y='30' width='40' height='40' rx='8' fill='white' opacity='0.2'/%3E%3C/svg%3E">
+    <!-- Optimized SVG Favicon matching the logo globe -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='20' y='20' width='30' height='30' fill='%23005696'/%3E%3Crect x='55' y='20' width='30' height='30' fill='%2384cc16'/%3E%3Crect x='20' y='55' width='30' height='30' fill='%23005696'/%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Clean System Font Stack */
+        /* Modern System Font Stack - Sharp and Clean */
         body {
             font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
             background-color: #f8fafc;
             color: #0f172a;
             -webkit-font-smoothing: antialiased;
         }
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-          width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-          background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
-          border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
-        }
         
-        /* Entrance animations */
+        /* Smooth Entrance Animations */
         .reveal {
           opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+          transform: translateY(30px);
+          transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .reveal.active {
           opacity: 1;
@@ -46,15 +29,15 @@
         
         @keyframes float {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-12px); }
+          50% { transform: translateY(-15px); }
         }
         .animate-float {
-          animation: float 5s ease-in-out infinite;
+          animation: float 6s ease-in-out infinite;
         }
 
-        .hero-gradient {
-            background: radial-gradient(circle at 70% 30%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
-                        radial-gradient(circle at 10% 80%, rgba(132, 204, 22, 0.05) 0%, transparent 40%);
+        .bg-grid-pattern {
+          background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);
+          background-size: 40px 40px;
         }
     </style>
 <script type="importmap">
@@ -71,7 +54,7 @@
 }
 </script>
 </head>
-<body class="hero-gradient">
+<body class="bg-grid-pattern">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
 </body>
