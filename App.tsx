@@ -22,6 +22,19 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('home');
 
   useEffect(() => {
+    // Initial routing based on hash
+    const handleHashRouting = () => {
+      const hash = window.location.hash;
+      if (hash === '#services-page') setView('services');
+      else if (hash === '#about-page') setView('about');
+      else if (hash === '#programs-page') setView('programs');
+      else if (hash === '#studio-page') setView('studio');
+      else setView('home');
+    };
+
+    handleHashRouting();
+    window.addEventListener('hashchange', handleHashRouting);
+
     // Initial loading delay for brand visibility
     const timer = setTimeout(() => {
       setLoading(false);
@@ -50,13 +63,23 @@ const App: React.FC = () => {
 
     return () => {
       clearTimeout(timer);
+      window.removeEventListener('hashchange', handleHashRouting);
       observer.disconnect();
     };
-  }, [loading, view]);
+  }, [loading]);
 
   // Handle internal navigation
   const navigateTo = (newView: ViewState) => {
     setView(newView);
+    // Update hash without triggering a new tab (for existing tab navigation)
+    const hashMapping: Record<ViewState, string> = {
+      home: '#home',
+      services: '#services-page',
+      about: '#about-page',
+      programs: '#programs-page',
+      studio: '#studio-page'
+    };
+    window.location.hash = hashMapping[newView];
     window.scrollTo(0, 0);
   };
 

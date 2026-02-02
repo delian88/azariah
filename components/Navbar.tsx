@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import Logo from './Logo';
@@ -20,46 +21,25 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
   }, []);
 
   const handleLinkClick = (e: React.MouseEvent, href: string) => {
-    if (href === '#services-page') {
-      e.preventDefault();
-      onNavigate?.('services');
-      setIsOpen(false);
-    } else if (href === '#about-page') {
-      e.preventDefault();
-      onNavigate?.('about');
-      setIsOpen(false);
-    } else if (href === '#programs-page') {
-      e.preventDefault();
-      onNavigate?.('programs');
-      setIsOpen(false);
-    } else if (href === '#studio-page') {
-      e.preventDefault();
-      onNavigate?.('studio');
-      setIsOpen(false);
-    } else if (href === '#home') {
+    // If it's the home link, we handle it internally to avoid too many tabs if they click Home from Home
+    if (href === '#home') {
       e.preventDefault();
       onNavigate?.('home');
       setIsOpen(false);
-    } else if (currentView !== 'home') {
-      // If we are on internal page and click a section link, go home first
-      onNavigate?.('home');
-      setTimeout(() => {
-        const id = href.replace('#', '');
-        const element = document.getElementById(id);
-        element?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-      setIsOpen(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
+      // For other links, we let the default behavior (opening in a new tab) happen
+      // but we still close the mobile menu if it's open
       setIsOpen(false);
     }
   };
 
   const navLinks = [
-    { label: 'Home', href: '#home' },
-    { label: 'About Us', href: '#about-page' },
-    { label: 'Services', href: '#services-page' },
-    { label: 'Programs', href: '#programs-page' },
-    { label: 'Studio AMG', href: '#studio-page' },
+    { label: 'Home', href: '#home', newTab: false },
+    { label: 'About Us', href: '#about-page', newTab: true },
+    { label: 'Services', href: '#services-page', newTab: true },
+    { label: 'Programs', href: '#programs-page', newTab: true },
+    { label: 'Studio AMG', href: '#studio-page', newTab: true },
   ];
 
   const isInternalView = currentView !== 'home';
@@ -80,6 +60,8 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
               key={item.label}
               href={item.href}
               onClick={(e) => handleLinkClick(e, item.href)}
+              target={item.newTab ? "_blank" : undefined}
+              rel={item.newTab ? "noopener noreferrer" : undefined}
               className={`font-black uppercase tracking-widest link-underline transition-colors md:text-[10px] lg:text-[13px] ${
                 scrolled || isInternalView ? 'text-slate-600 hover:text-slate-900' : 'text-slate-200 hover:text-white'
               } ${currentView === 'services' && item.href === '#services-page' ? 'text-lime-600' : ''} 
@@ -92,41 +74,41 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           ))}
           <a
             href="#contact"
-            onClick={(e) => handleLinkClick(e, '#contact')}
             className="md:px-4 lg:px-8 md:py-2.5 lg:py-3 bg-slate-900 text-white font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center group shadow-xl md:text-[9px] lg:text-[12px]"
           >
             Work With Us
-            <ChevronRight className="w-4 h-4 ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
+            <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
 
-        {/* Mobile Toggle (hidden on tablet and desktop) */}
-        <button className={`md:hidden p-2 transition-colors ${scrolled || isInternalView ? 'text-slate-900' : 'text-white'}`} onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden p-2 text-slate-600"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className="fixed inset-0 top-0 bg-white/98 backdrop-blur-2xl z-[60] flex flex-col items-center justify-center space-y-6 animate-in slide-in-from-top duration-500 md:hidden">
-           <button className="absolute top-6 right-6 text-slate-900 hover:text-lime-600 transition-colors" onClick={() => setIsOpen(false)}>
-             <X size={36} />
-           </button>
-           <Logo variant="light" className="h-16 mb-6" />
-           {navLinks.map((item) => (
+        <div className="md:hidden bg-white border-t border-slate-100 py-4 px-6 space-y-4 shadow-xl">
+          {navLinks.map((item) => (
             <a
               key={item.label}
               href={item.href}
               onClick={(e) => handleLinkClick(e, item.href)}
-              className="text-2xl font-black text-slate-900 hover:text-lime-600 transition-colors tracking-tighter uppercase"
+              target={item.newTab ? "_blank" : undefined}
+              rel={item.newTab ? "noopener noreferrer" : undefined}
+              className="block font-black uppercase tracking-widest text-slate-600 hover:text-slate-900 text-xs"
             >
               {item.label}
             </a>
           ))}
           <a
             href="#contact"
-            onClick={(e) => handleLinkClick(e, '#contact')}
-            className="mt-6 px-10 py-4 bg-lime-500 text-slate-950 text-sm font-black uppercase tracking-widest rounded-sm shadow-xl hover:bg-slate-900 hover:text-white transition-all"
+            onClick={() => setIsOpen(false)}
+            className="block w-full py-4 bg-slate-900 text-white text-center font-black uppercase tracking-widest rounded-sm text-xs"
           >
             Work With Us
           </a>
