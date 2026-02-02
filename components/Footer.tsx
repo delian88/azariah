@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
           <ul className="space-y-4 text-sm">
             <li className="flex items-center space-x-3">
               <MapPin className="w-5 h-5 text-slate-500" />
-              <span>1200 Wall Street, NY 10005</span>
+              <span>Upper Marlboro, MD, 20772 USA</span>
             </li>
             <li className="flex items-center space-x-3">
               <Phone className="w-5 h-5 text-slate-500" />
