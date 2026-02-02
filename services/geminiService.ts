@@ -1,27 +1,44 @@
 import { GoogleGenAI } from "@google/genai";
 
-export const getStrategicInsight = async (problem: string) => {
+export interface StrategicResponse {
+  text: string;
+  sources?: Array<{ title: string; uri: string }>;
+}
+
+export const getStrategicInsight = async (problem: string): Promise<StrategicResponse> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: `Provide a high-level strategic management recommendation for the following business challenge: "${problem}". Structure it with an executive summary, three actionable steps, and a potential risk assessment.`,
+      model: 'gemini-3-pro-preview',
+      contents: `Provide a high-level strategic management recommendation for the following business challenge: "${problem}". 
+      Use real-time information where relevant to provide context on current market trends.
+      Structure it with an executive summary, three actionable steps, and a potential risk assessment.`,
       config: {
         temperature: 0.7,
-        topP: 0.9,
+        thinkingConfig: { thinkingBudget: 16384 },
+        tools: [{ googleSearch: {} }]
       }
     });
-    return response.text;
+
+    const text = response.text || "No recommendation could be generated.";
+    const sources = response.candidates?.[0]?.groundingMetadata?.groundingChunks
+      ?.filter(chunk => chunk.web)
+      .map(chunk => ({
+        title: chunk.web?.title || "Source",
+        uri: chunk.web?.uri || "#"
+      }));
+
+    return { text, sources };
   } catch (error) {
     console.error("Gemini API Error:", error);
-    throw new Error("Could not generate insight. Please try again.");
+    throw new Error("Could not generate insight. Please check your connection and try again.");
   }
 };
 
 export const startStrategicChat = () => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   return ai.chats.create({
-    model: 'gemini-3-flash-preview',
+    model: 'gemini-3-pro-preview',
     config: {
       systemInstruction: `You are the Azariah Management Group (AMG) Virtual Consultant. 
       AMG is a multidisciplinary firm operating at the intersection of corporate innovation, community development, and creative media.
