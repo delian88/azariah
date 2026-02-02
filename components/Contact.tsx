@@ -169,7 +169,7 @@ const Contact: React.FC = () => {
           </button>
           
           <p className="text-[10px] text-slate-400 font-bold uppercase text-center tracking-widest">
-            Secure Submission • Privacy Compliant • AMG Cloud
+            Secure Submission • Privacy Compliant
           </p>
         </form>
       </div>
