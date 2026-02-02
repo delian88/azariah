@@ -1,4 +1,3 @@
-
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
 import { Send } from 'lucide-react';
@@ -16,7 +15,7 @@ const Contact: React.FC = () => {
           <div className="space-y-6">
             <div className="p-4 bg-slate-800 rounded-sm">
               <div className="text-blue-400 text-xs font-bold uppercase mb-1 tracking-widest">Office Hours</div>
-              <div>Mon - Fri, 8:00 - 18:00 EST</div>
+              <div>Mon - Fri, 9:00 AM - 5:00 PM</div>
             </div>
             <div className="p-4 bg-slate-800 rounded-sm">
               <div className="text-blue-400 text-xs font-bold uppercase mb-1 tracking-widest">Response Time</div>
