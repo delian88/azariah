@@ -12,38 +12,38 @@ const StudioAMGPage: React.FC = () => {
     {
       title: "Voices of the Diaspora",
       category: "Documentary",
-      image: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=2006",
-      impact: "Influenced trade policy discussions across 3 regions for the G.A.M.E. ecosystem."
+      image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2059",
+      impact: "Influenced global trade policy discussions for the G.A.M.E. ecosystem, bridging connections between North America and the African Diaspora."
     },
     {
       title: "Start Point: The Series",
       category: "Original Programming",
-      image: "https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&q=80&w=2070",
-      impact: "Reached 1.2M+ viewers across digital platforms, highlighting emerging African founders."
+      image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071",
+      impact: "High-impact docu-series reaching 1.2M+ viewers, featuring emerging CEOs and scaling the narrative of African innovation."
     },
     {
       title: "Foundation of Luv Impact Film",
       category: "Social Impact Film",
       image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=1964",
-      impact: "Visualized community wellness initiatives, helping secure $2M in grant funding."
+      impact: "Cinematic storytelling for community wellness that played a pivotal role in securing $2M+ in project funding."
     },
     {
       title: "Corporate ESG Standard",
       category: "Branded Content",
       image: "https://images.unsplash.com/photo-1551818255-e6e10975bc17?auto=format&fit=crop&q=80&w=2050",
-      impact: "Internal engagement increased by 45% through authentic sustainability storytelling."
+      impact: "Transformed complex ESG reporting into authentic human-centered stories, resulting in a 45% lift in employee engagement."
     },
     {
       title: "Captain Chiffon Hero Campaign",
       category: "Animation & Family",
-      image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=2094",
-      impact: "Promoted courage and compassion to 500k+ children globally via digital media."
+      image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1974",
+      impact: "Multi-platform animated campaign promoting empathy and courage to half a million children across global markets."
     },
     {
       title: "The Silent Movement",
       category: "Advocacy Campaign",
       image: "https://images.unsplash.com/photo-1542204113-e9354e746522?auto=format&fit=crop&q=80&w=1974",
-      impact: "Mobilized 50+ grassroots organizations for mental health and relationship advocacy."
+      impact: "Award-winning advocacy visuals that mobilized 50+ grassroots organizations for mental health awareness."
     }
   ];
 
@@ -65,10 +65,10 @@ const StudioAMGPage: React.FC = () => {
               <Camera className="w-4 h-4" /> The Creative Hub
             </div>
             <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none text-shine">
-              Impact Stories.
+              Studio AMG.
             </h1>
             <p className="text-xl md:text-2xl text-slate-600 leading-relaxed font-medium border-l-4 border-lime-500 pl-6">
-              Powerful narratives that move communities and elevate mission-driven brands.
+              Where high-level strategy meets world-class cinematic storytelling to drive measurable impact.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
               <button 
@@ -83,7 +83,7 @@ const StudioAMGPage: React.FC = () => {
              <div className="aspect-video bg-slate-900 rounded-sm shadow-2xl overflow-hidden group border-8 border-white">
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent z-10 flex items-end p-8">
                   <div className="flex items-center gap-4 text-white">
-                    <div className="w-12 h-12 bg-lime-500 rounded-full flex items-center justify-center animate-pulse group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 bg-lime-500 rounded-full flex items-center justify-center animate-pulse group-hover:scale-110 transition-transform cursor-pointer">
                       <Play className="w-6 h-6 fill-slate-950 text-slate-950" />
                     </div>
                     <span className="text-sm font-black uppercase tracking-widest">Studio Showreel</span>
@@ -116,7 +116,7 @@ const StudioAMGPage: React.FC = () => {
               </div>
               <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">The Problem</h3>
               <p className="text-slate-500 leading-relaxed font-medium text-sm">
-                Organizations struggle to communicate impact clearly. Their work is powerful—but it's not felt.
+                Organizations struggle to communicate impact clearly. Their work is powerful—but it's not felt by key stakeholders.
               </p>
             </div>
 
@@ -127,7 +127,7 @@ const StudioAMGPage: React.FC = () => {
               </div>
               <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Our Solution</h3>
               <p className="text-slate-600 leading-relaxed font-bold text-sm">
-                Cinematic production and strategic messaging that transforms missions into compelling narratives.
+                Cinematic production and strategic messaging that transforms mission-critical data into compelling narratives.
               </p>
             </div>
 
@@ -137,7 +137,7 @@ const StudioAMGPage: React.FC = () => {
                 <Sparkles className="w-8 h-8 text-lime-400" />
               </div>
               <h3 className="text-2xl font-black uppercase tracking-tight text-shine-white">The Impact</h3>
-              <p className="text-slate-300 font-bold text-sm">Believing stakeholders. Engaged communities. Unforgettable missions.</p>
+              <p className="text-slate-300 font-bold text-sm">Stakeholder trust. Community alignment. Unforgettable missions that inspire action.</p>
             </div>
           </div>
         </div>
@@ -174,7 +174,7 @@ const StudioAMGPage: React.FC = () => {
                           <p className="text-slate-300 text-xs font-medium mb-4">{project.impact}</p>
                           <button 
                             onClick={scrollToContact}
-                            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-lime-400"
+                            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-lime-400 hover:text-white transition-colors"
                           >
                              Inquire for Case Study <ExternalLink className="w-3 h-3" />
                           </button>
@@ -192,10 +192,10 @@ const StudioAMGPage: React.FC = () => {
          <div className="absolute inset-0 bg-blue-600/5 -z-10 animate-pulse"></div>
          <div className="max-w-5xl mx-auto text-center space-y-12 relative z-10 reveal">
             <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none text-shine-white">
-              Ready to Bring Your Story to Life?
+              Ready to Amplify Your Impact?
             </h2>
             <p className="text-xl md:text-3xl text-slate-400 font-medium leading-relaxed max-w-3xl mx-auto">
-              Let’s build a narrative that inspires action, strengthens your brand, and amplifies your impact.
+              Let’s build a cinematic narrative that inspires action, builds trust, and elevates your mission.
             </p>
             <div className="flex flex-col md:flex-row justify-center items-center gap-8 pt-8">
                <button 

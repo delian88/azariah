@@ -121,10 +121,6 @@ const App: React.FC = () => {
             <div className="reveal">
               <StrategicAI />
             </div>
-            
-            <div className="reveal">
-              <Contact />
-            </div>
           </>
         );
     }
@@ -136,6 +132,9 @@ const App: React.FC = () => {
       
       <main>
         {renderContent()}
+        <div className="reveal">
+          <Contact />
+        </div>
       </main>
       
       <Footer />
