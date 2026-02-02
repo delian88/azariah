@@ -4,6 +4,13 @@ import { SIGNATURE_PROGRAMS } from '../constants';
 import { ExternalLink, Zap } from 'lucide-react';
 
 const Programs: React.FC = () => {
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <SectionWrapper id="programs" bg="white" className="relative overflow-hidden">
       {/* Background Decor */}
@@ -58,7 +65,10 @@ const Programs: React.FC = () => {
         </div>
 
         <div className="pt-16 border-t border-slate-100 flex flex-col md:flex-row items-center justify-center gap-8">
-            <button className="w-full md:w-auto px-12 py-6 bg-slate-900 text-white font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-2xl uppercase tracking-widest text-sm">
+            <button 
+              onClick={scrollToContact}
+              className="w-full md:w-auto px-12 py-6 bg-slate-900 text-white font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-2xl uppercase tracking-widest text-sm"
+            >
               Book Discovery Call
             </button>
             <button className="w-full md:w-auto px-12 py-6 bg-white text-slate-900 border-2 border-slate-900 font-black rounded-sm hover:bg-slate-50 transition-all uppercase tracking-widest text-sm">

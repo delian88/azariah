@@ -9,6 +9,13 @@ import {
 } from 'lucide-react';
 
 const ServicesPage: React.FC = () => {
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="pt-24">
       {/* SECTION 1 — PAGE INTRODUCTION */}
@@ -106,7 +113,6 @@ const ServicesPage: React.FC = () => {
                 { icon: ClipboardList, title: "Planning", desc: "Strategic & operational roadmaps." },
                 { icon: Coins, title: "Fundraising", desc: "Grant-readiness & support." },
                 { icon: Layout, title: "Program Design", desc: "Execution & evaluation models." },
-                // Fixed: Added MessageSquare to the imports list above
                 { icon: MessageSquare, title: "Communications", desc: "PR & storytelling." },
                 { icon: Landmark, title: "Governance", desc: "Board & leadership development." }
               ].map((item, i) => (
@@ -179,9 +185,7 @@ const ServicesPage: React.FC = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              // Fixed: Added Brain to the imports list above
               { icon: Brain, title: "AI Readiness", desc: "Assessments and implementation roadmaps." },
-              // Fixed: Added Rocket to the imports list above
               { icon: Rocket, title: "Innovation", desc: "Digital transformation & roadmaps." },
               { icon: Workflow, title: "Automation", desc: "Workflow & process optimization." },
               { icon: Zap, title: "Startup Support", desc: "Innovation pipeline development." },
@@ -299,13 +303,13 @@ const ServicesPage: React.FC = () => {
               Whether you're growing your nonprofit, expanding your CSR strategy, modernizing your organization, or scaling community impact—AMG provides the expertise to move your mission forward.
             </p>
             <div className="flex flex-col md:flex-row justify-center items-center gap-8 pt-6">
-               <a 
-                 href="#contact" 
+               <button 
+                 onClick={scrollToContact}
                  className="group px-14 py-7 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-2xl uppercase tracking-widest text-sm flex items-center gap-4 hover:-translate-y-1"
                >
                  Book a 20-Minute Discovery Call
                  <Calendar className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-               </a>
+               </button>
             </div>
          </div>
       </SectionWrapper>

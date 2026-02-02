@@ -60,6 +60,13 @@ const Hero: React.FC = () => {
     setTimeout(() => setIsTransitioning(false), 800);
   };
 
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section id="home" className="relative h-screen w-full overflow-hidden bg-slate-900">
       {/* Background Videos Slider */}
@@ -107,7 +114,10 @@ const Hero: React.FC = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6 pt-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
-            <button className="px-10 py-6 bg-white text-slate-900 font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center justify-center group shadow-2xl text-base tracking-wider uppercase border-b-4 border-slate-200 active:translate-y-1 active:border-b-0">
+            <button 
+              onClick={scrollToContact}
+              className="px-10 py-6 bg-white text-slate-900 font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center justify-center group shadow-2xl text-base tracking-wider uppercase border-b-4 border-slate-200 active:translate-y-1 active:border-b-0"
+            >
               Book Discovery Call
               <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-2 transition-transform" />
             </button>

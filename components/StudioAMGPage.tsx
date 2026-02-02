@@ -12,51 +12,47 @@ const StudioAMGPage: React.FC = () => {
     {
       title: "Voices of the Diaspora",
       category: "Documentary",
-      image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2059",
-      impact: "Influenced trade policy discussions across 3 regions."
+      image: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=2006",
+      impact: "Influenced trade policy discussions across 3 regions for the G.A.M.E. ecosystem."
     },
     {
       title: "Start Point: The Series",
       category: "Original Programming",
       image: "https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&q=80&w=2070",
-      impact: "Reached 1.2M+ viewers across digital platforms."
+      impact: "Reached 1.2M+ viewers across digital platforms, highlighting emerging African founders."
     },
     {
       title: "Foundation of Luv Impact Film",
       category: "Social Impact Film",
       image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=1964",
-      impact: "Helped secure $2M in grant funding."
+      impact: "Visualized community wellness initiatives, helping secure $2M in grant funding."
     },
     {
       title: "Corporate ESG Standard",
       category: "Branded Content",
       image: "https://images.unsplash.com/photo-1551818255-e6e10975bc17?auto=format&fit=crop&q=80&w=2050",
-      impact: "Internal engagement increased by 45%."
+      impact: "Internal engagement increased by 45% through authentic sustainability storytelling."
+    },
+    {
+      title: "Captain Chiffon Hero Campaign",
+      category: "Animation & Family",
+      image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=2094",
+      impact: "Promoted courage and compassion to 500k+ children globally via digital media."
     },
     {
       title: "The Silent Movement",
       category: "Advocacy Campaign",
       image: "https://images.unsplash.com/photo-1542204113-e9354e746522?auto=format&fit=crop&q=80&w=1974",
-      impact: "Mobilized 50+ grassroots organizations."
-    },
-    {
-      title: "Tech for Humanity",
-      category: "Narrative Short",
-      image: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=2006",
-      impact: "Winner of 'Innovation in Storytelling' Award."
+      impact: "Mobilized 50+ grassroots organizations for mental health and relationship advocacy."
     }
   ];
 
-  const TESTIMONIALS = [
-    {
-      quote: "Studio AMG helped us tell a story we never had the words for. Their film tripled our reach.",
-      author: "Nonprofit Director"
-    },
-    {
-      quote: "Their ability to translate government programs into relatable stories is unmatched.",
-      author: "Public Agency Official"
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
     }
-  ];
+  };
 
   return (
     <div className="pt-24">
@@ -75,7 +71,10 @@ const StudioAMGPage: React.FC = () => {
               Powerful narratives that move communities and elevate mission-driven brands.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
-              <button className="px-10 py-5 bg-slate-900 text-white font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-xl uppercase tracking-widest text-[10px] hover:-translate-y-1">
+              <button 
+                onClick={scrollToContact}
+                className="px-10 py-5 bg-slate-900 text-white font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-xl uppercase tracking-widest text-[10px] hover:-translate-y-1"
+              >
                 Book Discovery Call
               </button>
             </div>
@@ -173,8 +172,11 @@ const StudioAMGPage: React.FC = () => {
                        </h3>
                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
                           <p className="text-slate-300 text-xs font-medium mb-4">{project.impact}</p>
-                          <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-lime-400">
-                             Case Study <ExternalLink className="w-3 h-3" />
+                          <button 
+                            onClick={scrollToContact}
+                            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-lime-400"
+                          >
+                             Inquire for Case Study <ExternalLink className="w-3 h-3" />
                           </button>
                        </div>
                     </div>
@@ -196,10 +198,16 @@ const StudioAMGPage: React.FC = () => {
               Let’s build a narrative that inspires action, strengthens your brand, and amplifies your impact.
             </p>
             <div className="flex flex-col md:flex-row justify-center items-center gap-8 pt-8">
-               <button className="w-full md:w-auto px-14 py-7 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-2xl uppercase tracking-widest text-xs flex items-center justify-center gap-4 group hover:-translate-y-2">
+               <button 
+                onClick={scrollToContact}
+                className="w-full md:w-auto px-14 py-7 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-2xl uppercase tracking-widest text-xs flex items-center justify-center gap-4 group hover:-translate-y-2"
+               >
                  Start Your Creative Project <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                </button>
-               <button className="w-full md:w-auto px-14 py-7 border-2 border-white/20 text-white font-black rounded-sm hover:bg-white hover:text-slate-900 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-4 group hover:-translate-y-2">
+               <button 
+                onClick={scrollToContact}
+                className="w-full md:w-auto px-14 py-7 border-2 border-white/20 text-white font-black rounded-sm hover:bg-white hover:text-slate-900 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-4 group hover:-translate-y-2"
+               >
                  Request a Media Proposal <FileText className="w-5 h-5" />
                </button>
             </div>

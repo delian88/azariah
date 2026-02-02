@@ -8,6 +8,13 @@ import {
 import { WHO_SERVED } from '../constants';
 
 const AboutPage: React.FC = () => {
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="pt-24">
       {/* HERO SECTION */}
@@ -124,8 +131,11 @@ const AboutPage: React.FC = () => {
             <p className="text-xl text-slate-600 leading-relaxed font-medium">
               We believe innovation, community impact, and storytelling must exist together to create lasting change.
             </p>
-            <button className="px-10 py-5 bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all hover:shadow-2xl">
-              Learn How We Work
+            <button 
+              onClick={scrollToContact}
+              className="px-10 py-5 bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all hover:shadow-2xl"
+            >
+              Get In Touch
             </button>
           </div>
         </div>
