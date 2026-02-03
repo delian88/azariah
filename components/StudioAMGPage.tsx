@@ -60,7 +60,7 @@ const StudioAMGPage: React.FC = () => {
       <SectionWrapper bg="white" className="relative overflow-hidden pb-32">
         <div className="absolute top-0 right-0 w-1/4 h-full bg-slate-50 -z-10 -skew-x-12 translate-x-1/2"></div>
         <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
-          <div className="space-y-8 reveal">
+          <div className="space-y-8 reveal active">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-800 text-xs font-black uppercase tracking-widest rounded-full border border-blue-100 animate-pulse">
               <Camera className="w-4 h-4" /> The Creative Hub
             </div>
@@ -79,7 +79,7 @@ const StudioAMGPage: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="relative reveal delay-300">
+          <div className="relative reveal active">
              <div className="aspect-video bg-slate-900 rounded-sm shadow-2xl overflow-hidden group border-8 border-white">
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent z-10 flex items-end p-8">
                   <div className="flex items-center gap-4 text-white">
@@ -109,7 +109,6 @@ const StudioAMGPage: React.FC = () => {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* The Problem */}
             <div className="reveal p-10 bg-white border-t-8 border-slate-300 shadow-xl space-y-6 hover:-translate-y-2 transition-all duration-500">
               <div className="p-3 bg-slate-100 inline-block rounded-sm">
                 <XCircle className="w-8 h-8 text-slate-400" />
@@ -120,8 +119,7 @@ const StudioAMGPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Our Solution */}
-            <div className="reveal delay-200 p-10 bg-white border-t-8 border-blue-600 shadow-2xl space-y-6 hover:-translate-y-4 transition-all duration-500 relative z-20">
+            <div className="reveal p-10 bg-white border-t-8 border-blue-600 shadow-2xl space-y-6 hover:-translate-y-4 transition-all duration-500 relative z-20">
               <div className="p-3 bg-blue-50 inline-block rounded-sm">
                 <CheckCircle2 className="w-8 h-8 text-blue-600" />
               </div>
@@ -131,8 +129,7 @@ const StudioAMGPage: React.FC = () => {
               </p>
             </div>
 
-            {/* The Impact */}
-            <div className="reveal delay-400 p-10 bg-slate-900 text-white border-t-8 border-lime-500 shadow-xl space-y-6 hover:-translate-y-2 transition-all duration-500">
+            <div className="reveal p-10 bg-slate-900 text-white border-t-8 border-lime-500 shadow-xl space-y-6 hover:-translate-y-2 transition-all duration-500">
               <div className="p-3 bg-slate-800 inline-block rounded-sm">
                 <Sparkles className="w-8 h-8 text-lime-400" />
               </div>
@@ -155,7 +152,7 @@ const StudioAMGPage: React.FC = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {PORTFOLIO_ITEMS.map((project, i) => (
-              <div key={i} className="reveal group relative overflow-hidden bg-slate-900 aspect-[4/5] rounded-sm shadow-xl" style={{ transitionDelay: `${i * 100}ms` }}>
+              <div key={i} className="reveal group relative overflow-hidden bg-slate-900 aspect-[4/5] rounded-sm shadow-xl">
                  <img 
                    src={project.image} 
                    alt={project.title} 

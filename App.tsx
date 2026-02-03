@@ -39,7 +39,7 @@ const App: React.FC = () => {
 
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 1500);
 
     return () => {
       clearTimeout(timer);
@@ -48,7 +48,6 @@ const App: React.FC = () => {
   }, []);
 
   // Intersection Observer for "reveal" animations
-  // This needs to re-run whenever the 'view' changes to catch new elements
   useEffect(() => {
     if (loading) return;
 
@@ -57,7 +56,6 @@ const App: React.FC = () => {
       rootMargin: '0px 0px -50px 0px'
     };
 
-    // Clean up old observer if it exists
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
@@ -71,11 +69,19 @@ const App: React.FC = () => {
       });
     }, observerOptions);
 
-    // Short delay to ensure DOM has rendered the new view
+    // Re-scan DOM after view updates
     const timer = setTimeout(() => {
       const revealElements = document.querySelectorAll('.reveal');
       revealElements.forEach(el => observerRef.current?.observe(el));
-    }, 150);
+      
+      // Fail-safe: If elements are still invisible after 2s, force them active
+      // to ensure content is NEVER trapped in a hidden state.
+      setTimeout(() => {
+        const stuckElements = document.querySelectorAll('.reveal:not(.active)');
+        stuckElements.forEach(el => el.classList.add('active'));
+      }, 2000);
+
+    }, 300);
 
     return () => {
       clearTimeout(timer);
@@ -92,7 +98,6 @@ const App: React.FC = () => {
       studio: '#studio-page'
     };
     window.location.hash = hashMapping[newView];
-    // Hash change listener will handle the setView and Scroll
   };
 
   if (loading) {
@@ -135,7 +140,7 @@ const App: React.FC = () => {
       default:
         return (
           <>
-            <div className="reveal">
+            <div className="reveal active">
               <Hero />
             </div>
             
@@ -165,7 +170,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-white selection:bg-slate-900 selection:text-white overflow-x-hidden">
       <Navbar onNavigate={navigateTo} currentView={view} />
       
-      <main>
+      <main className="w-full">
         {renderContent()}
         <div className="reveal">
           <Contact />

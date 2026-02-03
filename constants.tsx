@@ -49,8 +49,13 @@ export const WHAT_WE_DO = [
     icon: 'code-2'
   },
   {
-    title: 'Community Impact & Storytelling',
-    description: 'Creating powerful content and initiatives that elevate missions and inspire community action.',
+    title: 'Community Impact & Development',
+    description: 'Grassroots mobilization and urban development support to create lasting social change.',
+    icon: 'users'
+  },
+  {
+    title: 'Creative Storytelling (Studio AMG)',
+    description: 'World-class cinematic storytelling and media production to elevate missions and inspire action.',
     icon: 'camera'
   }
 ];
