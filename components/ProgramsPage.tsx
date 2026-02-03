@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { 
@@ -7,8 +6,7 @@ import {
   Clapperboard, Share2, Target, Play, ShieldAlert, Scale,
   BookOpen, LayoutDashboard, HeartHandshake, Users, BarChart3,
   TrendingUp, MessageSquare, Megaphone, GraduationCap,
-  // Fix: Added missing CheckCircle2 import
-  CheckCircle2
+  CheckCircle2, Link
 } from 'lucide-react';
 import { SIGNATURE_PROGRAMS } from '../constants';
 
@@ -40,7 +38,7 @@ const ProgramsPage: React.FC = () => {
     },
     'Voices of the Diaspora': {
       synopsis: [
-        "Voices of the Diaspora is a powerful storytelling and dialogue series that amplifies the lived experiences, perspectives, and contributions of people across the global African diaspora. Through intimate conversations, cultural exploration, and personal narratives, the series examines identity, heritage, innovation, and the interconnectedness of global Black communities.",
+        "Voices of the Diaspora is a powerful storytelling and dialogue series that amplifies the lived experiences, perspectives, and contributions of people across the global African diaspora. Through intimate conversations, cultural exploration, and personal narratives, the series examines identity, migration, heritage, innovation, and the interconnectedness of global Black communities.",
         "Spanning continents and generations, Voices of the Diaspora highlights how culture, history, and resilience shape modern realities while creating a shared space for understanding, healing, and collective progress. The series bridges global perspectives with local impact, honoring roots while spotlighting forward-thinking voices shaping the future."
       ],
       themes: "Diaspora Identity • Culture & Heritage • Migration • Belonging • Global Community • Legacy",
@@ -261,8 +259,37 @@ const ProgramsPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
+      {/* STRATEGIC FIT WITHIN AMG - ADDED HERE */}
+      <SectionWrapper bg="white" className="relative overflow-hidden">
+        <div className="max-w-5xl mx-auto py-12">
+          <div className="bg-slate-50 border-y border-slate-100 p-12 md:p-20 relative group">
+            <div className="absolute top-0 left-0 w-2 h-full bg-lime-500"></div>
+            <div className="space-y-10 reveal active">
+              <div className="flex items-center gap-4 text-xs font-black uppercase tracking-[0.4em] text-slate-900">
+                <Link className="w-5 h-5 text-lime-500" /> Strategic Fit Within AMG
+              </div>
+              <p className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter leading-[1.2] uppercase">
+                The Silent Movement serves as the advocacy backbone connecting <span className="text-blue-600">Family First</span>, <span className="text-lime-600">BlackbyAngel</span>, and <span className="text-blue-400">Voices of the Diaspora</span>.
+              </p>
+              <div className="flex flex-col md:flex-row gap-10 items-start md:items-center pt-8 border-t border-slate-200">
+                <p className="text-xl text-slate-600 font-medium leading-relaxed max-w-2xl italic">
+                  "Translating conversation and storytelling into measurable community impact and policy-aligned action."
+                </p>
+                <div className="flex -space-x-4">
+                  {[Heart, ShieldCheck, Globe].map((Icon, i) => (
+                    <div key={i} className="w-16 h-16 bg-white border border-slate-100 rounded-full flex items-center justify-center shadow-lg transform hover:-translate-y-2 transition-transform duration-500">
+                       <Icon className="w-6 h-6 text-slate-900" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SectionWrapper>
+
       {/* PROGRAMS GRID */}
-      <SectionWrapper bg="white">
+      <SectionWrapper bg="light">
         <div className="space-y-16">
           <div className="text-center space-y-4 max-w-3xl mx-auto reveal active">
              <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 uppercase text-shine">Signature Initiatives</h2>
