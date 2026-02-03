@@ -4,7 +4,8 @@ import {
   Camera, Play, Film, Tv, Megaphone, Sparkles, ArrowRight, 
   MessageSquare, Users, Target, Heart, Globe, Clapperboard,
   MonitorPlay, Mic2, Share2, Layers, Workflow, ShieldCheck,
-  CheckCircle2, XCircle, Zap, ExternalLink, Quote, FileText, Send
+  CheckCircle2, XCircle, Zap, ExternalLink, Quote, FileText, Send,
+  Brain, Cpu
 } from 'lucide-react';
 
 const StudioAMGPage: React.FC = () => {
@@ -94,6 +95,67 @@ const StudioAMGPage: React.FC = () => {
                   alt="Studio Media" 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-80"
                 />
+             </div>
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* NEW SECTION — OPERATING PHILOSOPHY */}
+      <SectionWrapper bg="light" className="relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-10 pointer-events-none"></div>
+        <div className="space-y-20 relative z-10">
+          <div className="max-w-4xl space-y-8 reveal">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-[1px] bg-blue-600"></div>
+              <h2 className="text-xs font-black uppercase tracking-[0.4em] text-blue-600">AMG Operating Philosophy</h2>
+            </div>
+            <h3 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter leading-tight uppercase">
+              Philosophy Aligned to Media, <br className="hidden md:block" /> Advocacy & AI Initiatives
+            </h3>
+            <p className="text-xl md:text-2xl text-slate-700 font-bold leading-snug border-l-4 border-slate-900 pl-8">
+              "At Azariah Management Group, we operate at the intersection of strategy, storytelling, and systems change. We believe advocacy without structure lacks sustainability, and technology without values lacks purpose."
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 reveal">
+            {[
+              {
+                icon: Megaphone,
+                title: "Media & Platforms",
+                desc: "Through media platforms like BlackbyAngel and Family First, we elevate authentic narratives that inspire awareness and action."
+              },
+              {
+                icon: Users,
+                title: "Advocacy & Community",
+                desc: "Through advocacy and community initiatives, we design solutions that address real needs and foster deep-rooted systemic change."
+              },
+              {
+                icon: Brain,
+                title: "AI & Technology",
+                desc: "Through AI and emerging technologies, we build tools that expand access, efficiency, and opportunity ethically and inclusively."
+              }
+            ].map((pillar, i) => (
+              <div key={i} className="p-10 bg-white border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                 <div className="w-12 h-12 bg-slate-50 flex items-center justify-center rounded-sm mb-6 group-hover:bg-slate-900 transition-colors">
+                    <pillar.icon className="w-6 h-6 text-slate-900 group-hover:text-lime-500 transition-colors" />
+                 </div>
+                 <h4 className="text-lg font-black text-slate-900 uppercase tracking-tight mb-4">{pillar.title}</h4>
+                 <p className="text-slate-500 text-sm leading-relaxed font-medium">
+                   {pillar.desc}
+                 </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-10 flex flex-col items-center text-center space-y-6 reveal">
+             <div className="w-full h-[1px] bg-slate-200"></div>
+             <p className="text-xl md:text-3xl font-black text-slate-900 uppercase tracking-tighter text-shine">
+               Our philosophy is simple: impact must be intentional, scalable, and human-centered.
+             </p>
+             <div className="flex gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                <span className="w-2 h-2 rounded-full bg-lime-500"></span>
+                <span className="w-2 h-2 rounded-full bg-slate-900"></span>
              </div>
           </div>
         </div>
