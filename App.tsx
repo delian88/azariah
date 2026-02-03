@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
@@ -20,9 +20,10 @@ type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio';
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<ViewState>('home');
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
+  // Handle Hash Routing
   useEffect(() => {
-    // Initial routing based on hash
     const handleHashRouting = () => {
       const hash = window.location.hash;
       if (hash === '#services-page') setView('services');
@@ -30,48 +31,59 @@ const App: React.FC = () => {
       else if (hash === '#programs-page') setView('programs');
       else if (hash === '#studio-page') setView('studio');
       else setView('home');
+      window.scrollTo(0, 0);
     };
 
     handleHashRouting();
     window.addEventListener('hashchange', handleHashRouting);
 
-    // Initial loading delay for brand visibility
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('hashchange', handleHashRouting);
+    };
+  }, []);
+
+  // Intersection Observer for "reveal" animations
+  // This needs to re-run whenever the 'view' changes to catch new elements
+  useEffect(() => {
+    if (loading) return;
 
     const observerOptions = {
       threshold: 0.1,
       rootMargin: '0px 0px -50px 0px'
     };
 
-    const observer = new IntersectionObserver((entries) => {
+    // Clean up old observer if it exists
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    observerRef.current = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('active');
-          observer.unobserve(entry.target);
+          observerRef.current?.unobserve(entry.target);
         }
       });
     }, observerOptions);
 
-    if (!loading) {
-      setTimeout(() => {
-        const revealElements = document.querySelectorAll('.reveal');
-        revealElements.forEach(el => observer.observe(el));
-      }, 100);
-    }
+    // Short delay to ensure DOM has rendered the new view
+    const timer = setTimeout(() => {
+      const revealElements = document.querySelectorAll('.reveal');
+      revealElements.forEach(el => observerRef.current?.observe(el));
+    }, 150);
 
     return () => {
       clearTimeout(timer);
-      window.removeEventListener('hashchange', handleHashRouting);
-      observer.disconnect();
+      observerRef.current?.disconnect();
     };
-  }, [loading]);
+  }, [loading, view]);
 
-  // Handle internal navigation
   const navigateTo = (newView: ViewState) => {
-    setView(newView);
-    // Update hash without triggering a new tab (for existing tab navigation)
     const hashMapping: Record<ViewState, string> = {
       home: '#home',
       services: '#services-page',
@@ -80,7 +92,7 @@ const App: React.FC = () => {
       studio: '#studio-page'
     };
     window.location.hash = hashMapping[newView];
-    window.scrollTo(0, 0);
+    // Hash change listener will handle the setView and Scroll
   };
 
   if (loading) {
@@ -161,8 +173,6 @@ const App: React.FC = () => {
       </main>
       
       <Footer />
-      
-      {/* Global AI Chat Bot */}
       <ChatBot />
     </div>
   );
