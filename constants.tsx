@@ -94,6 +94,11 @@ export const SIGNATURE_PROGRAMS = [
     tags: ['Media', 'Entrepreneurship']
   },
   {
+    title: 'Voices of the Diaspora',
+    description: 'Storytelling series amplifying experiences across the global African diaspora.',
+    tags: ['Culture', 'Documentary']
+  },
+  {
     title: 'Captain Chiffon',
     description: 'Children’s animated superhero promoting courage & compassion.',
     tags: ['Animation', 'Social Good']

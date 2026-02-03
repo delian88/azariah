@@ -16,6 +16,7 @@ const ProgramsPage: React.FC = () => {
       case 'Captain Chiffon': return Gamepad2;
       case 'Family First': return Heart;
       case 'G.A.M.E.': return Globe;
+      case 'Voices of the Diaspora': return Globe;
       case 'AI Force Hub': return Brain;
       case 'BlackbyAngel Initiative': return ShieldCheck;
       default: return Zap;
@@ -30,6 +31,45 @@ const ProgramsPage: React.FC = () => {
       ],
       themes: "Entrepreneurship • Leadership • Resilience • Innovation • Purpose",
       format: "Docu-Reality / Business & Human Interest"
+    },
+    'Voices of the Diaspora': {
+      synopsis: [
+        "Voices of the Diaspora is a powerful storytelling and dialogue series that amplifies the lived experiences, perspectives, and contributions of people across the global African diaspora. Through intimate conversations, cultural exploration, and personal narratives, the series examines identity, migration, heritage, innovation, and the interconnectedness of global Black communities.",
+        "Spanning continents and generations, Voices of the Diaspora highlights how culture, history, and resilience shape modern realities while creating a shared space for understanding, healing, and collective progress. The series bridges global perspectives with local impact, honoring roots while spotlighting forward-thinking voices shaping the future."
+      ],
+      themes: "Diaspora Identity • Culture & Heritage • Migration • Belonging • Global Community • Legacy",
+      format: "Documentary / Talk / Cultural & Advocacy Series"
+    },
+    'Family First': {
+      synopsis: [
+        "Family First is a values-centered series that explores the dynamics of family, parenting, and relationships in today’s rapidly evolving world. Through real conversations, expert insights, and lived experiences, the series addresses mental health, communication, generational challenges, and the importance of nurturing strong family foundations.",
+        "Designed to educate, empower, and heal, Family First creates a safe and relatable space for families to engage in honest dialogue, strengthen bonds, and prioritize emotional well-being across generations."
+      ],
+      themes: "Family • Parenting • Mental Health • Relationships • Community Wellness",
+      format: "Lifestyle / Educational / Advocacy"
+    },
+    'BlackbyAngel Initiative': {
+      synopsis: [
+        "BlackbyAngel is a bold, culturally resonant talk and advocacy series that centers Black voices, experiences, and perspectives through meaningful dialogue and storytelling. Hosted by Angelica Watkins, the series blends social commentary, mental health awareness, cultural identity, and empowerment into conversations that challenge narratives and inspire growth.",
+        "Produced by Azariah Management Group under Studio AMG, BlackbyAngel is more than a show—it is a platform for visibility, healing, and forward-thinking dialogue that uplifts community voices and sparks impactful change."
+      ],
+      themes: "Culture • Identity • Mental Health • Advocacy • Empowerment",
+      format: "Talk Show / Advocacy / Cultural Commentary"
+    }
+  };
+
+  const getProgramImage = (title: string) => {
+    switch (title) {
+      case 'Family First':
+        return "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070";
+      case 'BlackbyAngel Initiative':
+        return "https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80&w=2067";
+      case 'Start Point':
+        return "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=2074";
+      case 'Voices of the Diaspora':
+        return "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2059";
+      default:
+        return "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071";
     }
   };
 
@@ -148,7 +188,7 @@ const ProgramsPage: React.FC = () => {
               {/* LEFT COLUMN: Visual Anchor */}
               <div className="w-full lg:w-[40%] bg-slate-900 relative min-h-[400px] lg:min-h-0">
                  <img 
-                   src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071" 
+                   src={getProgramImage(selectedProgram.title)} 
                    className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 transition-all duration-1000"
                    alt={selectedProgram.title}
                  />
