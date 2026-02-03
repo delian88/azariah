@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -17,9 +18,11 @@ import Careers from './components/Careers';
 import CreAItube from './components/CreAItube';
 import ChatBot from './components/ChatBot';
 import Partners from './components/Partners';
+import PodOreSection from './components/PodOreSection';
 
 type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio';
 
+// Completed the App component to fix the '() => void' is not assignable to type 'FC<{}>' error
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<ViewState>('home');
@@ -110,101 +113,102 @@ const App: React.FC = () => {
       studio: '#studio-page'
     };
     window.location.hash = hashMapping[newView];
+    setView(newView);
+    window.scrollTo(0, 0);
   };
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-[9999]">
-        <div className="animate-pulse-logo">
-          <Logo className="h-20 md:h-24" />
+      <div className="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center z-[1000] space-y-8">
+        <Logo variant="dark" className="h-20 animate-pulse" />
+        <div className="w-48 h-1 bg-slate-800 rounded-full overflow-hidden relative">
+          <div className="absolute inset-0 bg-lime-500 animate-loading-bar origin-left"></div>
         </div>
-        <div className="mt-8 w-48 h-1 bg-slate-100 rounded-full overflow-hidden">
-          <div className="h-full bg-[#005696] animate-[loading_2s_ease-in-out_infinite]"></div>
-        </div>
-        <style>{`
-          @keyframes pulse-logo {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
-          }
-          .animate-pulse-logo {
-            animation: pulse-logo 2s ease-in-out infinite;
-          }
-          @keyframes loading {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-          }
-        `}</style>
+        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] animate-pulse">
+          Initializing Strategy...
+        </p>
       </div>
     );
   }
 
-  const renderContent = () => {
-    switch(view) {
-      case 'services':
-        return <ServicesPage />;
-      case 'about':
-        return <AboutPage />;
-      case 'programs':
-        return <ProgramsPage />;
-      case 'studio':
-        return <StudioAMGPage />;
-      default:
-        return (
-          <>
-            <div className="reveal active">
-              <Hero />
-            </div>
-            
-            <Partners />
-
-            <div className="reveal">
-              <About />
-            </div>
-
-            <div className="reveal">
-              <Philosophy />
-            </div>
-            
-            <div className="reveal">
-              <Services onExploreMore={() => navigateTo('services')} />
-            </div>
-
-            <div className="reveal">
-              <Programs />
-            </div>
-
-            <div className="reveal">
-              <CreAItube />
-            </div>
-
-            <div className="reveal">
-              <Careers />
-            </div>
-            
-            <div className="reveal">
-              <StrategicAI />
-            </div>
-          </>
-        );
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-white selection:bg-slate-900 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-white">
       <Navbar onNavigate={navigateTo} currentView={view} />
       
-      <main className="w-full">
-        {renderContent()}
-        <div className="reveal">
-          <Contact />
-        </div>
+      <main>
+        {view === 'home' && (
+          <>
+            <Hero />
+            <Philosophy />
+            <Partners />
+            <Services onExploreMore={() => navigateTo('services')} />
+            <About />
+            <Programs />
+            <StrategicAI />
+            <CreAItube />
+            <PodOreSection />
+            <Careers />
+          </>
+        )}
+
+        {view === 'services' && <ServicesPage />}
+        {view === 'about' && <AboutPage />}
+        {view === 'programs' && <ProgramsPage />}
+        {view === 'studio' && <StudioAMGPage />}
+        
+        <Contact />
       </main>
-      
+
       <Footer />
       <ChatBot />
+      
+      <style>{`
+        .reveal {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.active {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .text-shine {
+          background: linear-gradient(to right, #0f172a 20%, #475569 40%, #475569 60%, #0f172a 80%);
+          background-size: 200% auto;
+          color: #000;
+          background-clip: text;
+          text-fill-color: transparent;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: shine 4s linear infinite;
+        }
+        .text-shine-white {
+          background: linear-gradient(to right, #fff 20%, #94a3b8 40%, #94a3b8 60%, #fff 80%);
+          background-size: 200% auto;
+          background-clip: text;
+          text-fill-color: transparent;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: shine 4s linear infinite;
+        }
+        @keyframes shine {
+          to { background-position: 200% center; }
+        }
+        @keyframes loading-bar {
+          0% { transform: scaleX(0); }
+          100% { transform: scaleX(1); }
+        }
+        .animate-loading-bar {
+          animation: loading-bar 1.5s ease-in-out forwards;
+        }
+        .bg-grid-pattern {
+          background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+          background-size: 30px 30px;
+        }
+      `}</style>
     </div>
   );
 };
 
+// Added default export to fix "Module has no default export" error in index.tsx
 export default App;
