@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import Philosophy from './components/Philosophy';
 import Services from './components/Services';
 import About from './components/About';
 import Programs from './components/Programs';
@@ -159,6 +160,10 @@ const App: React.FC = () => {
 
             <div className="reveal">
               <About />
+            </div>
+
+            <div className="reveal">
+              <Philosophy />
             </div>
             
             <div className="reveal">
