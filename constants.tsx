@@ -109,6 +109,11 @@ export const SIGNATURE_PROGRAMS = [
     tags: ['Wellness', 'Media']
   },
   {
+    title: 'The Silent Movement',
+    description: 'Advocacy backbone translating storytelling into community impact.',
+    tags: ['Advocacy', 'Policy']
+  },
+  {
     title: 'G.A.M.E.',
     description: 'Global African Market Enterprise – Diaspora innovation & trade ecosystem.',
     tags: ['Trade', 'Innovation']
