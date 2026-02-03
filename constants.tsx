@@ -133,20 +133,20 @@ export const WHY_CHOOSE_AMG = {
 };
 
 export const WHO_SERVED = [
-  'Start-ups & MSMEs seeking growth, readiness, and business development support',
-  'Government & Public Agencies executing programs and modernization initiatives',
-  'Nonprofits & foundations building strategy, capacity, and community impact',
-  'International partners (U.S., EU, UK, Africa) expanding their footprint',
+  'Government Agencies / Public Sector & Private Sector',
+  'Non-Profits & Civil Society Organizations',
+  'International Organizations & Donor Agencies (North/South America, E.U, UK, Asia, Africa)',
+  'Communities',
   'Tech & engineering firms innovating and scaling new solutions',
   'Creative & mission-driven brands looking for advocacy or branded storytelling'
 ];
 
 export const WHO_WE_SERVE = {
   primary: [
-    'Start-ups & MSMEs',
-    'Government agencies & public sector programs',
-    'Nonprofits & foundations',
-    'International organizations (U.S., EU, UK, Africa)'
+    'Government Agencies / Public Sector & Private Sector',
+    'Non-Profits & Civil Society Organizations',
+    'International Organizations & Donor Agencies (North/South America, E.U, UK, Asia, Africa)',
+    'Communities'
   ],
   secondary: [
     'Tech & engineering firms',
