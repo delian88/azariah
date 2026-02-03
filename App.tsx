@@ -12,6 +12,7 @@ import ServicesPage from './components/ServicesPage';
 import AboutPage from './components/AboutPage';
 import ProgramsPage from './components/ProgramsPage';
 import StudioAMGPage from './components/StudioAMGPage';
+import Careers from './components/Careers';
 import ChatBot from './components/ChatBot';
 import Partners from './components/Partners';
 
@@ -31,7 +32,17 @@ const App: React.FC = () => {
       else if (hash === '#programs-page') setView('programs');
       else if (hash === '#studio-page') setView('studio');
       else setView('home');
-      window.scrollTo(0, 0);
+      
+      // If we're on the home page and have a specific section hash, scroll to it
+      if (!hash.includes('-page') && hash.length > 1) {
+        const id = hash.substring(1);
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else {
+        window.scrollTo(0, 0);
+      }
     };
 
     handleHashRouting();
@@ -74,8 +85,7 @@ const App: React.FC = () => {
       const revealElements = document.querySelectorAll('.reveal');
       revealElements.forEach(el => observerRef.current?.observe(el));
       
-      // Fail-safe: If elements are still invisible after 2s, force them active
-      // to ensure content is NEVER trapped in a hidden state.
+      // Fail-safe
       setTimeout(() => {
         const stuckElements = document.querySelectorAll('.reveal:not(.active)');
         stuckElements.forEach(el => el.classList.add('active'));
@@ -156,6 +166,10 @@ const App: React.FC = () => {
 
             <div className="reveal">
               <Programs />
+            </div>
+
+            <div className="reveal">
+              <Careers />
             </div>
             
             <div className="reveal">

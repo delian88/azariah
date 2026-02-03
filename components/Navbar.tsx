@@ -20,13 +20,18 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
   }, []);
 
   const handleLinkClick = (e: React.MouseEvent, href: string, view?: 'home' | 'services' | 'about' | 'programs' | 'studio') => {
-    // We handle all internal navigation through our router to ensure "new page" feel 
-    // without opening new tabs, and scrolling to the top.
     if (view) {
       e.preventDefault();
       onNavigate?.(view);
       setIsOpen(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (href.startsWith('#')) {
+      const el = document.getElementById(href.substring(1));
+      if (el) {
+        e.preventDefault();
+        setIsOpen(false);
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
     } else {
       setIsOpen(false);
     }
@@ -38,6 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
     { label: 'Services', href: '#services-page', view: 'services' as const },
     { label: 'Programs', href: '#programs-page', view: 'programs' as const },
     { label: 'Studio AMG', href: '#studio-page', view: 'studio' as const },
+    { label: 'Careers', href: '#careers' },
   ];
 
   const isInternalView = currentView !== 'home';
@@ -61,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
             <a
               key={item.label}
               href={item.href}
-              onClick={(e) => handleLinkClick(e, item.href, item.view)}
+              onClick={(e) => handleLinkClick(e, item.href, (item as any).view)}
               className={`font-black uppercase tracking-widest link-underline transition-colors md:text-[10px] lg:text-[13px] ${
                 scrolled || isInternalView ? 'text-slate-600 hover:text-slate-900' : 'text-slate-200 hover:text-white'
               } ${currentView === 'services' && item.href === '#services-page' ? 'text-lime-600' : ''} 
@@ -75,7 +81,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           <a
             href="#contact"
             onClick={(e) => {
-               // Close mobile menu if open, handle scroll to contact
                setIsOpen(false);
                const el = document.getElementById('contact');
                if (el) {
@@ -106,7 +111,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
             <a
               key={item.label}
               href={item.href}
-              onClick={(e) => handleLinkClick(e, item.href, item.view)}
+              onClick={(e) => handleLinkClick(e, item.href, (item as any).view)}
               className="block font-black uppercase tracking-widest text-slate-600 hover:text-slate-900 text-xs py-2 border-b border-slate-50 last:border-0"
             >
               {item.label}
