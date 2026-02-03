@@ -13,6 +13,7 @@ import AboutPage from './components/AboutPage';
 import ProgramsPage from './components/ProgramsPage';
 import StudioAMGPage from './components/StudioAMGPage';
 import Careers from './components/Careers';
+import CreAItube from './components/CreAItube';
 import ChatBot from './components/ChatBot';
 import Partners from './components/Partners';
 
@@ -166,6 +167,10 @@ const App: React.FC = () => {
 
             <div className="reveal">
               <Programs />
+            </div>
+
+            <div className="reveal">
+              <CreAItube />
             </div>
 
             <div className="reveal">

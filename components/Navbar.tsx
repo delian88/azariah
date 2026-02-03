@@ -43,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
     { label: 'Services', href: '#services-page', view: 'services' as const },
     { label: 'Programs', href: '#programs-page', view: 'programs' as const },
     { label: 'Studio AMG', href: '#studio-page', view: 'studio' as const },
-    { label: 'Careers', href: '#careers' },
+    { label: 'CreAItube', href: '#creaitube' },
   ];
 
   const isInternalView = currentView !== 'home';
