@@ -55,6 +55,15 @@ const ProgramsPage: React.FC = () => {
       ],
       themes: "Culture • Identity • Mental Health • Advocacy • Empowerment",
       format: "Talk Show / Advocacy / Cultural Commentary"
+    },
+    'Captain Chiffon': {
+      synopsis: [
+        "Captain Chiffon is an empowering, imaginative, and educational series that follows Captain Chiffon—a courageous, compassionate leader who guides children and families through life’s everyday challenges using creativity, emotional intelligence, and problem-solving skills.",
+        "Blending storytelling, positive messaging, and real-world lessons, the series encourages confidence, kindness, resilience, and self-belief. Each episode explores themes such as leadership, empathy, teamwork, mental wellness, and purpose—helping young viewers learn how to navigate their world with courage and care.",
+        "At its core, Captain Chiffon inspires children to see themselves as leaders, helpers, and changemakers—reminding them that strength comes not just from power, but from character."
+      ],
+      themes: "Leadership • Confidence • Emotional Intelligence • Kindness • Purpose • Mental Wellness",
+      format: "Educational / Animated or Live-Action Youth Series"
     }
   };
 
@@ -68,6 +77,8 @@ const ProgramsPage: React.FC = () => {
         return "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=2074";
       case 'Voices of the Diaspora':
         return "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2059";
+      case 'Captain Chiffon':
+        return "https://images.unsplash.com/photo-1534643900280-4533df516147?auto=format&fit=crop&q=80&w=2071";
       default:
         return "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071";
     }
