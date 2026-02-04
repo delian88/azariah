@@ -30,10 +30,10 @@ const Contact: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call to deliver message to info@ordiafinances.com
+      // Simulate API call to deliver message to info@azariahmgmt.com
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      console.log('Message delivered to info@ordiafinances.com:', formData);
+      console.log('Message delivered to info@azariahmgmt.com:', formData);
       
       // Success feedback
       setShowToast(true);
@@ -65,7 +65,7 @@ const Contact: React.FC = () => {
             </div>
             <div className="flex-1">
               <p className="font-black uppercase tracking-widest text-xs">Message Sent</p>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Your request has been delivered to info@ordiafinances.com</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Your request has been delivered to info@azariahmgmt.com</p>
             </div>
             <button onClick={() => setShowToast(false)} className="text-slate-500 hover:text-white">
               <AlertCircle className="w-4 h-4 rotate-45" />
@@ -92,7 +92,7 @@ const Contact: React.FC = () => {
             </div>
             <div className="pt-6 border-t border-slate-800">
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-2">Direct Inquiry</p>
-              <p className="text-sm font-bold text-lime-400">info@ordiafinances.com</p>
+              <p className="text-sm font-bold text-lime-400">info@azariahmgmt.com</p>
             </div>
           </div>
         </div>
