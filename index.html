@@ -21,9 +21,9 @@
             overflow-x: hidden;
         }
 
-        /* Shining Text Effect */
+        /* Shining Text Effect with Blue to Green Glance */
         .text-shine {
-            background: linear-gradient(to right, #005696 20%, #84cc16 40%, #84cc16 60%, #005696 80%);
+            background: linear-gradient(to right, #0f172a 10%, #005696 35%, #84cc16 50%, #005696 65%, #0f172a 90%);
             background-size: 200% auto;
             color: #000;
             background-clip: text;
@@ -39,14 +39,15 @@
             }
         }
 
-        /* Hero Text Shine (White) */
+        /* Hero Text Shine (White Base) with Blue to Green Glance */
         .text-shine-white {
-            background: linear-gradient(to right, #fff 20%, #84cc16 40%, #84cc16 60%, #fff 80%);
+            background: linear-gradient(to right, #ffffff 10%, #005696 35%, #84cc16 50%, #005696 65%, #ffffff 90%);
             background-size: 200% auto;
             background-clip: text;
+            text-fill-color: transparent;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
+            animation: shine 4s linear infinite;
         }
 
         .reveal {

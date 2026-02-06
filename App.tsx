@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -22,13 +21,11 @@ import PodOreSection from './components/PodOreSection';
 
 type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio';
 
-// Completed the App component to fix the '() => void' is not assignable to type 'FC<{}>' error
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<ViewState>('home');
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Handle Hash Routing
   useEffect(() => {
     const handleHashRouting = () => {
       const hash = window.location.hash;
@@ -38,7 +35,6 @@ const App: React.FC = () => {
       else if (hash === '#studio-page') setView('studio');
       else setView('home');
       
-      // If we're on the home page and have a specific section hash, scroll to it
       if (!hash.includes('-page') && hash.length > 1) {
         const id = hash.substring(1);
         setTimeout(() => {
@@ -63,7 +59,6 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // Intersection Observer for "reveal" animations
   useEffect(() => {
     if (loading) return;
 
@@ -85,12 +80,10 @@ const App: React.FC = () => {
       });
     }, observerOptions);
 
-    // Re-scan DOM after view updates
     const timer = setTimeout(() => {
       const revealElements = document.querySelectorAll('.reveal');
       revealElements.forEach(el => observerRef.current?.observe(el));
       
-      // Fail-safe
       setTimeout(() => {
         const stuckElements = document.querySelectorAll('.reveal:not(.active)');
         stuckElements.forEach(el => el.classList.add('active'));
@@ -173,7 +166,7 @@ const App: React.FC = () => {
           transform: translateY(0);
         }
         .text-shine {
-          background: linear-gradient(to right, #0f172a 20%, #475569 40%, #475569 60%, #0f172a 80%);
+          background: linear-gradient(to right, #0f172a 10%, #005696 35%, #84cc16 50%, #005696 65%, #0f172a 90%);
           background-size: 200% auto;
           color: #000;
           background-clip: text;
@@ -183,7 +176,7 @@ const App: React.FC = () => {
           animation: shine 4s linear infinite;
         }
         .text-shine-white {
-          background: linear-gradient(to right, #fff 20%, #94a3b8 40%, #94a3b8 60%, #fff 80%);
+          background: linear-gradient(to right, #ffffff 10%, #005696 35%, #84cc16 50%, #005696 65%, #ffffff 90%);
           background-size: 200% auto;
           background-clip: text;
           text-fill-color: transparent;
@@ -210,5 +203,4 @@ const App: React.FC = () => {
   );
 };
 
-// Added default export to fix "Module has no default export" error in index.tsx
 export default App;
