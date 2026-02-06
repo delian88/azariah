@@ -40,8 +40,8 @@ export const WHAT_WE_DO = [
     icon: 'landmark'
   },
   {
-    title: 'Innovation & AI Strategy',
-    description: 'Guiding organizations through AI readiness, digital transformation, and future-proof tech systems.',
+    title: 'AI & Tech for Good',
+    description: 'Ensuring that underrepresented communities have access to emerging technology that should serve humanity not exploit it.',
     icon: 'cpu'
   },
   {
@@ -120,7 +120,7 @@ export const SIGNATURE_PROGRAMS = [
   },
   {
     title: 'AI Force Hub',
-    description: 'Ethical AI collaboration & training center.',
+    description: 'Collaboration & training center for ethical AI implementation.',
     tags: ['Technology', 'Training']
   },
   {

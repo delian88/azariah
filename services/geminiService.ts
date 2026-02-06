@@ -47,7 +47,7 @@ export const startStrategicChat = () => {
       Our divisions include: 
       1. Consulting Division (Strategy, Business Dev, Governance).
       2. Projects & Infrastructure.
-      3. Innovation & Technology (AI, Digital Transformation).
+      3. AI & Tech for Good (Ensuring access for underrepresented communities).
       4. Community & Social Impact (CSR, Wellness, Mental Health).
       5. Studio AMG (Creative Media, Advocacy Storytelling).
 

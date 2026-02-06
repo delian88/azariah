@@ -162,14 +162,14 @@ const ServicesPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
-      {/* SECTION 5 — SERVICE CATEGORY #4: Innovation & AI */}
+      {/* SECTION 5 — SERVICE CATEGORY #4: AI & Tech for Good */}
       <SectionWrapper bg="dark" className="relative overflow-hidden">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
           <div className="space-y-16 relative z-10 reveal">
             <div className="max-w-3xl space-y-6">
               <div className="w-16 h-1 bg-lime-500 mb-6"></div>
               <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none text-shine-white">
-                4. Innovation, AI Strategy & Tech Transformation
+                4. AI & Tech for Good
               </h2>
               <p className="text-xl text-slate-400 leading-relaxed font-medium">
                 We help organizations adopt emerging technologies, build AI readiness, and modernize their systems for the future through precision engineering.

@@ -31,8 +31,8 @@ const AboutPage: React.FC = () => {
       bg: "bg-blue-50"
     },
     {
-      title: "Innovation with Responsibility",
-      desc: "Technology and AI should serve humanity, not replace it. We lead with ethical transformation.",
+      title: "AI & Tech for Good",
+      desc: "Ensuring that underrepresented communities have access to emerging technology that should serve humanity not exploit it.",
       icon: Zap,
       color: "text-lime-600",
       bg: "bg-lime-50"
