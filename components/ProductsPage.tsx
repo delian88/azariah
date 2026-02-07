@@ -1,19 +1,45 @@
-
 import React, { useState } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { PRODUCT_ITEMS } from '../constants';
 import { 
   Zap, ArrowRight, CheckCircle2, ShoppingBag, 
   ExternalLink, Layers, Sparkles, Globe, ShieldCheck, 
-  ChevronRight, Laptop, Smartphone, Rocket
+  ChevronRight, Laptop, Smartphone, Rocket, X, Mail, User, Download, Loader2
 } from 'lucide-react';
 
 const ProductsPage: React.FC = () => {
+  const [isDocModalOpen, setIsDocModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '' });
+
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const openDocModal = (product: any) => {
+    setSelectedProduct(product);
+    setIsDocModalOpen(true);
+    setIsSubmitted(false);
+  };
+
+  const closeDocModal = () => {
+    setIsDocModalOpen(false);
+    setSelectedProduct(null);
+    setFormData({ name: '', email: '' });
+  };
+
+  const handleDocSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    // Simulate API lead capture
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsSubmitting(false);
+    setIsSubmitted(true);
   };
 
   return (
@@ -77,7 +103,10 @@ const ProductsPage: React.FC = () => {
                    >
                      Request Product Demo
                    </button>
-                   <button className="px-8 py-4 border-2 border-slate-200 text-slate-900 font-black uppercase tracking-widest text-[10px] rounded-sm hover:border-slate-900 transition-all">
+                   <button 
+                     onClick={() => openDocModal(product)}
+                     className="px-8 py-4 border-2 border-slate-200 text-slate-900 font-black uppercase tracking-widest text-[10px] rounded-sm hover:border-slate-900 transition-all"
+                   >
                      View Documentation
                    </button>
                 </div>
@@ -94,6 +123,111 @@ const ProductsPage: React.FC = () => {
           ))}
         </div>
       </SectionWrapper>
+
+      {/* DOCUMENTATION MODAL */}
+      {isDocModalOpen && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-xl animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-xl rounded-sm shadow-2xl overflow-hidden relative">
+            <button 
+              onClick={closeDocModal}
+              className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 transition-colors z-20"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {!isSubmitted ? (
+              <div className="p-10 md:p-16 space-y-10">
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 text-blue-600 font-black text-[10px] uppercase tracking-widest">
+                    <ShieldCheck className="w-4 h-4" /> Secure Document Portal
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+                    Access {selectedProduct?.title} Blueprint
+                  </h3>
+                  <p className="text-slate-500 font-medium text-sm">
+                    Enter your professional details below to receive the comprehensive technical documentation and implementation guide.
+                  </p>
+                </div>
+
+                <form onSubmit={handleDocSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                      <User className="w-3 h-3" /> Full Name
+                    </label>
+                    <input 
+                      required
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Jane Cooper"
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-slate-900 transition-all text-sm font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                      <Mail className="w-3 h-3" /> Business Email
+                    </label>
+                    <input 
+                      required
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="jane@organization.com"
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-slate-900 transition-all text-sm font-bold"
+                    />
+                  </div>
+                  
+                  <button 
+                    disabled={isSubmitting}
+                    className="w-full py-6 bg-slate-900 text-white font-black uppercase tracking-[0.2em] text-xs rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center justify-center gap-4 disabled:opacity-50 shadow-xl"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" /> Verifying Credentials...
+                      </>
+                    ) : (
+                      <>
+                        Request Access <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <p className="text-[9px] text-center font-black uppercase tracking-widest text-slate-400">
+                  By requesting access, you agree to our professional data handling policy.
+                </p>
+              </div>
+            ) : (
+              <div className="p-10 md:p-20 text-center space-y-8 animate-in zoom-in-95 duration-500">
+                <div className="w-24 h-24 bg-lime-500 rounded-full flex items-center justify-center mx-auto shadow-2xl">
+                   <Download className="w-10 h-10 text-slate-950 animate-bounce" />
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Access Granted</h3>
+                  <p className="text-slate-500 font-medium text-sm">
+                    Thank you, {formData.name.split(' ')[0]}. Your documentation for <span className="font-black text-slate-900">{selectedProduct?.title}</span> is ready for download.
+                  </p>
+                </div>
+                <div className="pt-4 flex flex-col gap-4">
+                   <a 
+                     href="#" 
+                     onClick={(e) => { e.preventDefault(); alert("Simulated download: " + selectedProduct?.title + "_Documentation.pdf"); }}
+                     className="w-full py-6 bg-lime-500 text-slate-950 font-black uppercase tracking-[0.2em] text-xs rounded-sm hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center gap-4 shadow-xl"
+                   >
+                     Download Blueprint PDF <Download className="w-4 h-4" />
+                   </a>
+                   <button 
+                     onClick={closeDocModal}
+                     className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors"
+                   >
+                     Return to Products
+                   </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* CTA SECTION */}
       <SectionWrapper bg="dark" className="py-32 text-center relative overflow-hidden">
