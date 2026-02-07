@@ -1,46 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { 
   Camera, Play, Film, Tv, Megaphone, Sparkles, ArrowRight, 
   MessageSquare, Users, Target, Heart, Globe, Clapperboard,
   MonitorPlay, Mic2, Share2, Layers, Workflow, ShieldCheck,
   CheckCircle2, XCircle, Zap, ExternalLink, Quote, FileText, Send,
-  Brain, Cpu
+  Brain, Cpu, X, ChevronLeft, Info, Clock, BarChart3
 } from 'lucide-react';
 
 const StudioAMGPage: React.FC = () => {
+  const [selectedProject, setSelectedProject] = useState<any | null>(null);
+
   const PORTFOLIO_ITEMS = [
     {
+      id: 'start-point',
+      title: "Start Point: The Series",
+      category: "Original Programming",
+      image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071",
+      impact: "High-impact docu-series reaching 1.2M+ viewers, featuring emerging CEOs and scaling the narrative of African innovation.",
+      details: {
+        synopsis: [
+          "Start Point is a docu-reality series that follows the authentic journeys of entrepreneurs, founders, and CEOs at the pivotal moments where vision meets uncertainty. Rather than spotlighting success alone, the series captures the real decisions, risks, failures, and breakthroughs that shape leadership from the ground up.",
+          "Through candid storytelling and behind-the-scenes access, Start Point reveals what it truly takes to build something meaningful offering inspiration, practical insight, and human connection for aspiring leaders, innovators, and changemakers."
+        ],
+        themes: "Entrepreneurship • Leadership • Resilience • Innovation • Purpose",
+        format: "Docu-Reality / Business & Human Interest"
+      }
+    },
+    {
+      id: 'voices-diaspora',
       title: "Voices of the Diaspora",
       category: "Documentary",
       image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2059",
       impact: "Influenced global trade policy discussions for the G.A.M.E. ecosystem, bridging connections between North America and the African Diaspora."
     },
     {
-      title: "Start Point: The Series",
-      category: "Original Programming",
-      image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071",
-      impact: "High-impact docu-series reaching 1.2M+ viewers, featuring emerging CEOs and scaling the narrative of African innovation."
-    },
-    {
+      id: 'foundation-luv',
       title: "Foundation of Luv Impact Film",
       category: "Social Impact Film",
       image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=1964",
       impact: "Cinematic storytelling for community wellness that played a pivotal role in securing $2M+ in project funding."
     },
     {
+      id: 'corporate-esg',
       title: "Corporate ESG Standard",
       category: "Branded Content",
       image: "https://images.unsplash.com/photo-1551818255-e6e10975bc17?auto=format&fit=crop&q=80&w=2050",
       impact: "Transformed complex ESG reporting into authentic human-centered stories, resulting in a 45% lift in employee engagement."
     },
     {
+      id: 'captain-chiffon',
       title: "Captain Chiffon Hero Campaign",
       category: "Animation & Family",
       image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1974",
       impact: "Multi-platform animated campaign promoting empathy and courage to half a million children across global markets."
     },
     {
+      id: 'silent-movement',
       title: "The Silent Movement",
       category: "Advocacy Campaign",
       image: "https://images.unsplash.com/photo-1542204113-e9354e746522?auto=format&fit=crop&q=80&w=1974",
@@ -100,7 +116,7 @@ const StudioAMGPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
-      {/* NEW SECTION — OPERATING PHILOSOPHY */}
+      {/* OPERATING PHILOSOPHY */}
       <SectionWrapper bg="light" className="relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-10 pointer-events-none"></div>
         <div className="space-y-20 relative z-10">
@@ -161,7 +177,7 @@ const StudioAMGPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
-      {/* SECTION 5 — PROBLEM / SOLUTION / IMPACT */}
+      {/* PROBLEM / SOLUTION / IMPACT */}
       <SectionWrapper bg="white" className="py-32 relative overflow-hidden">
         <div className="relative z-10 max-w-5xl mx-auto space-y-20">
           <div className="text-center space-y-6 reveal">
@@ -202,7 +218,7 @@ const StudioAMGPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
-      {/* SECTION 6 — FEATURED WORK */}
+      {/* PORTFOLIO */}
       <SectionWrapper bg="light">
         <div className="space-y-16">
           <div className="max-w-3xl space-y-4 reveal">
@@ -214,7 +230,7 @@ const StudioAMGPage: React.FC = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {PORTFOLIO_ITEMS.map((project, i) => (
-              <div key={i} className="reveal group relative overflow-hidden bg-slate-900 aspect-[4/5] rounded-sm shadow-xl">
+              <div key={i} className="reveal group relative overflow-hidden bg-slate-900 aspect-[4/5] rounded-sm shadow-xl cursor-pointer" onClick={() => setSelectedProject(project)}>
                  <img 
                    src={project.image} 
                    alt={project.title} 
@@ -231,12 +247,9 @@ const StudioAMGPage: React.FC = () => {
                        </h3>
                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
                           <p className="text-slate-300 text-xs font-medium mb-4">{project.impact}</p>
-                          <button 
-                            onClick={scrollToContact}
-                            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-lime-400 hover:text-white transition-colors"
-                          >
-                             Inquire for Case Study <ExternalLink className="w-3 h-3" />
-                          </button>
+                          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-lime-400 hover:text-white transition-colors">
+                             View Details <ExternalLink className="w-3 h-3" />
+                          </div>
                        </div>
                     </div>
                  </div>
@@ -246,7 +259,159 @@ const StudioAMGPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
-      {/* SECTION 8 — CLEAR CALL TO ACTION */}
+      {/* PROJECT DETAIL OVERLAY */}
+      {selectedProject && (
+        <div className="fixed inset-0 z-[100] bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
+          {/* HEADER */}
+          <div className="sticky top-0 bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-6 md:px-12 flex justify-between items-center z-50">
+            <button 
+              onClick={() => setSelectedProject(null)}
+              className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-950 transition-colors group"
+            >
+              <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+              Back to Portfolio
+            </button>
+            <button 
+              onClick={() => setSelectedProject(null)}
+              className="p-2 text-slate-400 hover:text-slate-950 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            <div className="flex flex-col lg:flex-row min-h-full">
+              {/* LEFT COLUMN: Visual */}
+              <div className="w-full lg:w-[40%] bg-slate-900 relative min-h-[400px] lg:min-h-0">
+                 <img 
+                   src={selectedProject.image} 
+                   className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale"
+                   alt={selectedProject.title}
+                 />
+                 <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 to-transparent flex flex-col justify-end p-12 md:p-20">
+                    <div className="space-y-8 animate-in slide-in-from-left-8 duration-700 delay-200">
+                      <div className="w-16 h-16 bg-lime-500 rounded-sm flex items-center justify-center shadow-2xl">
+                         <Play className="w-8 h-8 text-slate-950" />
+                      </div>
+                      <div className="space-y-2">
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] bg-white/10 text-white border border-white/20 px-3 py-1 backdrop-blur-sm">
+                          {selectedProject.category}
+                        </span>
+                        <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-[0.85] text-shine-white">
+                          {selectedProject.title}.
+                        </h2>
+                      </div>
+                    </div>
+                 </div>
+              </div>
+
+              {/* RIGHT COLUMN: Info */}
+              <div className="flex-1 bg-white p-12 md:p-20 lg:p-32 max-w-5xl">
+                <div className="space-y-16 animate-in slide-in-from-bottom-8 duration-700 delay-300">
+                  
+                  {selectedProject.details ? (
+                    <div className="space-y-16">
+                      {/* Synopsis */}
+                      <div className="space-y-8">
+                        <h4 className="flex items-center gap-4 text-xs font-black uppercase tracking-[0.4em] text-blue-600">
+                          <Info className="w-5 h-5" /> Synopsis
+                        </h4>
+                        <div className="space-y-10 border-l-8 border-slate-50 pl-10 md:pl-16">
+                          {selectedProject.details.synopsis.map((para: string, idx: number) => (
+                            <p key={idx} className="text-2xl md:text-3xl text-slate-800 font-medium leading-[1.4] tracking-tight">
+                              {para}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Technical Specs */}
+                      <div className="grid md:grid-cols-2 gap-12 pt-16 border-t border-slate-100">
+                        <div className="space-y-6">
+                           <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                              <Zap className="w-4 h-4 text-lime-500" /> Key Themes
+                           </div>
+                           <p className="text-lg md:text-xl font-bold text-slate-900 leading-relaxed">
+                              {selectedProject.details.themes}
+                           </p>
+                        </div>
+                        <div className="space-y-6">
+                           <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                              <Clapperboard className="w-4 h-4 text-blue-600" /> Platform Format
+                           </div>
+                           <p className="text-lg md:text-xl font-bold text-slate-900 leading-relaxed">
+                              {selectedProject.details.format}
+                           </p>
+                        </div>
+                      </div>
+
+                      {/* Impact Highlight */}
+                      <div className="p-10 bg-slate-50 border-l-8 border-blue-600">
+                        <h4 className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.4em] text-slate-900 mb-6">
+                           <BarChart3 className="w-5 h-5 text-blue-600" /> Strategic Impact
+                        </h4>
+                        <p className="text-xl font-bold text-slate-700 leading-relaxed">
+                          {selectedProject.impact}
+                        </p>
+                      </div>
+
+                      <div className="pt-10 flex flex-col md:flex-row items-center gap-8">
+                         <button 
+                           onClick={() => {
+                              setSelectedProject(null);
+                              scrollToContact();
+                           }}
+                           className="w-full md:w-auto px-16 py-8 bg-slate-900 text-white font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-2xl uppercase tracking-widest text-xs flex items-center justify-center gap-4 group"
+                         >
+                           Inquire for Partnership <Share2 className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                         </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-12">
+                      <div className="space-y-8">
+                        <h4 className="flex items-center gap-4 text-xs font-black uppercase tracking-[0.4em] text-blue-600">
+                          <Info className="w-5 h-5" /> Project Impact
+                        </h4>
+                        <div className="border-l-8 border-slate-50 pl-10 md:pl-16">
+                          <p className="text-2xl md:text-3xl text-slate-800 font-medium leading-[1.4] tracking-tight">
+                            {selectedProject.impact}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="py-20 text-center space-y-8 bg-slate-50 border-2 border-dashed border-slate-200 rounded-sm">
+                        <Sparkles className="w-12 h-12 text-slate-300 mx-auto animate-pulse" />
+                        <div className="space-y-2">
+                          <h4 className="text-xl font-black text-slate-900 uppercase">Profile Finalization</h4>
+                          <p className="text-slate-500 text-sm font-medium">The full cinematic blueprint for this project is currently being uploaded.</p>
+                        </div>
+                        <button 
+                          onClick={() => {
+                            setSelectedProject(null);
+                            scrollToContact();
+                          }}
+                          className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-800 transition-colors"
+                        >
+                          Request Full Case Study
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="pt-20 border-t border-slate-100 opacity-50 text-center">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">
+                      Azariah Management Group • Studio Portfolio • {new Date().getFullYear()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CALL TO ACTION */}
       <SectionWrapper bg="dark" className="relative overflow-hidden py-32 md:py-48">
          <div className="absolute inset-0 bg-blue-600/5 -z-10 animate-pulse"></div>
          <div className="max-w-5xl mx-auto text-center space-y-12 relative z-10 reveal">
