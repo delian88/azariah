@@ -19,6 +19,7 @@ const StudioAMGPage: React.FC = () => {
 
   const NETWORK_VIDEOS = [
     { id: 'm0_tXv_Xv5o', title: 'Studio AMG Network Launch', category: 'Network' },
+    { id: 'Y7e8gvlkCeU', title: 'Family First: Wellness & Unity', category: 'Wellness' },
     { id: 'q9p9OP6WK6w', title: "Life's Second Chance", category: 'Originals' },
     { id: 'vB_K7tH6s2M', title: 'Start Point: The Series Trailer', category: 'Originals' },
     { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health', category: 'Advocacy' },
@@ -27,7 +28,6 @@ const StudioAMGPage: React.FC = () => {
     { id: '_7yP_w5-E70', title: 'Voices of the Diaspora: Identity', category: 'Documentary' },
     { id: '5Pb6_N0k5hY', title: 'AMG Global Impact Strategy 2024', category: 'Strategy' },
     { id: 'Y8xG2f8A_pI', title: 'Innovation & AI for Development', category: 'Technology' },
-    { id: 'X5uV_n9S_q4', title: 'Family First: Wellness & Unity', category: 'Wellness' },
     { id: 'dQw4w9WgXcQ', title: 'Creative Storytelling Workshop', category: 'Education' },
     { id: 'L3k_jW_H2mQ', title: 'Strategic Leadership Summit', category: 'Corporate' },
     { id: 'B7m_xP_N4tR', title: 'CSR Excellence Awards Highlight', category: 'Events' },
