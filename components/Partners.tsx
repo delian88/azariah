@@ -6,7 +6,7 @@ const Partners: React.FC = () => {
   const displayPartners = [...PARTNERS, ...PARTNERS];
 
   return (
-    <div className="py-12 bg-white border-y border-slate-100 overflow-hidden relative">
+    <div id="partners" className="py-12 bg-white border-y border-slate-100 overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-6 mb-8 flex items-center gap-4">
         <div className="h-[1px] flex-1 bg-slate-200"></div>
         <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 whitespace-nowrap">Trusted Partners & Clients</h3>

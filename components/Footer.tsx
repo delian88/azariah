@@ -45,21 +45,21 @@ const Footer: React.FC = () => {
         <div>
           <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-xs">Services</h4>
           <ul className="space-y-4 text-sm">
-            <li><a href="#" className="hover:text-white transition-colors">Business Consulting</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Innovation Strategy</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Social Impact Design</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Studio AMG Media</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Digital Readiness</a></li>
+            <li><a href="#services-page" className="hover:text-white transition-colors">Strategic Consulting</a></li>
+            <li><a href="#services-page" className="hover:text-white transition-colors">AI & Innovation</a></li>
+            <li><a href="#studio-page" className="hover:text-white transition-colors">Studio AMG Media</a></li>
+            <li><a href="#products-page" className="hover:text-white transition-colors">Product Ecosystem</a></li>
+            <li><a href="#news-page" className="hover:text-white transition-colors">Global News & Press</a></li>
           </ul>
         </div>
 
         <div>
           <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-xs">Company</h4>
           <ul className="space-y-4 text-sm">
-            <li><a href="#about" className="hover:text-white transition-colors">Who We Are</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Our Impact</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Client Stories</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Partnerships</a></li>
+            <li><a href="#about-page" className="hover:text-white transition-colors">Who We Are</a></li>
+            <li><a href="#programs-page" className="hover:text-white transition-colors">Signature Programs</a></li>
+            <li><a href="#careers" className="hover:text-white transition-colors">Careers & Growth</a></li>
+            <li><a href="#partners" className="hover:text-white transition-colors">Partnerships</a></li>
             <li><a href="#contact" className="hover:text-white transition-colors">Contact</a></li>
           </ul>
         </div>
