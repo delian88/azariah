@@ -5,8 +5,8 @@ const SLIDES = [
   {
     video: 'https://player.vimeo.com/external/434045526.sd.mp4?s=c27db08e124845114704b2d352332f1f50a80d2a&profile_id=164&oauth2_token_id=57447761',
     poster: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2069',
-    title: 'Management.',
-    subtitle: 'Azariah Group',
+    title: 'Azariah.',
+    subtitle: 'Management Group',
     description: 'We deliver high-performance consulting and media solutions for organizations that demand excellence and impact.'
   },
   {

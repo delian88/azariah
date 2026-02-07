@@ -11,7 +11,7 @@ const Philosophy: React.FC = () => {
         <div className="lg:w-1/3 space-y-6">
           <div className="w-20 h-2 bg-slate-900 mb-6"></div>
           <h2 className="text-5xl md:text-6xl font-black text-slate-900 uppercase tracking-tighter leading-[0.8]">
-            AZARIAH <br /> <span className="text-lime-600">MANAGE</span> <br /> GROUP.
+            AZARIAH <br /> <span className="text-lime-600">MANAGEMENT</span> <br /> GROUP.
           </h2>
         </div>
         
@@ -23,7 +23,7 @@ const Philosophy: React.FC = () => {
             </p>
             <div className="grid md:grid-cols-2 gap-10">
               <p className="text-lg text-slate-600 font-bold leading-relaxed">
-                We partner with visionaries to transform ideas into scalable impact. At Azariah Manage, we bridge the gap between business intelligence and human-centered design.
+                We partner with visionaries to transform ideas into scalable impact. At Azariah Management Group, we bridge the gap between business intelligence and human-centered design.
               </p>
               <p className="text-lg text-slate-600 font-bold leading-relaxed">
                 Our core is rooted in integrity. We ensure every solution strengthens systems, empowers talent, and builds sustainable global futures for our clients.

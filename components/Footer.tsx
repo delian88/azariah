@@ -1,24 +1,34 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter, Facebook } from 'lucide-react';
 import Logo from './Logo';
 
 const Footer: React.FC = () => {
+  const socialLinks = [
+    { Icon: Linkedin, href: "#", label: "LinkedIn" },
+    { Icon: Instagram, href: "#", label: "Instagram" },
+    { Icon: Twitter, href: "https://x.com/AzariahGroup", label: "X" },
+    { Icon: Facebook, href: "https://www.facebook.com/profile.php?id=61587353685276", label: "Facebook" }
+  ];
+
   return (
     <footer className="bg-slate-950 text-slate-400 pt-32 pb-12 px-6 md:px-12 border-t border-slate-900">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
         <div className="space-y-8">
           <Logo variant="dark" className="h-6" />
           <p className="text-slate-500 leading-relaxed font-bold text-sm">
-            AZARIAH MANAGE: Advanced strategic consulting, engineering, and digital transformation for a borderless world.
+            AZARIAH MANAGEMENT GROUP: Advanced strategic consulting, engineering, and digital transformation for a borderless world.
           </p>
           <div className="flex space-x-2">
-            {[Linkedin, Instagram, Twitter].map((Icon, i) => (
+            {socialLinks.map((social, i) => (
               <a 
                 key={i}
-                href="#" 
+                href={social.href} 
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.label}
                 className="w-12 h-12 bg-slate-900 border border-slate-800 flex items-center justify-center hover:bg-lime-500 hover:text-slate-950 transition-all"
               >
-                <Icon className="w-5 h-5" />
+                <social.Icon className="w-5 h-5" />
               </a>
             ))}
           </div>
@@ -60,7 +70,7 @@ const Footer: React.FC = () => {
       </div>
       
       <div className="max-w-7xl mx-auto pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-600 uppercase tracking-[0.5em] font-black">
-        <p>© {new Date().getFullYear()} AZARIAH MANAGE. BUILT FOR SCALE.</p>
+        <p>© {new Date().getFullYear()} AZARIAH MANAGEMENT GROUP. BUILT FOR SCALE.</p>
         <div className="flex space-x-8 mt-6 md:mt-0">
           <a href="#" className="hover:text-white transition-colors">Privacy</a>
           <a href="#" className="hover:text-white transition-colors">Terms</a>
