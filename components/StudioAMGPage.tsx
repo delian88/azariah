@@ -19,14 +19,25 @@ const StudioAMGPage: React.FC = () => {
 
   const NETWORK_VIDEOS = [
     { id: 'm0_tXv_Xv5o', title: 'Studio AMG Network Launch', category: 'Network' },
+    { id: 'q9p9OP6WK6w', title: "Life's Second Chance", category: 'Originals' },
     { id: 'vB_K7tH6s2M', title: 'Start Point: The Series Trailer', category: 'Originals' },
-    { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health Advocacy', category: 'Advocacy' },
+    { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health', category: 'Advocacy' },
     { id: 'J_A5L_eXUeA', title: 'BlackbyAngel: Real Conversations', category: 'Talk Show' },
     { id: 'S6H-G55zN-Q', title: 'Captain Chiffon: Future Leaders', category: 'Animation' },
-    { id: '_7yP_w5-E70', title: 'Voices of the Diaspora: Cultural Identity', category: 'Documentary' },
+    { id: '_7yP_w5-E70', title: 'Voices of the Diaspora: Identity', category: 'Documentary' },
     { id: '5Pb6_N0k5hY', title: 'AMG Global Impact Strategy 2024', category: 'Strategy' },
-    { id: 'Y8xG2f8A_pI', title: 'Innovation & AI for Community Development', category: 'Technology' },
-    { id: 'X5uV_n9S_q4', title: 'Family First: Wellness & Unity', category: 'Wellness' }
+    { id: 'Y8xG2f8A_pI', title: 'Innovation & AI for Development', category: 'Technology' },
+    { id: 'X5uV_n9S_q4', title: 'Family First: Wellness & Unity', category: 'Wellness' },
+    { id: 'dQw4w9WgXcQ', title: 'Creative Storytelling Workshop', category: 'Education' },
+    { id: 'L3k_jW_H2mQ', title: 'Strategic Leadership Summit', category: 'Corporate' },
+    { id: 'B7m_xP_N4tR', title: 'CSR Excellence Awards Highlight', category: 'Events' },
+    { id: 'Z9j_kV_S1wY', title: 'Digital Transformation for NGOs', category: 'Tech' },
+    { id: 'Q2g_pX_L8oZ', title: 'NGO Capacity Building Session', category: 'Training' },
+    { id: 'K5n_fV_S8xL', title: 'Emerging Markets: Global Trends', category: 'Economic' },
+    { id: 'P9q_zL_M1vT', title: 'The Future of Impact Investing', category: 'Finance' },
+    { id: 'R4d_bG_X7pW', title: 'Youth Empowerment Initiative 2024', category: 'Youth' },
+    { id: 'G2t_hN_P5mK', title: 'Mental Health in the Workplace', category: 'Wellness' },
+    { id: 'D8s_xV_L1qR', title: 'Inclusive Tech Frameworks', category: 'Ethics' }
   ];
 
   const PORTFOLIO_ITEMS = [
@@ -191,16 +202,16 @@ const StudioAMGPage: React.FC = () => {
                  Broadcasts & Originals
                </h2>
                <p className="text-xl text-slate-400 font-medium leading-relaxed max-w-2xl">
-                 Explore the full library of broadcasts, trailers, and advocacy spotlights from across the STUDIO AMG NETWORK ecosystem.
+                 Explore the extensive library of broadcasts, documentaries, and advocacy series from the STUDIO AMG NETWORK ecosystem.
                </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 reveal">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 reveal">
                {NETWORK_VIDEOS.map((video, idx) => (
-                 <div key={idx} className="group bg-slate-800 rounded-sm overflow-hidden shadow-2xl border border-slate-700 hover:border-lime-500 transition-all flex flex-col h-full">
+                 <div key={idx} className="group bg-slate-800 rounded-sm overflow-hidden shadow-xl border border-slate-700 hover:border-lime-500 transition-all flex flex-col h-full">
                     <div className="aspect-video relative overflow-hidden bg-slate-900">
                        <iframe 
-                          className="w-full h-full grayscale-[50%] group-hover:grayscale-0 transition-all duration-700"
+                          className="w-full h-full grayscale-[40%] group-hover:grayscale-0 transition-all duration-700"
                           src={`https://www.youtube.com/embed/${video.id}`} 
                           title={video.title}
                           frameBorder="0" 
@@ -208,18 +219,18 @@ const StudioAMGPage: React.FC = () => {
                           allowFullScreen
                        ></iframe>
                     </div>
-                    <div className="p-6 flex flex-col flex-1">
-                       <div className="flex justify-between items-start mb-4">
-                         <h4 className="text-sm font-black text-white uppercase tracking-widest group-hover:text-lime-400 transition-colors flex-1">
+                    <div className="p-5 flex flex-col flex-1">
+                       <div className="flex justify-between items-start mb-3">
+                         <h4 className="text-xs font-black text-white uppercase tracking-widest group-hover:text-lime-400 transition-colors flex-1 line-clamp-2">
                            {video.title}
                          </h4>
-                         <span className="text-[8px] font-black uppercase tracking-widest bg-slate-900 px-2 py-0.5 text-blue-400 rounded-full border border-blue-400/20">
+                         <span className="text-[7px] font-black uppercase tracking-widest bg-slate-950 px-2 py-0.5 text-blue-400 rounded-full border border-blue-400/20 shrink-0 ml-2">
                            {video.category}
                          </span>
                        </div>
-                       <div className="mt-auto flex justify-between items-center text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">
-                          <span className="flex items-center gap-2"><Zap className="w-3 h-3 text-lime-500" /> AMG Network</span>
-                          <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> Featured Broadcast</span>
+                       <div className="mt-auto flex justify-between items-center text-[8px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          <span className="flex items-center gap-1.5"><Zap className="w-2.5 h-2.5 text-lime-500" /> AMG</span>
+                          <span className="flex items-center gap-1"><Clock className="w-2.5 h-2.5" /> Featured</span>
                        </div>
                     </div>
                  </div>
@@ -233,7 +244,7 @@ const StudioAMGPage: React.FC = () => {
                  rel="noopener noreferrer"
                  className="inline-flex items-center gap-4 px-12 py-6 bg-slate-800 text-white font-black rounded-sm hover:bg-white hover:text-slate-950 transition-all shadow-xl uppercase tracking-widest text-xs group"
                >
-                 Watch Full Episodes on YouTube <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                 View All 100+ Videos on YouTube <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                </a>
             </div>
          </div>
