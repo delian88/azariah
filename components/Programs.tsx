@@ -4,17 +4,37 @@ import { SIGNATURE_PROGRAMS } from '../constants';
 import { 
   ExternalLink, Zap, X, ChevronLeft, Info, 
   Play, Share2, Scale, Clapperboard, BarChart3,
-  Tv, Gamepad2, Heart, Globe, Brain, ShieldCheck, ShieldAlert, Sparkles
+  Tv, Gamepad2, Heart, Globe, Brain, ShieldCheck, ShieldAlert, Sparkles,
+  Download, Loader2, User, Mail, ArrowRight, Shield
 } from 'lucide-react';
 
 const Programs: React.FC = () => {
   const [selectedProgram, setSelectedProgram] = useState<any | null>(null);
+  const [isBlueprintModalOpen, setIsBlueprintModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '' });
 
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleBlueprintSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    // Simulate API lead capture
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+  };
+
+  const closeBlueprintModal = () => {
+    setIsBlueprintModalOpen(false);
+    setIsSubmitted(false);
+    setFormData({ name: '', email: '' });
   };
 
   const getProgramIcon = (title: string) => {
@@ -199,12 +219,114 @@ const Programs: React.FC = () => {
               Book Discovery Call
             </button>
             <button 
+              onClick={() => setIsBlueprintModalOpen(true)}
               className="w-full md:w-auto px-12 py-6 bg-white text-slate-900 border-2 border-slate-900 font-black rounded-sm hover:bg-slate-50 transition-all uppercase tracking-widest text-sm"
             >
               Impact Blueprint
             </button>
         </div>
       </div>
+
+      {/* IMPACT BLUEPRINT MODAL */}
+      {isBlueprintModalOpen && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-xl animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-xl rounded-sm shadow-2xl overflow-hidden relative">
+            <button 
+              onClick={closeBlueprintModal}
+              className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 transition-colors z-20"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {!isSubmitted ? (
+              <div className="p-10 md:p-16 space-y-10">
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 text-lime-600 font-black text-[10px] uppercase tracking-widest">
+                    <Shield className="w-4 h-4" /> Strategic Resource
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+                    Access The Impact Blueprint
+                  </h3>
+                  <p className="text-slate-500 font-medium text-sm">
+                    Enter your professional details below to download the Azariah Management Group 2024 Impact & Strategy Blueprint.
+                  </p>
+                </div>
+
+                <form onSubmit={handleBlueprintSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                      <User className="w-3 h-3" /> Full Name
+                    </label>
+                    <input 
+                      required
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Your Name"
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-slate-900 transition-all text-sm font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                      <Mail className="w-3 h-3" /> Professional Email
+                    </label>
+                    <input 
+                      required
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="name@organization.com"
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-slate-900 transition-all text-sm font-bold"
+                    />
+                  </div>
+                  
+                  <button 
+                    disabled={isSubmitting}
+                    className="w-full py-6 bg-slate-900 text-white font-black uppercase tracking-[0.2em] text-xs rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center justify-center gap-4 disabled:opacity-50 shadow-xl"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" /> Verifying...
+                      </>
+                    ) : (
+                      <>
+                        Get Blueprint Access <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            ) : (
+              <div className="p-10 md:p-20 text-center space-y-8 animate-in zoom-in-95 duration-500">
+                <div className="w-24 h-24 bg-lime-500 rounded-full flex items-center justify-center mx-auto shadow-2xl">
+                   <Download className="w-10 h-10 text-slate-950 animate-bounce" />
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Download Ready</h3>
+                  <p className="text-slate-500 font-medium text-sm">
+                    Thank you, {formData.name.split(' ')[0]}. You now have full access to our strategic frameworks.
+                  </p>
+                </div>
+                <div className="pt-4 flex flex-col gap-4">
+                   <a 
+                     href="#" 
+                     onClick={(e) => { e.preventDefault(); alert("Simulated download: AMG_Impact_Blueprint_2024.pdf"); }}
+                     className="w-full py-6 bg-lime-500 text-slate-950 font-black uppercase tracking-[0.2em] text-xs rounded-sm hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center gap-4 shadow-xl"
+                   >
+                     Download Blueprint PDF <Download className="w-4 h-4" />
+                   </a>
+                   <button 
+                     onClick={closeBlueprintModal}
+                     className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors"
+                   >
+                     Return to Overview
+                   </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* DETAILED PROJECT OVERLAY */}
       {selectedProgram && (
