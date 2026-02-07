@@ -30,8 +30,7 @@ const StudioAMGPage: React.FC = () => {
     { id: 'n_rhhqNeXEY', title: 'CAPTAIN CHIFFON PODCAST ADVERT', category: 'Animation' },
     { id: 'IP9qfZJUldU', title: 'MY BARBER’S LOUNGE', category: 'Lifestyle' },
     { id: 'bRHiFE9NElU', title: 'The Pink Bosses', category: 'Talk Show' },
-    { id: 'KHt6oWqSkcE', title: 'Wrong Diagnosis Ep 5', category: 'Advocacy' },
-    { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health', category: 'Advocacy' }
+    { id: 'KHt6oWqSkcE', title: 'Wrong Diagnosis Ep 5', category: 'Advocacy' }
   ];
 
   const PORTFOLIO_ITEMS = [
