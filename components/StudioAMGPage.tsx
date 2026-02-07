@@ -18,31 +18,20 @@ const StudioAMGPage: React.FC = () => {
   };
 
   const NETWORK_VIDEOS = [
-    { id: 'm0_tXv_Xv5o', title: 'Studio AMG Network Launch', category: 'Network' },
-    { id: 'Ueo4httxgVY', title: 'Studio AMG (Azariah Management Group)', category: 'Brand' },
     { id: 'liPxM5UGeec', title: 'Azariah Management Group', category: 'Brand' },
+    { id: 'USSAakpKJss', title: 'Captain Chiffon 3', category: 'Animation' },
+    { id: 'LjwVmb4fE4M', title: 'CAPTAIN CHIFFON', category: 'Animation' },
+    { id: 'hOOBn53bASY', title: 'Wow Moments @BlackbyAngel', category: 'Talk Show' },
+    { id: 'CyvLAAN2GhI', title: 'Knights of Columbus - Installation', category: 'Community' },
+    { id: 'Ueo4httxgVY', title: 'Studio AMG Brand Intro', category: 'Network' },
     { id: 'Hz4_3mcTvyA', title: 'BLACK BY ANGEL THE ORIGIN', category: 'Talk Show' },
     { id: 'i8Qmu8H2w24', title: 'BLACKBYANGEL "THE JOURNEY"', category: 'Talk Show' },
-    { id: 'hOOBn53bASY', title: 'Wow Moments @BlackbyAngel', category: 'Talk Show' },
-    { id: 'IP9qfZJUldU', title: 'MY BARBER’S LOUNGE', category: 'Lifestyle' },
-    { id: 'KDDQ9et05t4', title: 'We Rise', category: 'Documentary' },
     { id: 'IWPdFb0r3n4', title: 'CAPTAIN CHIFFON THEME Song', category: 'Animation' },
     { id: 'n_rhhqNeXEY', title: 'CAPTAIN CHIFFON PODCAST ADVERT', category: 'Animation' },
-    { id: 'LjwVmb4fE4M', title: 'CAPTAIN CHIFFON', category: 'Animation' },
-    { id: 'USSAakpKJss', title: 'Captain Chiffon 3', category: 'Animation' },
-    { id: '6nA7dh5JPbM', title: 'BlackbyAngel (Boundaries and Bondage)', category: 'Talk Show' },
-    { id: '9J16DpeksTw', title: '@BLACKBYANGEL EP 2 BOUNDARIES & BONDAGE', category: 'Talk Show' },
-    { id: '4wrb_2Pedhc', title: 'BAD FRIEND BONUS EPISODE', category: 'Talk Show' },
+    { id: 'IP9qfZJUldU', title: 'MY BARBER’S LOUNGE', category: 'Lifestyle' },
     { id: 'bRHiFE9NElU', title: 'The Pink Bosses', category: 'Talk Show' },
-    { id: 'bD2OXMZE0bI', title: 'The Pink Bosses Show', category: 'Talk Show' },
     { id: 'KHt6oWqSkcE', title: 'Wrong Diagnosis Ep 5', category: 'Advocacy' },
-    { id: 'Y7e8gvlkCeU', title: 'Family First: Wellness & Unity', category: 'Wellness' },
-    { id: 'fL_USE9Hn10', title: 'Marriage Restoration Story', category: 'Wellness' },
-    { id: 'IK1_vZ4v4bI', title: 'Family First: On a Budget', category: 'Wellness' },
-    { id: 'q9p9OP6WK6w', title: "Life's Second Chance", category: 'Originals' },
-    { id: 'vB_K7tH6s2M', title: 'Start Point: The Series Trailer', category: 'Originals' },
-    { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health', category: 'Advocacy' },
-    { id: 'CyvLAAN2GhI', title: 'Knights of Columbus - Installation', category: 'Community' }
+    { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health', category: 'Advocacy' }
   ];
 
   const PORTFOLIO_ITEMS = [
@@ -184,7 +173,7 @@ const StudioAMGPage: React.FC = () => {
              <div className="aspect-video bg-slate-900 rounded-sm shadow-2xl overflow-hidden group border-8 border-white">
                 <iframe 
                   className="w-full h-full"
-                  src="https://www.youtube.com/embed/m0_tXv_Xv5o?autoplay=1&mute=1&loop=1&playlist=m0_tXv_Xv5o" 
+                  src="https://www.youtube.com/embed/liPxM5UGeec?autoplay=1&mute=1&loop=1&playlist=liPxM5UGeec" 
                   title="Studio AMG Featured" 
                   frameBorder="0" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
