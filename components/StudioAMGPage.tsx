@@ -5,7 +5,7 @@ import {
   MessageSquare, Users, Target, Heart, Globe, Clapperboard,
   MonitorPlay, Mic2, Share2, Layers, Workflow, ShieldCheck,
   CheckCircle2, XCircle, Zap, ExternalLink, Quote, FileText, Send,
-  Brain, Cpu, X, ChevronLeft, Info, Clock, BarChart3
+  Brain, Cpu, X, ChevronLeft, Info, Clock, BarChart3, Youtube
 } from 'lucide-react';
 
 const IMAGE_FALLBACK = "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071";
@@ -16,6 +16,12 @@ const StudioAMGPage: React.FC = () => {
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = IMAGE_FALLBACK;
   };
+
+  const FEATURED_VIDEOS = [
+    { id: 'm0_tXv_Xv5o', title: 'Studio AMG Network Launch' },
+    { id: 'dQw4w9WgXcQ', title: 'The Silent Movement Campaign' }, // Placeholder IDs for demonstration
+    { id: '5Pb6_N0k5hY', title: 'Start Point: Leadership Reimagined' }
+  ];
 
   const PORTFOLIO_ITEMS = [
     {
@@ -142,27 +148,84 @@ const StudioAMGPage: React.FC = () => {
               >
                 Book Discovery Call
               </button>
+              <a 
+                href="https://www.youtube.com/@STUDIOAMG-NETWORK" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-10 py-5 border-2 border-slate-200 text-slate-900 font-black rounded-sm hover:border-slate-900 transition-all uppercase tracking-widest text-[10px] flex items-center gap-3"
+              >
+                <Youtube className="w-4 h-4 text-red-600" /> Visit Network
+              </a>
             </div>
           </div>
           <div className="relative reveal active">
              <div className="aspect-video bg-slate-900 rounded-sm shadow-2xl overflow-hidden group border-8 border-white">
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent z-10 flex items-end p-8">
-                  <div className="flex items-center gap-4 text-white">
-                    <div className="w-12 h-12 bg-lime-500 rounded-full flex items-center justify-center animate-pulse group-hover:scale-110 transition-transform cursor-pointer shadow-2xl">
-                      <Play className="w-6 h-6 fill-slate-950 text-slate-950" />
-                    </div>
-                    <span className="text-sm font-black uppercase tracking-widest">Studio Showreel</span>
-                  </div>
-                </div>
-                <img 
-                  src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071" 
-                  alt="Studio Media" 
-                  onError={handleImageError}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-80"
-                />
+                <iframe 
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/m0_tXv_Xv5o?autoplay=1&mute=1&loop=1&playlist=m0_tXv_Xv5o" 
+                  title="Studio AMG Featured" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                ></iframe>
              </div>
           </div>
         </div>
+      </SectionWrapper>
+
+      {/* NEW: NETWORK SPOTLIGHT SECTION */}
+      <SectionWrapper bg="dark" className="relative overflow-hidden py-32">
+         <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-5 pointer-events-none"></div>
+         <div className="space-y-16 relative z-10">
+            <div className="max-w-4xl space-y-6 reveal">
+               <div className="flex items-center gap-3 text-lime-400 font-black text-xs uppercase tracking-widest">
+                  <MonitorPlay className="w-5 h-5" /> Network Spotlight
+               </div>
+               <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase leading-none text-shine-white">
+                 Broadcasts & Highlights
+               </h2>
+               <p className="text-xl text-slate-400 font-medium leading-relaxed max-w-2xl">
+                 Catch the latest episodes, trailers, and advocacy spotlights directly from the STUDIO AMG NETWORK.
+               </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 reveal">
+               {FEATURED_VIDEOS.map((video, idx) => (
+                 <div key={idx} className="group bg-slate-800 rounded-sm overflow-hidden shadow-2xl border border-slate-700 hover:border-lime-500 transition-all flex flex-col h-full">
+                    <div className="aspect-video relative overflow-hidden bg-slate-900">
+                       <iframe 
+                          className="w-full h-full"
+                          src={`https://www.youtube.com/embed/${video.id}`} 
+                          title={video.title}
+                          frameBorder="0" 
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                          allowFullScreen
+                       ></iframe>
+                    </div>
+                    <div className="p-6 flex flex-col flex-1">
+                       <h4 className="text-sm font-black text-white uppercase tracking-widest mb-4 group-hover:text-lime-400 transition-colors">
+                         {video.title}
+                       </h4>
+                       <div className="mt-auto flex justify-between items-center text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          <span>AMG Original</span>
+                          <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> Latest Release</span>
+                       </div>
+                    </div>
+                 </div>
+               ))}
+            </div>
+
+            <div className="pt-12 text-center reveal">
+               <a 
+                 href="https://www.youtube.com/@STUDIOAMG-NETWORK" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="inline-flex items-center gap-4 px-12 py-6 bg-slate-800 text-white font-black rounded-sm hover:bg-white hover:text-slate-950 transition-all shadow-xl uppercase tracking-widest text-xs group"
+               >
+                 Watch More on YouTube <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+               </a>
+            </div>
+         </div>
       </SectionWrapper>
 
       {/* OPERATING PHILOSOPHY */}
