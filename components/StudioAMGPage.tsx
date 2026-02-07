@@ -21,23 +21,23 @@ const StudioAMGPage: React.FC = () => {
     { id: 'm0_tXv_Xv5o', title: 'Studio AMG Network Launch', category: 'Network' },
     { id: 'Ueo4httxgVY', title: 'Studio AMG (Azariah Management Group)', category: 'Brand' },
     { id: 'Hz4_3mcTvyA', title: 'BLACK BY ANGEL THE ORIGIN', category: 'Talk Show' },
+    { id: 'i8Qmu8H2w24', title: 'BLACKBYANGEL "THE JOURNEY"', category: 'Talk Show' },
+    { id: 'IP9qfZJUldU', title: 'MY BARBER’S LOUNGE', category: 'Lifestyle' },
+    { id: 'KDDQ9et05t4', title: 'We Rise', category: 'Documentary' },
+    { id: 'IWPdFb0r3n4', title: 'CAPTAIN CHIFFON THEME Song', category: 'Animation' },
+    { id: 'n_rhhqNeXEY', title: 'CAPTAIN CHIFFON PODCAST ADVERT', category: 'Animation' },
+    { id: '6nA7dh5JPbM', title: 'BlackbyAngel (Boundaries and Bondage)', category: 'Talk Show' },
+    { id: '9J16DpeksTw', title: '@BLACKBYANGEL EP 2 BOUNDARIES & BONDAGE', category: 'Talk Show' },
+    { id: '4wrb_2Pedhc', title: 'BAD FRIEND BONUS EPISODE', category: 'Talk Show' },
+    { id: 'bRHiFE9NElU', title: 'The Pink Bosses', category: 'Talk Show' },
+    { id: 'bD2OXMZE0bI', title: 'The Pink Bosses Show', category: 'Talk Show' },
+    { id: 'KHt6oWqSkcE', title: 'Wrong Diagnosis Ep 5', category: 'Advocacy' },
     { id: 'Y7e8gvlkCeU', title: 'Family First: Wellness & Unity', category: 'Wellness' },
     { id: 'fL_USE9Hn10', title: 'Marriage Restoration Story', category: 'Wellness' },
     { id: 'IK1_vZ4v4bI', title: 'Family First: On a Budget', category: 'Wellness' },
     { id: 'q9p9OP6WK6w', title: "Life's Second Chance", category: 'Originals' },
     { id: 'vB_K7tH6s2M', title: 'Start Point: The Series Trailer', category: 'Originals' },
-    { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health', category: 'Advocacy' },
-    { id: 'J_A5L_eXUeA', title: 'BlackbyAngel: Real Conversations', category: 'Talk Show' },
-    { id: 'S6H-G55zN-Q', title: 'Captain Chiffon: Future Leaders', category: 'Animation' },
-    { id: '_7yP_w5-E70', title: 'Voices of the Diaspora: Identity', category: 'Documentary' },
-    { id: '5Pb6_N0k5hY', title: 'AMG Global Impact Strategy 2024', category: 'Strategy' },
-    { id: 'Y8xG2f8A_pI', title: 'Innovation & AI for Development', category: 'Technology' },
-    { id: 'dQw4w9WgXcQ', title: 'Creative Storytelling Workshop', category: 'Education' },
-    { id: 'L3k_jW_H2mQ', title: 'Strategic Leadership Summit', category: 'Corporate' },
-    { id: 'B7m_xP_N4tR', title: 'CSR Excellence Awards Highlight', category: 'Events' },
-    { id: 'Z9j_kV_S1wY', title: 'Digital Transformation for NGOs', category: 'Tech' },
-    { id: 'Q2g_pX_L8oZ', title: 'NGO Capacity Building Session', category: 'Training' },
-    { id: 'K5n_fV_S8xL', title: 'Emerging Markets: Global Trends', category: 'Economic' }
+    { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health', category: 'Advocacy' }
   ];
 
   const PORTFOLIO_ITEMS = [
@@ -61,7 +61,7 @@ const StudioAMGPage: React.FC = () => {
       title: "Voices of the Diaspora",
       category: "Documentary",
       image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2059",
-      impact: "Influenced global trade policy discussions for the G.A.M.E. ecosystem, bridging connections between North America and the African Diaspora.",
+      impact: "Influenced global trade policy discussions for the G.A.M. ecosystem, bridging connections between North America and the African Diaspora.",
       details: {
         synopsis: [
           "Voices of the Diaspora is a powerful storytelling and dialogue series that amplifies the lived experiences, perspectives, and contributions of people across the global African diaspora.",

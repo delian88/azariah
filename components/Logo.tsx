@@ -7,101 +7,28 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ className = "h-8", variant = 'light' }) => {
   const isDark = variant === 'dark';
-  
-  // Colors sampled from the brand identity
-  const bluePrimary = "#005696"; 
-  const greenBrand = "#84cc16"; 
-  const greyManagement = "#71717a";
-  const whiteText = "#ffffff";
+  const colorPrimary = isDark ? "#ffffff" : "#0f172a";
+  const colorAccent = "#84cc16";
 
   return (
-    <div className={`flex items-center gap-1.5 md:gap-2 ${className}`}>
-      {/* Precision Pixel Globe SVG - Scaled down for tighter fit */}
-      <svg 
-        viewBox="0 0 120 120" 
-        className="h-full w-auto shrink-0"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="1" />
-            <feOffset dx="0.5" dy="0.5" result="offsetblur" />
-            <feComponentTransfer>
-              <feFuncA type="linear" slope="0.2" />
-            </feComponentTransfer>
-            <feMerge>
-              <feMergeNode />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        <g filter="url(#shadow)">
-          {/* Blue Pixels */}
-          <g fill={bluePrimary}>
-            <rect x="35" y="10" width="8" height="8" rx="0.5" />
-            <rect x="45" y="8" width="8" height="8" rx="0.5" />
-            <rect x="55" y="10" width="8" height="8" rx="0.5" />
-            <rect x="25" y="22" width="8" height="8" rx="0.5" />
-            <rect x="35" y="20" width="8" height="8" rx="0.5" />
-            <rect x="45" y="18" width="8" height="8" rx="0.5" />
-            <rect x="55" y="20" width="8" height="8" rx="0.5" />
-            <rect x="15" y="38" width="9" height="9" rx="0.5" />
-            <rect x="26" y="35" width="9" height="9" rx="0.5" />
-            <rect x="38" y="33" width="9" height="9" rx="0.5" />
-            <rect x="50" y="35" width="9" height="9" rx="0.5" />
-            <rect x="10" y="55" width="10" height="10" rx="0.5" />
-            <rect x="22" y="52" width="10" height="10" rx="0.5" />
-            <rect x="35" y="50" width="10" height="10" rx="0.5" />
-            <rect x="12" y="72" width="9" height="9" rx="0.5" />
-            <rect x="24" y="70" width="9" height="9" rx="0.5" />
-            <rect x="38" y="68" width="9" height="9" rx="0.5" />
-            <rect x="18" y="88" width="8" height="8" rx="0.5" />
-            <rect x="28" y="86" width="8" height="8" rx="0.5" />
-            <rect x="40" y="84" width="8" height="8" rx="0.5" />
-            <rect x="30" y="102" width="7" height="7" rx="0.5" />
-            <rect x="40" y="100" width="7" height="7" rx="0.5" />
-          </g>
-
-          {/* Green Pixels */}
-          <g fill={greenBrand}>
-            <rect x="68" y="12" width="8" height="8" rx="0.5" />
-            <rect x="78" y="18" width="8" height="8" rx="0.5" />
-            <rect x="88" y="28" width="8" height="8" rx="0.5" />
-            <rect x="65" y="25" width="8" height="8" rx="0.5" />
-            <rect x="75" y="32" width="8" height="8" rx="0.5" />
-            <rect x="85" y="42" width="8" height="8" rx="0.5" />
-            <rect x="60" y="45" width="9" height="9" rx="0.5" />
-            <rect x="52" y="62" width="9" height="9" rx="0.5" />
-            <rect x="45" y="78" width="8" height="8" rx="0.5" />
-            <rect x="55" y="92" width="7" height="7" rx="0.5" />
-            <rect x="50" y="108" width="6" height="6" rx="0.5" />
-          </g>
-        </g>
-      </svg>
+    <div className={`flex items-center gap-3 ${className}`}>
+      {/* The iconic square symbol */}
+      <div className="relative w-10 h-10 flex-shrink-0">
+        <div className="absolute inset-0 border-[5px] border-current" style={{ color: colorPrimary }}></div>
+        <div className="absolute bottom-1.5 right-1.5 w-3.5 h-3.5" style={{ backgroundColor: colorAccent }}></div>
+      </div>
       
-      {/* Typography - Left aligned, scaled down */}
-      <div className="flex flex-col justify-center items-start leading-[1.1] select-none">
-        {/* AZARIAH */}
-        <div className="flex items-center font-black tracking-tight text-lg md:text-xl lg:text-2xl">
-          <span style={{ color: isDark ? whiteText : bluePrimary }}>AZAR</span>
-          <span style={{ color: greenBrand }}>IAH</span>
+      {/* Brand Typography */}
+      <div className="flex flex-col -space-y-1">
+        <div className="flex items-center font-black tracking-tighter text-2xl md:text-3xl lg:text-4xl leading-none">
+          <span style={{ color: colorPrimary }}>AZARIAH</span>
+          <span className="ml-0.5" style={{ color: colorAccent }}>.</span>
         </div>
-        
-        {/* MANAGEMENT */}
         <div 
-          className="text-[5px] md:text-[6px] lg:text-[8px] font-bold tracking-[0.2em] uppercase"
-          style={{ color: isDark ? "#94a3b8" : greyManagement }}
+          className="text-[8px] md:text-[9px] font-black tracking-[0.4em] uppercase leading-none whitespace-nowrap"
+          style={{ color: isDark ? "#94a3b8" : "#475569" }}
         >
-          Management
-        </div>
-        
-        {/* GROUP */}
-        <div 
-          className="text-xs md:text-sm lg:text-lg font-black tracking-[0.1em] uppercase"
-          style={{ color: isDark ? whiteText : bluePrimary }}
-        >
-          Group
+          MANAGE
         </div>
       </div>
     </div>

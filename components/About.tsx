@@ -19,7 +19,7 @@ const About: React.FC = () => {
             </div>
             
             <p className="text-xl text-slate-600 leading-relaxed font-medium">
-              AMG is a social enterprise and strategic consulting firm operating at the intersection of corporate innovation, community development, and creative media.
+              Azariah Manage is a social enterprise and strategic consulting firm operating at the intersection of corporate innovation, community development, and creative media.
             </p>
             
             <div className="space-y-8 py-8 border-y border-slate-100">
@@ -44,7 +44,7 @@ const About: React.FC = () => {
                 </div>
                 
                 <h3 className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-lime-400">
-                  Why Clients Choose AMG
+                  Why Clients Choose Azariah Manage
                 </h3>
                 
                 <div className="space-y-8">
