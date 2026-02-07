@@ -20,12 +20,16 @@ const StudioAMGPage: React.FC = () => {
   const NETWORK_VIDEOS = [
     { id: 'm0_tXv_Xv5o', title: 'Studio AMG Network Launch', category: 'Network' },
     { id: 'Ueo4httxgVY', title: 'Studio AMG (Azariah Management Group)', category: 'Brand' },
+    { id: 'liPxM5UGeec', title: 'Azariah Management Group', category: 'Brand' },
     { id: 'Hz4_3mcTvyA', title: 'BLACK BY ANGEL THE ORIGIN', category: 'Talk Show' },
     { id: 'i8Qmu8H2w24', title: 'BLACKBYANGEL "THE JOURNEY"', category: 'Talk Show' },
+    { id: 'hOOBn53bASY', title: 'Wow Moments @BlackbyAngel', category: 'Talk Show' },
     { id: 'IP9qfZJUldU', title: 'MY BARBER’S LOUNGE', category: 'Lifestyle' },
     { id: 'KDDQ9et05t4', title: 'We Rise', category: 'Documentary' },
     { id: 'IWPdFb0r3n4', title: 'CAPTAIN CHIFFON THEME Song', category: 'Animation' },
     { id: 'n_rhhqNeXEY', title: 'CAPTAIN CHIFFON PODCAST ADVERT', category: 'Animation' },
+    { id: 'LjwVmb4fE4M', title: 'CAPTAIN CHIFFON', category: 'Animation' },
+    { id: 'USSAakpKJss', title: 'Captain Chiffon 3', category: 'Animation' },
     { id: '6nA7dh5JPbM', title: 'BlackbyAngel (Boundaries and Bondage)', category: 'Talk Show' },
     { id: '9J16DpeksTw', title: '@BLACKBYANGEL EP 2 BOUNDARIES & BONDAGE', category: 'Talk Show' },
     { id: '4wrb_2Pedhc', title: 'BAD FRIEND BONUS EPISODE', category: 'Talk Show' },
@@ -37,7 +41,8 @@ const StudioAMGPage: React.FC = () => {
     { id: 'IK1_vZ4v4bI', title: 'Family First: On a Budget', category: 'Wellness' },
     { id: 'q9p9OP6WK6w', title: "Life's Second Chance", category: 'Originals' },
     { id: 'vB_K7tH6s2M', title: 'Start Point: The Series Trailer', category: 'Originals' },
-    { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health', category: 'Advocacy' }
+    { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health', category: 'Advocacy' },
+    { id: 'CyvLAAN2GhI', title: 'Knights of Columbus - Installation', category: 'Community' }
   ];
 
   const PORTFOLIO_ITEMS = [
