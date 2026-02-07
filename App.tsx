@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -13,13 +14,15 @@ import ServicesPage from './components/ServicesPage';
 import AboutPage from './components/AboutPage';
 import ProgramsPage from './components/ProgramsPage';
 import StudioAMGPage from './components/StudioAMGPage';
+import NewsPage from './components/NewsPage';
+import ProductsPage from './components/ProductsPage';
 import Careers from './components/Careers';
 import CreAItube from './components/CreAItube';
 import ChatBot from './components/ChatBot';
 import Partners from './components/Partners';
 import PodOreSection from './components/PodOreSection';
 
-type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio';
+type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -33,6 +36,8 @@ const App: React.FC = () => {
       else if (hash === '#about-page') setView('about');
       else if (hash === '#programs-page') setView('programs');
       else if (hash === '#studio-page') setView('studio');
+      else if (hash === '#news-page') setView('news');
+      else if (hash === '#products-page') setView('products');
       else setView('home');
       
       if (!hash.includes('-page') && hash.length > 1) {
@@ -103,7 +108,9 @@ const App: React.FC = () => {
       services: '#services-page',
       about: '#about-page',
       programs: '#programs-page',
-      studio: '#studio-page'
+      studio: '#studio-page',
+      news: '#news-page',
+      products: '#products-page'
     };
     window.location.hash = hashMapping[newView];
     setView(newView);
@@ -148,6 +155,8 @@ const App: React.FC = () => {
         {view === 'about' && <AboutPage />}
         {view === 'programs' && <ProgramsPage />}
         {view === 'studio' && <StudioAMGPage />}
+        {view === 'news' && <NewsPage />}
+        {view === 'products' && <ProductsPage />}
         
         <Contact />
       </main>

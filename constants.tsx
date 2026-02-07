@@ -1,11 +1,14 @@
-import { NavItem } from './types';
+
+import { NavItem, NewsItem, ProductItem } from './types';
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: 'Home', href: '#home' },
-  { label: 'About Us', href: '#about-page' },
-  { label: 'Services', href: '#services-page' },
-  { label: 'Programs', href: '#programs-page' },
-  { label: 'Studio AMG', href: '#studio-page' },
+  { label: 'Home', href: '#home', view: 'home' },
+  { label: 'About Us', href: '#about-page', view: 'about' },
+  { label: 'Services', href: '#services-page', view: 'services' },
+  { label: 'Programs', href: '#programs-page', view: 'programs' },
+  { label: 'Products', href: '#products-page', view: 'products' },
+  { label: 'News', href: '#news-page', view: 'news' },
+  { label: 'Studio AMG', href: '#studio-page', view: 'studio' },
   { label: 'CreAItube', href: '#creaitube' },
   { label: 'Contact', href: '#contact' }
 ];
@@ -21,6 +24,66 @@ export const PARTNERS = [
   { name: "Premegage Tech Solution", url: "https://www.premegagetech.com" },
   { name: "NYCN - North America" },
   { name: "BlackbyAngel", url: "https://blackbyangel.my.canva.site/" }
+];
+
+export const NEWS_ITEMS: NewsItem[] = [
+  {
+    id: 'news-1',
+    title: "AMG Expands Global Impact Strategy in Sub-Saharan Africa",
+    date: "May 15, 2024",
+    category: "Corporate News",
+    summary: "New partnership initiatives focused on economic pathway development and digital inclusion.",
+    image: "https://images.unsplash.com/photo-1526253038957-bce54e05968e?auto=format&fit=crop&q=80&w=2070",
+    content: ["Azariah Management Group (AMG) has officially announced a new phase of its global impact strategy, specifically targeting emerging markets in Sub-Saharan Africa. The initiative, led by our International Organizations & Donor Agencies division, aims to foster public-private partnerships that bridge the digital divide.", "Working with local grassroots organizations, AMG will implement strategic management frameworks that prioritize long-term sustainability and local leadership."]
+  },
+  {
+    id: 'news-2',
+    title: "AI & Tech for Good: New Ethics Framework Released",
+    date: "April 28, 2024",
+    category: "Technology",
+    summary: "A proprietary framework for underrepresented communities to access AI responsibly.",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=2070",
+    content: ["As part of our Innovation & Technology Division, AMG has released a foundational whitepaper on 'Responsible AI for Community Systems'. This framework provides actionable guidelines for ensuring that emerging technologies serve humanity rather than exploit it.", "The framework is now being integrated into our consulting services for NGOs and government agencies."]
+  },
+  {
+    id: 'news-3',
+    title: "Studio AMG Receives Advocacy Storytelling Award",
+    date: "March 12, 2024",
+    category: "Studio AMG",
+    summary: "Recognized for 'The Silent Movement' campaign's impact on mental health awareness.",
+    image: "https://images.unsplash.com/photo-1542204113-e9354e746522?auto=format&fit=crop&q=80&w=1974",
+    content: ["Our creative division, Studio AMG, has been honored with a regional award for Excellence in Advocacy Media. The award highlights the measurable impact of 'The Silent Movement', which mobilized over 50 grassroots organizations."]
+  }
+];
+
+export const PRODUCT_ITEMS: ProductItem[] = [
+  {
+    id: 'prod-1',
+    title: "AI Readiness Toolkit",
+    tagline: "Modernization for the Human Scale",
+    category: "Digital Tools",
+    description: "A comprehensive assessment and roadmap generator for organizations transitioning to AI-integrated operations.",
+    features: ["Risk-based AI auditing", "Custom implementation roadmaps", "Employee training modules", "Impact measurement dashboard"],
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=2070"
+  },
+  {
+    id: 'prod-2',
+    title: "Impact Metric OS",
+    tagline: "Measure what Matters",
+    category: "SaaS",
+    description: "A proprietary dashboard for CSR and non-profit leaders to track social return on investment (SROI) in real-time.",
+    features: ["Real-time data ingestion", "Stakeholder sentiment analysis", "Automated impact reporting", "Benchmarking against global standards"],
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2015"
+  },
+  {
+    id: 'prod-3',
+    title: "G.A.M.E. Gateway",
+    tagline: "Connecting the Diaspora",
+    category: "Ecosystem",
+    description: "A digital trade and innovation ecosystem connecting North American investors with African innovation hubs.",
+    features: ["Verified partner network", "Cross-border compliance tools", "Supply chain visibility", "Collaborative project hubs"],
+    image: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=2006"
+  }
 ];
 
 export const WHAT_WE_DO = [
