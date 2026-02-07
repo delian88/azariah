@@ -48,14 +48,19 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
 
   const isInternalView = currentView !== 'home';
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.location.href = '/';
+  };
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
       scrolled || isInternalView ? 'bg-white/95 backdrop-blur-xl shadow-lg py-2 md:py-3' : 'bg-transparent py-4 md:py-6'
     }`}>
       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 flex justify-between items-center">
         <a 
-          href="#home" 
-          onClick={(e) => handleLinkClick(e, '#home', 'home')} 
+          href="/" 
+          onClick={handleLogoClick} 
           className="flex items-center group"
         >
           <Logo className="h-6 md:h-8 lg:h-9 transition-transform group-hover:scale-105 duration-500" />

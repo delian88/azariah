@@ -71,12 +71,13 @@ const ProgramsPage: React.FC = () => {
     },
     'The Silent Movement': {
       synopsis: [
-        "The Silent Movement is a high-impact advocacy and policy-focused initiative designed to bridge the gap between awareness and action. It serves as a mobilizing force that takes the cultural narratives from our media platforms and converts them into tangible systemic change.",
-        "Focused on underrepresented voices and critical social issues, the movement leverages award-winning visuals and data-driven strategy to engage policymakers, grassroots organizations, and global stakeholders in meaningful dialogue."
+        "The Silent Movement is an advocacy-driven initiative and storytelling platform dedicated to amplifying voices that are too often unheard—those affected by mental health challenges, family instability, systemic barriers, and social inequities. The movement sheds light on the quiet struggles happening within communities, homes, and institutions, and transforms awareness into action.",
+        "Through real stories, educational content, and community engagement, The Silent Movement challenges stigma, encourages dialogue, and promotes access to support, resources, and policy change. It centers dignity, empathy, and accountability creating space for healing while mobilizing collective responsibility.",
+        "At its core, The Silent Movement affirms that silence is not weakness, and visibility is the first step toward meaningful change."
       ],
       strategicFit: "The Silent Movement serves as the advocacy backbone connecting Family First, BlackbyAngel, and Voices of the Diaspora, translating conversation and storytelling into measurable community impact and policy-aligned action.",
-      themes: "Policy Reform • Advocacy • Systemic Change • Community Empowerment",
-      format: "Advocacy Campaign / Policy Initiative"
+      themes: "Mental Health Advocacy • Family & Community Wellness • Social Equity • Awareness to Action",
+      format: "Advocacy Campaign / Media Series / Community Initiative"
     }
   };
 

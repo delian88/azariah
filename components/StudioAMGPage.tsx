@@ -8,8 +8,14 @@ import {
   Brain, Cpu, X, ChevronLeft, Info, Clock, BarChart3
 } from 'lucide-react';
 
+const IMAGE_FALLBACK = "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071";
+
 const StudioAMGPage: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = IMAGE_FALLBACK;
+  };
 
   const PORTFOLIO_ITEMS = [
     {
@@ -66,17 +72,35 @@ const StudioAMGPage: React.FC = () => {
     },
     {
       id: 'captain-chiffon',
-      title: "Captain Chiffon Hero Campaign",
-      category: "Animation & Family",
-      image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1974",
-      impact: "Multi-platform animated campaign promoting empathy and courage to half a million children across global markets."
+      title: "Captain Chiffon",
+      category: "Animation & Youth Series",
+      image: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=2069",
+      impact: "Empowering children to see themselves as leaders, helpers, and changemakers—reminding them that strength comes from character.",
+      details: {
+        synopsis: [
+          "Captain Chiffon is an empowering, imaginative, and educational series that follows Captain Chiffon—a courageous, compassionate leader who guides children and families through life’s everyday challenges using creativity, emotional intelligence, and problem-solving skills.",
+          "Blending storytelling, positive messaging, and real-world lessons, the series encourages confidence, kindness, resilience, and self-belief. Each episode explores themes such as leadership, empathy, teamwork, mental wellness, and purpose—helping young viewers learn how to navigate their world with courage and care.",
+          "At its core, Captain Chiffon inspires children to see themselves as leaders, helpers, and changemakers—reminding them that strength comes not just from power, but from character."
+        ],
+        themes: "Leadership • Confidence • Emotional Intelligence • Kindness • Purpose • Mental Wellness",
+        format: "Educational / Animated or Live-Action Youth Series"
+      }
     },
     {
       id: 'silent-movement',
       title: "The Silent Movement",
       category: "Advocacy Campaign",
       image: "https://images.unsplash.com/photo-1542204113-e9354e746522?auto=format&fit=crop&q=80&w=1974",
-      impact: "Award-winning advocacy visuals that mobilized 50+ grassroots organizations for mental health awareness."
+      impact: "Award-winning advocacy visuals that mobilized 50+ grassroots organizations for mental health awareness.",
+      details: {
+        synopsis: [
+          "The Silent Movement is an advocacy-driven initiative and storytelling platform dedicated to amplifying voices that are too often unheard—those affected by mental health challenges, family instability, systemic barriers, and social inequities. The movement sheds light on the quiet struggles happening within communities, homes, and institutions, and transforms awareness into action.",
+          "Through real stories, educational content, and community engagement, The Silent Movement challenges stigma, encourages dialogue, and promotes access to support, resources, and policy change. It centers dignity, empathy, and accountability creating space for healing while mobilizing collective responsibility.",
+          "At its core, The Silent Movement affirms that silence is not weakness, and visibility is the first step toward meaningful change."
+        ],
+        themes: "Mental Health Advocacy • Family & Community Wellness • Social Equity • Awareness to Action",
+        format: "Advocacy Campaign / Media Series / Community Initiative"
+      }
     }
   ];
 
@@ -125,6 +149,7 @@ const StudioAMGPage: React.FC = () => {
                 <img 
                   src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071" 
                   alt="Studio Media" 
+                  onError={handleImageError}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-80"
                 />
              </div>
@@ -214,6 +239,7 @@ const StudioAMGPage: React.FC = () => {
                  <img 
                    src={project.image} 
                    alt={project.title} 
+                   onError={handleImageError}
                    className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 opacity-60 group-hover:opacity-100"
                  />
                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-10"></div>
@@ -265,6 +291,7 @@ const StudioAMGPage: React.FC = () => {
               <div className="w-full lg:w-[40%] bg-slate-900 relative min-h-[400px] lg:min-h-0">
                  <img 
                    src={selectedProject.image} 
+                   onError={handleImageError}
                    className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale"
                    alt={selectedProject.title}
                  />
