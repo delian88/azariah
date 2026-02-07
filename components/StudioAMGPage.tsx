@@ -32,14 +32,30 @@ const StudioAMGPage: React.FC = () => {
       title: "Voices of the Diaspora",
       category: "Documentary",
       image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2059",
-      impact: "Influenced global trade policy discussions for the G.A.M.E. ecosystem, bridging connections between North America and the African Diaspora."
+      impact: "Influenced global trade policy discussions for the G.A.M.E. ecosystem, bridging connections between North America and the African Diaspora.",
+      details: {
+        synopsis: [
+          "Voices of the Diaspora is a powerful storytelling and dialogue series that amplifies the lived experiences, perspectives, and contributions of people across the global African diaspora.",
+          "Spanning continents and generations, the series bridges global perspectives with local impact, honoring roots while spotlighting forward-thinking voices shaping the future."
+        ],
+        themes: "Culture • Identity • Migration • Global Community",
+        format: "Documentary / Cultural & Advocacy Series"
+      }
     },
     {
-      id: 'foundation-luv',
-      title: "Foundation of Luv Impact Film",
-      category: "Social Impact Film",
-      image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=1964",
-      impact: "Cinematic storytelling for community wellness that played a pivotal role in securing $2M+ in project funding."
+      id: 'family-first',
+      title: "Family First",
+      category: "Lifestyle & Advocacy Series",
+      image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070",
+      impact: "Creating safe spaces for families to engage in honest dialogue, strengthen bonds, and prioritize emotional well-being.",
+      details: {
+        synopsis: [
+          "Family First is a values-centered series that explores the dynamics of family, parenting, and relationships in today’s rapidly evolving world. Through real conversations, expert insights, and lived experiences, the series addresses mental health, communication, generational challenges, and the importance of nurturing strong family foundations.",
+          "Designed to educate, empower, and heal, Family First creates a safe and relatable space for families to engage in honest dialogue, strengthen bonds, and prioritize emotional well-being across generations."
+        ],
+        themes: "Family • Parenting • Mental Health • Relationships • Community Wellness",
+        format: "Lifestyle / Educational / Advocacy"
+      }
     },
     {
       id: 'corporate-esg',
@@ -100,7 +116,7 @@ const StudioAMGPage: React.FC = () => {
              <div className="aspect-video bg-slate-900 rounded-sm shadow-2xl overflow-hidden group border-8 border-white">
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent z-10 flex items-end p-8">
                   <div className="flex items-center gap-4 text-white">
-                    <div className="w-12 h-12 bg-lime-500 rounded-full flex items-center justify-center animate-pulse group-hover:scale-110 transition-transform cursor-pointer">
+                    <div className="w-12 h-12 bg-lime-500 rounded-full flex items-center justify-center animate-pulse group-hover:scale-110 transition-transform cursor-pointer shadow-2xl">
                       <Play className="w-6 h-6 fill-slate-950 text-slate-950" />
                     </div>
                     <span className="text-sm font-black uppercase tracking-widest">Studio Showreel</span>
@@ -177,60 +193,24 @@ const StudioAMGPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
-      {/* PROBLEM / SOLUTION / IMPACT */}
-      <SectionWrapper bg="white" className="py-32 relative overflow-hidden">
-        <div className="relative z-10 max-w-5xl mx-auto space-y-20">
-          <div className="text-center space-y-6 reveal">
-            <h2 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter leading-tight max-w-4xl mx-auto text-shine">
-              Stories That Resonate.
-            </h2>
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="reveal p-10 bg-white border-t-8 border-slate-300 shadow-xl space-y-6 hover:-translate-y-2 transition-all duration-500">
-              <div className="p-3 bg-slate-100 inline-block rounded-sm">
-                <XCircle className="w-8 h-8 text-slate-400" />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">The Problem</h3>
-              <p className="text-slate-500 leading-relaxed font-medium text-sm">
-                Organizations struggle to communicate impact clearly. Their work is powerful—but it's not felt by key stakeholders.
-              </p>
-            </div>
-
-            <div className="reveal p-10 bg-white border-t-8 border-blue-600 shadow-2xl space-y-6 hover:-translate-y-4 transition-all duration-500 relative z-20">
-              <div className="p-3 bg-blue-50 inline-block rounded-sm">
-                <CheckCircle2 className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Our Solution</h3>
-              <p className="text-slate-600 leading-relaxed font-bold text-sm">
-                Cinematic production and strategic messaging that transforms mission-critical data into compelling narratives.
-              </p>
-            </div>
-
-            <div className="reveal p-10 bg-slate-900 text-white border-t-8 border-lime-500 shadow-xl space-y-6 hover:-translate-y-2 transition-all duration-500">
-              <div className="p-3 bg-slate-800 inline-block rounded-sm">
-                <Sparkles className="w-8 h-8 text-lime-400" />
-              </div>
-              <h3 className="text-2xl font-black uppercase tracking-tight text-shine-white">The Impact</h3>
-              <p className="text-slate-300 font-bold text-sm">Stakeholder trust. Community alignment. Unforgettable missions that inspire action.</p>
-            </div>
-          </div>
-        </div>
-      </SectionWrapper>
-
-      {/* PORTFOLIO */}
-      <SectionWrapper bg="light">
+      {/* PORTFOLIO GRID */}
+      <SectionWrapper bg="white" className="py-24">
         <div className="space-y-16">
           <div className="max-w-3xl space-y-4 reveal">
             <div className="w-12 h-1 bg-slate-900"></div>
             <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight uppercase text-shine">
-              Our Portfolio
+              The Portfolio
             </h2>
+            <p className="text-xl text-slate-500 font-medium">Original programming and high-impact branded content.</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {PORTFOLIO_ITEMS.map((project, i) => (
-              <div key={i} className="reveal group relative overflow-hidden bg-slate-900 aspect-[4/5] rounded-sm shadow-xl cursor-pointer" onClick={() => setSelectedProject(project)}>
+              <div 
+                key={i} 
+                className="reveal group relative overflow-hidden bg-slate-900 aspect-[4/5] rounded-sm shadow-xl cursor-pointer" 
+                onClick={() => setSelectedProject(project)}
+              >
                  <img 
                    src={project.image} 
                    alt={project.title} 
@@ -427,12 +407,6 @@ const StudioAMGPage: React.FC = () => {
                 className="w-full md:w-auto px-14 py-7 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-2xl uppercase tracking-widest text-xs flex items-center justify-center gap-4 group hover:-translate-y-2"
                >
                  Start Your Creative Project <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-               </button>
-               <button 
-                onClick={scrollToContact}
-                className="w-full md:w-auto px-14 py-7 border-2 border-white/20 text-white font-black rounded-sm hover:bg-white hover:text-slate-900 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-4 group hover:-translate-y-2"
-               >
-                 Request a Media Proposal <FileText className="w-5 h-5" />
                </button>
             </div>
          </div>

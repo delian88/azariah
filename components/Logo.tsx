@@ -5,18 +5,18 @@ interface LogoProps {
   variant?: 'light' | 'dark';
 }
 
-const Logo: React.FC<LogoProps> = ({ className = "h-12", variant = 'light' }) => {
+const Logo: React.FC<LogoProps> = ({ className = "h-8", variant = 'light' }) => {
   const isDark = variant === 'dark';
   
-  // Colors sampled from the provided logo image
+  // Colors sampled from the brand identity
   const bluePrimary = "#005696"; 
   const greenBrand = "#84cc16"; 
   const greyManagement = "#71717a";
   const whiteText = "#ffffff";
 
   return (
-    <div className={`flex items-center gap-2 md:gap-3 lg:gap-4 ${className}`}>
-      {/* Precision Pixel Globe SVG based on the provided image */}
+    <div className={`flex items-center gap-1.5 md:gap-2 ${className}`}>
+      {/* Precision Pixel Globe SVG - Scaled down for tighter fit */}
       <svg 
         viewBox="0 0 120 120" 
         className="h-full w-auto shrink-0"
@@ -37,7 +37,7 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12", variant = 'light' }) =>
         </defs>
 
         <g filter="url(#shadow)">
-          {/* Blue Pixels - Left and Central hemisphere */}
+          {/* Blue Pixels */}
           <g fill={bluePrimary}>
             <rect x="35" y="10" width="8" height="8" rx="0.5" />
             <rect x="45" y="8" width="8" height="8" rx="0.5" />
@@ -63,7 +63,7 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12", variant = 'light' }) =>
             <rect x="40" y="100" width="7" height="7" rx="0.5" />
           </g>
 
-          {/* Green Pixels - Top Right and Edge highlighting */}
+          {/* Green Pixels */}
           <g fill={greenBrand}>
             <rect x="68" y="12" width="8" height="8" rx="0.5" />
             <rect x="78" y="18" width="8" height="8" rx="0.5" />
@@ -80,17 +80,17 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12", variant = 'light' }) =>
         </g>
       </svg>
       
-      {/* Accurate Typography */}
-      <div className="flex flex-col justify-center leading-[1.1] select-none">
+      {/* Typography - Left aligned, scaled down */}
+      <div className="flex flex-col justify-center items-start leading-[1.1] select-none">
         {/* AZARIAH */}
-        <div className="flex items-center font-black tracking-tight text-xl md:text-2xl lg:text-4xl">
+        <div className="flex items-center font-black tracking-tight text-lg md:text-xl lg:text-2xl">
           <span style={{ color: isDark ? whiteText : bluePrimary }}>AZAR</span>
           <span style={{ color: greenBrand }}>IAH</span>
         </div>
         
         {/* MANAGEMENT */}
         <div 
-          className="text-[6px] md:text-[8px] lg:text-[12px] font-bold tracking-[0.2em] md:tracking-[0.3em] lg:tracking-[0.4em] uppercase"
+          className="text-[5px] md:text-[6px] lg:text-[8px] font-bold tracking-[0.2em] uppercase"
           style={{ color: isDark ? "#94a3b8" : greyManagement }}
         >
           Management
@@ -98,7 +98,7 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12", variant = 'light' }) =>
         
         {/* GROUP */}
         <div 
-          className="text-sm md:text-lg lg:text-2xl font-black tracking-[0.1em] md:tracking-[0.15em] uppercase"
+          className="text-xs md:text-sm lg:text-lg font-black tracking-[0.1em] uppercase"
           style={{ color: isDark ? whiteText : bluePrimary }}
         >
           Group

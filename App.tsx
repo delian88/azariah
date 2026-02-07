@@ -113,7 +113,7 @@ const App: React.FC = () => {
   if (loading) {
     return (
       <div className="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center z-[1000] space-y-8">
-        <Logo variant="dark" className="h-20 animate-pulse" />
+        <Logo variant="dark" className="h-12 animate-pulse" />
         <div className="w-48 h-1 bg-slate-800 rounded-full overflow-hidden relative">
           <div className="absolute inset-0 bg-lime-500 animate-loading-bar origin-left"></div>
         </div>

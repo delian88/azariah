@@ -58,7 +58,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           onClick={(e) => handleLinkClick(e, '#home', 'home')} 
           className="flex items-center group"
         >
-          <Logo className="h-9 md:h-11 lg:h-12 transition-transform group-hover:scale-105 duration-500" />
+          <Logo className="h-6 md:h-8 lg:h-9 transition-transform group-hover:scale-105 duration-500" />
         </a>
 
         {/* Desktop & Tablet Links */}

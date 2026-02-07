@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
         <div className="space-y-6">
           <div className="flex items-center">
-            <Logo variant="dark" className="h-12" />
+            <Logo variant="dark" className="h-8 md:h-9" />
           </div>
           <p className="text-slate-400 leading-relaxed text-sm">
             Azariah Management Group: Turning purpose into progress through strategic consulting, technology, and social impact.
