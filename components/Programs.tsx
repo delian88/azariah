@@ -5,7 +5,7 @@ import {
   ExternalLink, Zap, X, ChevronLeft, Info, 
   Play, Share2, Scale, Clapperboard, BarChart3,
   Tv, Gamepad2, Heart, Globe, Brain, ShieldCheck, ShieldAlert, Sparkles,
-  Download, Loader2, User, Mail, ArrowRight, Shield, CheckCircle2, FileText, Printer
+  Download, Loader2, User, Mail, ArrowRight, Shield, CheckCircle2, FileText, Printer, AlertCircle
 } from 'lucide-react';
 
 const BLUEPRINT_DATA = {
@@ -93,6 +93,7 @@ const Programs: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '' });
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
@@ -101,8 +102,20 @@ const Programs: React.FC = () => {
     }
   };
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handleBlueprintSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEmailError(null);
+
+    if (!validateEmail(formData.email)) {
+      setEmailError('Please enter a valid professional email.');
+      return;
+    }
+
     setIsSubmitting(true);
     // Simulate API lead capture
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -114,6 +127,7 @@ const Programs: React.FC = () => {
     setIsBlueprintModalOpen(false);
     setIsSubmitted(false);
     setFormData({ name: '', email: '' });
+    setEmailError(null);
   };
 
   const handlePrint = () => {
@@ -418,10 +432,18 @@ const Programs: React.FC = () => {
                       required
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, email: e.target.value });
+                        if (emailError) setEmailError(null);
+                      }}
                       placeholder="name@organization.com"
-                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-slate-900 transition-all text-sm font-bold"
+                      className={`w-full px-6 py-4 bg-slate-50 border ${emailError ? 'border-red-500 bg-red-50' : 'border-slate-200'} rounded-sm focus:outline-none focus:border-slate-900 transition-all text-sm font-bold`}
                     />
+                    {emailError && (
+                      <p className="text-[10px] text-red-600 font-black uppercase tracking-tighter flex items-center gap-2 animate-in slide-in-from-left-2">
+                        <AlertCircle className="w-3 h-3" /> {emailError}
+                      </p>
+                    )}
                   </div>
                   
                   <button 
