@@ -17,7 +17,7 @@ const StudioAMGPage: React.FC = () => {
       title: "Start Point: The Series",
       category: "Original Programming",
       image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071",
-      impact: "High-impact docu-series reaching 1.2M+ viewers, featuring emerging CEOs and scaling the narrative of African innovation.",
+      impact: "High-impact docu-series reaching a wide range of viewers, featuring emerging CEOs and scaling the narrative of innovators.",
       details: {
         synopsis: [
           "Start Point is a docu-reality series that follows the authentic journeys of entrepreneurs, founders, and CEOs at the pivotal moments where vision meets uncertainty. Rather than spotlighting success alone, the series captures the real decisions, risks, failures, and breakthroughs that shape leadership from the ground up.",
