@@ -113,7 +113,7 @@ const CreAItube: React.FC = () => {
              className="group px-16 py-8 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-[0_20px_50px_rgba(132,204,22,0.3)] uppercase tracking-widest text-sm flex items-center gap-4 hover:-translate-y-2"
              onClick={() => alert("Registration link coming soon! Stay tuned.")}
            >
-             Create Your Creator Account
+             Create Your CreAItor Account
              <UserPlus className="w-5 h-5 group-hover:rotate-12 transition-transform" />
            </button>
            
