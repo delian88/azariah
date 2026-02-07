@@ -64,11 +64,19 @@ const StudioAMGPage: React.FC = () => {
       }
     },
     {
-      id: 'corporate-esg',
-      title: "Corporate ESG Standard",
-      category: "Branded Content",
-      image: "https://images.unsplash.com/photo-1551818255-e6e10975bc17?auto=format&fit=crop&q=80&w=2050",
-      impact: "Transformed complex ESG reporting into authentic human-centered stories, resulting in a 45% lift in employee engagement."
+      id: 'blackbyangel',
+      title: "BlackbyAngel",
+      category: "Talk & Advocacy Series",
+      image: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80&w=2067",
+      impact: "A platform for visibility, healing, and forward-thinking dialogue that uplifts community voices and sparks impactful change.",
+      details: {
+        synopsis: [
+          "BlackbyAngel is a bold, culturally resonant talk and advocacy series that centers Black voices, experiences, and perspectives through meaningful dialogue and storytelling. Hosted by Angelica Watkins, the series blends social commentary, mental health awareness, cultural identity, and empowerment into conversations that challenge narratives and inspire growth.",
+          "Produced by Azariah Management Group under Studio AMG, BlackbyAngel is more than a show—it is a platform for visibility, healing, and forward-thinking dialogue that uplifts community voices and sparks impactful change."
+        ],
+        themes: "Culture • Identity • Mental Health • Advocacy • Empowerment",
+        format: "Talk Show / Advocacy / Cultural Commentary"
+      }
     },
     {
       id: 'captain-chiffon',
@@ -431,7 +439,7 @@ const StudioAMGPage: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-center items-center gap-8 pt-8">
                <button 
                 onClick={scrollToContact}
-                className="w-full md:w-auto px-14 py-7 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-2xl uppercase tracking-widest text-xs flex items-center justify-center gap-4 group hover:-translate-y-2"
+                className="w-full md:w-auto px-14 py-7 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-xl uppercase tracking-widest text-xs flex items-center justify-center gap-4 group hover:-translate-y-2"
                >
                  Start Your Creative Project <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                </button>
