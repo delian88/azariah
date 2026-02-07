@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import Logo from './Logo';
@@ -60,25 +59,26 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-      scrolled || isInternalView ? 'bg-white/95 backdrop-blur-xl shadow-lg py-2 md:py-3' : 'bg-transparent py-4 md:py-6'
+      scrolled || isInternalView ? 'bg-white/95 backdrop-blur-xl shadow-lg py-2' : 'bg-transparent py-4'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 flex justify-between items-center">
+      <div className="max-w-full px-4 md:px-6 lg:px-8 flex justify-between items-center">
         <a 
           href="/" 
           onClick={handleLogoClick} 
           className="flex items-center group"
         >
-          <Logo className="h-6 md:h-8 lg:h-9 transition-transform group-hover:scale-105 duration-500" />
+          {/* Reduced size: h-4 to h-6 range */}
+          <Logo className="h-4 md:h-5 lg:h-6 transition-transform group-hover:scale-105 duration-500" />
         </a>
 
         {/* Desktop & Tablet Links */}
-        <div className="hidden md:flex items-center md:space-x-4 lg:space-x-8">
+        <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
           {navLinks.map((item) => (
             <a
               key={item.label}
               href={item.href}
               onClick={(e) => handleLinkClick(e, item.href, (item as any).view)}
-              className={`font-black uppercase tracking-widest link-underline transition-colors md:text-[9px] lg:text-[11px] ${
+              className={`font-black uppercase tracking-widest link-underline transition-colors text-[8px] lg:text-[10px] ${
                 scrolled || isInternalView ? 'text-slate-600 hover:text-slate-900' : 'text-slate-200 hover:text-white'
               } ${currentView === item.view ? 'text-lime-600' : ''}`}
             >
@@ -95,10 +95,10 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
                  el.scrollIntoView({ behavior: 'smooth' });
                }
             }}
-            className="md:px-4 lg:px-6 md:py-2.5 lg:py-3 bg-slate-900 text-white font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center group shadow-xl md:text-[8px] lg:text-[10px]"
+            className="px-4 py-2 bg-slate-900 text-white font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center group shadow-xl text-[8px] lg:text-[9px]"
           >
             Work With Us
-            <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
 
@@ -107,7 +107,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           className={`md:hidden p-2 transition-colors ${scrolled || isInternalView ? 'text-slate-900' : 'text-white'}`}
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 

@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
     <footer className="bg-slate-950 text-slate-400 pt-32 pb-12 px-6 md:px-12 border-t border-slate-900">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
         <div className="space-y-8">
-          <Logo variant="dark" className="h-10" />
+          <Logo variant="dark" className="h-6" />
           <p className="text-slate-500 leading-relaxed font-bold text-sm">
             AZARIAH MANAGE: Advanced strategic consulting, engineering, and digital transformation for a borderless world.
           </p>

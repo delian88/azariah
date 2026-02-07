@@ -5,8 +5,8 @@ const SLIDES = [
   {
     video: 'https://player.vimeo.com/external/434045526.sd.mp4?s=c27db08e124845114704b2d352332f1f50a80d2a&profile_id=164&oauth2_token_id=57447761',
     poster: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2069',
-    title: 'Azariah Manage.',
-    subtitle: 'Strategic Intelligence',
+    title: 'Management.',
+    subtitle: 'Azariah Group',
     description: 'We deliver high-performance consulting and media solutions for organizations that demand excellence and impact.'
   },
   {
@@ -20,8 +20,8 @@ const SLIDES = [
     video: 'https://player.vimeo.com/external/403810419.sd.mp4?s=e52f5979f046e8c89c8a071c33f274a7b7a42142&profile_id=164&oauth2_token_id=57447761',
     title: 'Global Scale.',
     poster: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=2070',
-    subtitle: 'Management Excellence',
-    description: 'Azariah Manage partners with visionaries to transform complex challenges into scalable opportunities.'
+    subtitle: 'Strategic Excellence',
+    description: 'Azariah Management Group partners with visionaries to transform complex challenges into scalable opportunities.'
   }
 ];
 
@@ -99,7 +99,7 @@ const Hero: React.FC = () => {
         <div className="max-w-4xl space-y-8">
           <div className="inline-flex items-center gap-2 px-6 py-2 bg-white text-slate-950 rounded-none text-[12px] font-black tracking-[0.3em] uppercase shadow-2xl animate-in fade-in slide-in-from-left-8 duration-1000">
             <Zap className="w-4 h-4 fill-slate-950" />
-            AZARIAH MANAGE / STRATEGY
+            AZARIAH MANAGEMENT GROUP
           </div>
 
           <div className="space-y-2 overflow-hidden">
