@@ -19,7 +19,11 @@ const StudioAMGPage: React.FC = () => {
 
   const NETWORK_VIDEOS = [
     { id: 'm0_tXv_Xv5o', title: 'Studio AMG Network Launch', category: 'Network' },
+    { id: 'Ueo4httxgVY', title: 'Studio AMG (Azariah Management Group)', category: 'Brand' },
+    { id: 'Hz4_3mcTvyA', title: 'BLACK BY ANGEL THE ORIGIN', category: 'Talk Show' },
     { id: 'Y7e8gvlkCeU', title: 'Family First: Wellness & Unity', category: 'Wellness' },
+    { id: 'fL_USE9Hn10', title: 'Marriage Restoration Story', category: 'Wellness' },
+    { id: 'IK1_vZ4v4bI', title: 'Family First: On a Budget', category: 'Wellness' },
     { id: 'q9p9OP6WK6w', title: "Life's Second Chance", category: 'Originals' },
     { id: 'vB_K7tH6s2M', title: 'Start Point: The Series Trailer', category: 'Originals' },
     { id: '7DDRz6mG_C4', title: 'The Silent Movement: Mental Health', category: 'Advocacy' },
@@ -33,11 +37,7 @@ const StudioAMGPage: React.FC = () => {
     { id: 'B7m_xP_N4tR', title: 'CSR Excellence Awards Highlight', category: 'Events' },
     { id: 'Z9j_kV_S1wY', title: 'Digital Transformation for NGOs', category: 'Tech' },
     { id: 'Q2g_pX_L8oZ', title: 'NGO Capacity Building Session', category: 'Training' },
-    { id: 'K5n_fV_S8xL', title: 'Emerging Markets: Global Trends', category: 'Economic' },
-    { id: 'P9q_zL_M1vT', title: 'The Future of Impact Investing', category: 'Finance' },
-    { id: 'R4d_bG_X7pW', title: 'Youth Empowerment Initiative 2024', category: 'Youth' },
-    { id: 'G2t_hN_P5mK', title: 'Mental Health in the Workplace', category: 'Wellness' },
-    { id: 'D8s_xV_L1qR', title: 'Inclusive Tech Frameworks', category: 'Ethics' }
+    { id: 'K5n_fV_S8xL', title: 'Emerging Markets: Global Trends', category: 'Economic' }
   ];
 
   const PORTFOLIO_ITEMS = [
@@ -82,7 +82,7 @@ const StudioAMGPage: React.FC = () => {
           "Family First is a values-centered series that explores the dynamics of family, parenting, and relationships in today’s rapidly evolving world. Through real conversations, expert insights, and lived experiences, the series addresses mental health, communication, generational challenges, and the importance of nurturing strong family foundations.",
           "Designed to educate, empower, and heal, Family First creates a safe and relatable space for families to engage in honest dialogue, strengthen bonds, and prioritize emotional well-being across generations."
         ],
-        themes: "Family • Parenting • Mental Health • Relationships • Community Wellness",
+        themes: "Family • parenting • Mental Health • Relationships • Community Wellness",
         format: "Lifestyle / Educational / Advocacy"
       }
     },
@@ -447,7 +447,7 @@ const StudioAMGPage: React.FC = () => {
 
                       {/* Impact Highlight */}
                       <div className="p-10 bg-slate-50 border-l-8 border-blue-600">
-                        <h4 className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.4em] text-slate-900 mb-6">
+                        <h4 className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.4em] text-blue-600 mb-6">
                            <BarChart3 className="w-5 h-5 text-blue-600" /> Strategic Impact
                         </h4>
                         <p className="text-xl font-bold text-slate-700 leading-relaxed">
