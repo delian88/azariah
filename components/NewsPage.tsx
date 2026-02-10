@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { NEWS_ITEMS } from '../constants';
@@ -6,6 +5,30 @@ import { Calendar, Tag, ArrowRight, ChevronLeft, X, Share2, Globe, Sparkles } fr
 
 const NewsPage: React.FC = () => {
   const [selectedNews, setSelectedNews] = useState<any | null>(null);
+
+  const handleShare = (platform: string) => {
+    if (!selectedNews) return;
+    
+    const url = window.location.href;
+    const text = encodeURIComponent(selectedNews.title);
+    const encodedUrl = encodeURIComponent(url);
+
+    let shareUrl = '';
+    switch (platform) {
+      case 'Linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+        break;
+      case 'Twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${encodedUrl}`;
+        break;
+      case 'Facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+        break;
+      default:
+        return;
+    }
+    window.open(shareUrl, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div className="pt-24">
@@ -79,7 +102,11 @@ const NewsPage: React.FC = () => {
               Back to News
             </button>
             <div className="flex items-center gap-4">
-               <button className="p-2 text-slate-400 hover:text-slate-950 transition-colors">
+               <button 
+                 onClick={() => handleShare('Twitter')}
+                 className="p-2 text-slate-400 hover:text-slate-950 transition-colors"
+                 title="Share on X"
+               >
                  <Share2 className="w-5 h-5" />
                </button>
                <button 
@@ -119,16 +146,22 @@ const NewsPage: React.FC = () => {
 
                <div className="pt-20 border-t border-slate-100 flex flex-col md:flex-row gap-12 items-center justify-between">
                   <div className="space-y-2">
-                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Share Intelligence</h4>
+                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Share on social media</h4>
                     <div className="flex gap-4">
                        {['Linkedin', 'Twitter', 'Facebook'].map(s => (
-                         <button key={s} className="text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-blue-600 transition-colors">{s}</button>
+                         <button 
+                           key={s} 
+                           onClick={() => handleShare(s)}
+                           className="text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-blue-600 transition-colors"
+                         >
+                           {s}
+                         </button>
                        ))}
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                      <Sparkles className="w-8 h-8 text-lime-500" />
-                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest max-w-[200px]">Strategic insight powered by AMG Intelligence</p>
+                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest max-w-[200px]">Strategic insight powered by Azariah Management Group</p>
                   </div>
                </div>
             </div>
