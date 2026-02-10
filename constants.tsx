@@ -1,4 +1,3 @@
-
 import { NavItem, NewsItem, ProductItem } from './types';
 
 export const NAV_ITEMS: NavItem[] = [
@@ -28,31 +27,37 @@ export const PARTNERS = [
 
 export const NEWS_ITEMS: NewsItem[] = [
   {
-    id: 'news-1',
-    title: "AMG Expands Global Impact Strategy in Sub-Saharan Africa",
-    date: "May 15, 2024",
-    category: "Corporate News",
-    summary: "New partnership initiatives focused on economic pathway development and digital inclusion.",
-    image: "https://images.unsplash.com/photo-1526253038957-bce54e05968e?auto=format&fit=crop&q=80&w=2070",
-    content: ["Azariah Management Group (AMG) has officially announced a new phase of its global impact strategy, specifically targeting emerging markets in Sub-Saharan Africa. The initiative, led by our International Organizations & Donor Agencies division, aims to foster public-private partnerships that bridge the digital divide.", "Working with local grassroots organizations, AMG will implement strategic management frameworks that prioritize long-term sustainability and local leadership."]
-  },
-  {
-    id: 'news-2',
-    title: "AI & Tech for Good: New Ethics Framework Released",
-    date: "April 28, 2024",
-    category: "Technology",
-    summary: "A proprietary framework for underrepresented communities to access AI responsibly.",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=2070",
-    content: ["As part of our Innovation & Technology Division, AMG has released a foundational whitepaper on 'Responsible AI for Community Systems'. This framework provides actionable guidelines for ensuring that emerging technologies serve humanity rather than exploit it.", "The framework is now being integrated into our consulting services for NGOs and government agencies."]
-  },
-  {
-    id: 'news-3',
-    title: "Studio AMG Receives Advocacy Storytelling Award",
-    date: "March 12, 2024",
+    id: 'news-nolly-oh',
+    title: "Studio AMG Partners on “Nolly Oh!” A Landmark Nollywood & Nigerian Cultural Festival Across the UK",
+    date: "October 01, 2025",
     category: "Studio AMG",
-    summary: "Recognized for 'The Silent Movement' campaign's impact on mental health awareness.",
-    image: "https://images.unsplash.com/photo-1542204113-e9354e746522?auto=format&fit=crop&q=80&w=1974",
-    content: ["Our creative division, Studio AMG, has been honored with a regional award for Excellence in Advocacy Media. The award highlights the measurable impact of 'The Silent Movement', which mobilized over 50 grassroots organizations."]
+    summary: "Azariah Management Group announces its role as technical partner for a UK-wide Nollywood festival celebrating Nigerian culture and cinema.",
+    image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1925",
+    content: [
+      "Azariah Management Group (AMG), through its media division Studio AMG, is proud to announce its role as a technical partner and featured creative contributor to “Nolly Oh!”, a landmark Nollywood and Nigerian cultural festival set to take place across the United Kingdom.",
+      "Launched in celebration of Nigeria’s 65th Independence Anniversary, Nolly Oh! is a bold, global initiative honoring African storytelling, cultural integration, and the extraordinary impact of Nollywood on the world stage.",
+      "The festival is presented by Grey Cinema (UK) in partnership with The New Black Film Collective (TNBFC) and is proudly supported by the British Film Institute (BFI).",
+      "A UK-Wide Celebration of Nollywood & Nigerian Heritage",
+      "Nolly Oh! will run from October to December 2025, with events hosted across London, Birmingham, Manchester, Newcastle, and Liverpool bringing Nigerian cinema and culture directly to diverse communities throughout the UK.",
+      "The festival officially opens in London on Wednesday, 1st October 2025, aligning with celebrations marking Nigeria’s Independence Day, and setting the tone for a season of cultural excellence, dialogue, and creative exchange.",
+      "Opening Night Highlight: “MAMI WATA” UK Screening",
+      "The highly anticipated opening night will feature the UK screening of MAMI WATA the critically acclaimed, award-nominated film directed by CJ Obasi at 7:00 PM.",
+      "Coinciding with the BFI’s Melodrama Blockbuster Season, the premiere will also host a panel discussion and live Q&A, bringing together leading Nigerian and global filmmakers, producers, and cultural voices to explore the evolution, influence, and future of Nollywood.",
+      "Beyond Film: A Multi-Sensory Cultural Experience",
+      "More than a traditional film festival, Nolly Oh! is designed as an immersive cultural experience. Audiences will engage with the full spectrum of Nigerian creativity through:",
+      "• Authentic Nigerian cuisine",
+      "• Live music performances",
+      "• Fashion showcases",
+      "• Dance exhibitions",
+      "• Contemporary African art displays",
+      "This holistic approach celebrates not only storytelling on screen but also the broader creative industries that shape Nigeria’s cultural and economic influence globally.",
+      "Studio AMG’s Role",
+      "As a technical partner, Studio AMG supported the festival through production expertise, media collaboration, and the showcasing of select projects aligned with AMG’s mission to amplify powerful stories, cultural narratives, and global African voices.",
+      "This partnership reflects Azariah Management Group’s ongoing commitment to cultural advocacy, creative excellence, and diaspora engagement through media and storytelling.",
+      "A Global Moment for Nollywood",
+      "Nolly Oh! stands as a defining moment for Nollywood’s global journey connecting filmmakers, audiences, institutions, and creatives while honoring Nigeria’s past, present, and future.",
+      "Azariah Management Group is honored to be part of this historic celebration and looks forward to contributing to its lasting cultural impact."
+    ]
   }
 ];
 
@@ -172,11 +177,6 @@ export const SIGNATURE_PROGRAMS = [
     tags: ['Wellness', 'Media']
   },
   {
-    title: 'The Silent Movement',
-    description: 'Advocacy backbone translating storytelling into community impact.',
-    tags: ['Advocacy', 'Policy']
-  },
-  {
     title: 'G.A.M.E.',
     description: 'Global African Market Enterprise – Diaspora innovation & trade ecosystem.',
     tags: ['Trade', 'Innovation']
@@ -184,7 +184,7 @@ export const SIGNATURE_PROGRAMS = [
   {
     title: 'AI Force Hub',
     description: 'Collaboration & training center for ethical AI implementation.',
-    tags: ['Technology', 'Training']
+    tags: ['Technology', 'Technology']
   },
   {
     title: 'BlackbyAngel Initiative',
@@ -193,43 +193,36 @@ export const SIGNATURE_PROGRAMS = [
   }
 ];
 
+// Added missing constants required by About components to resolve import errors
 export const WHY_CHOOSE_AMG = {
   strengths: [
-    'Tailored consulting for every growth stage',
-    'Deep expertise in engineering, transformation & execution',
-    'Integrated consulting + media ecosystem',
-    'Real-world government & private-sector experience',
-    'Community-centered, relationship-driven approach',
-    'Proven global partnerships (U.S., Europe, Africa)',
-    'Ability to take clients from feasibility → readiness → execution'
+    "Multidisciplinary Strategic Expertise",
+    "Ethical & Inclusive AI Integration",
+    "High-Impact Creative Storytelling",
+    "Scalable Community Development Models"
   ],
   differentiators: [
-    'Strategy + storytelling in one ecosystem',
-    'Strong investment in small businesses & community development',
-    'Measurable impact frameworks',
-    'Multidisciplinary team spanning strategy, technology, culture, and media'
+    "Integrated Media-Strategy Ecosystem",
+    "Real-World Operational Experience",
+    "Cultural & Diaspora Intelligence",
+    "End-to-End Execution"
+  ]
+};
+
+export const WHO_WE_SERVE = {
+  primary: [
+    "Government & Public Sector Agencies",
+    "Corporate CSR & ESG Departments",
+    "Non-Profit & Civil Society Organizations",
+    "Global Development Foundations"
   ]
 };
 
 export const WHO_SERVED = [
-  'Government Agencies / Public Sector & Private Sector',
-  'Non-Profits & Civil Society Organizations',
-  'International Organizations & Donor Agencies (North/South America, E.U, UK, Asia, Africa)',
-  'Communities',
-  'Tech & engineering firms innovating and scaling new solutions',
-  'Creative & mission-driven brands looking for advocacy or branded storytelling'
+  "Corporate Leadership Teams",
+  "Public Sector Administrators",
+  "Non-Profit Directors",
+  "Social Entrepreneurs",
+  "Community Organizers",
+  "International Development Agencies"
 ];
-
-export const WHO_WE_SERVE = {
-  primary: [
-    'Government Agencies / Public Sector & Private Sector',
-    'Non-Profits & Civil Society Organizations',
-    'International Organizations & Donor Agencies (North/South America, E.U, UK, Asia, Africa)',
-    'Communities'
-  ],
-  secondary: [
-    'Tech & engineering firms',
-    'Enterprises undergoing modernization',
-    'Creative industries seeking advocacy or branded media'
-  ]
-};
