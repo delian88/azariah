@@ -14,10 +14,22 @@ import {
   Sparkles,
   ChevronRight,
   ShieldCheck,
-  Briefcase
+  Briefcase,
+  Zap,
+  Target,
+  BarChart3,
+  Clock,
+  Printer,
+  Download
 } from 'lucide-react';
 
 const TermsPage: React.FC = () => {
+  const today = new Date().toLocaleDateString('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric'
+  });
+
   return (
     <div className="pt-24">
       {/* HEADER */}
@@ -33,7 +45,7 @@ const TermsPage: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-center gap-4 text-xs font-black uppercase tracking-widest text-slate-400">
              <span className="text-slate-900">Azariah Management Group (AMG)</span>
              <span className="hidden md:block w-2 h-2 rounded-full bg-lime-500"></span>
-             <span>Effective Date: 04/17/2024</span>
+             <span>Effective Date: {today}</span>
           </div>
         </div>
       </SectionWrapper>
