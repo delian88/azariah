@@ -26,12 +26,14 @@ const NewsPage: React.FC = () => {
 
   const getValidUrl = () => {
     try {
-      // Ensure we have a valid, absolute URL for sharing
-      // Some browsers/OS reject localhost or non-https URLs in navigator.share
       const currentUrl = window.location.href;
+      // Handle sandbox blob URLs or invalid URLs by falling back to the origin
+      if (currentUrl.startsWith('blob:') || !currentUrl.startsWith('http')) {
+        return window.location.origin;
+      }
       return new URL(currentUrl).href;
     } catch (e) {
-      return window.location.origin + window.location.pathname + window.location.hash;
+      return window.location.origin;
     }
   };
 
@@ -45,19 +47,17 @@ const NewsPage: React.FC = () => {
       url: shareUrl,
     };
 
-    // Robust check for share capability
+    // Navigator.share is the primary "one-click" share for mobile and modern browsers
     if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
       try {
         await navigator.share(shareData);
       } catch (err) {
-        // Handle cancellation or errors gracefully
+        // If user cancels or error occurs, fallback to manual copy
         if ((err as Error).name !== 'AbortError') {
-          console.error('Error sharing:', err);
           copyToClipboard();
         }
       }
     } else {
-      // Fallback to manual copy if navigator.share is not supported
       copyToClipboard();
     }
   };
@@ -92,15 +92,21 @@ const NewsPage: React.FC = () => {
         shareUrl = `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`;
         break;
       case 'Instagram':
-        // Instagram doesn't support direct URL sharing via web intent.
-        // We copy the link for them and notify.
+        // Instagram doesn't support sharing links via URL parameters (intent).
+        // Best practice: Copy the link for the user and then open Instagram.
         copyToClipboard();
-        alert("Link copied! You can now paste it in your Instagram story or bio.");
+        window.open('https://www.instagram.com', '_blank', 'noopener,noreferrer');
         return;
+      case 'Email':
+        shareUrl = `mailto:?subject=${encodedText}&body=Check out this news from Azariah Management Group: ${encodedUrl}`;
+        break;
       default:
         return;
     }
-    window.open(shareUrl, '_blank', 'noopener,noreferrer');
+    
+    if (shareUrl) {
+      window.open(shareUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -178,7 +184,7 @@ const NewsPage: React.FC = () => {
                <button 
                  onClick={handleNativeShare}
                  className="p-2 text-slate-400 hover:text-slate-950 transition-colors"
-                 title="One-click share"
+                 title="Quick Share"
                >
                  <Share2 className="w-5 h-5" />
                </button>
@@ -218,14 +224,14 @@ const NewsPage: React.FC = () => {
                </div>
 
                <div className="pt-20 border-t border-slate-100 flex flex-col md:flex-row gap-12 items-center justify-between">
-                  <div className="space-y-8 w-full md:w-auto">
+                  <div className="space-y-10 w-full md:w-auto">
                     <div className="space-y-2">
-                       <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Share on social media</h4>
-                       <p className="text-[10px] text-slate-500 font-bold uppercase">Click to share this article with your network</p>
+                       <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">Share on social media</h4>
+                       <p className="text-[10px] text-slate-500 font-bold uppercase">Distribute this insight to your network</p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4">
-                       {/* PRIMARY ONE-CLICK SHARE */}
+                       {/* PRIMARY NATIVE SHARE */}
                        <button 
                          onClick={handleNativeShare}
                          className="flex items-center gap-3 px-8 py-5 bg-slate-900 text-white rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all group shadow-xl"
@@ -249,43 +255,43 @@ const NewsPage: React.FC = () => {
                     </div>
 
                     <div className="flex flex-wrap gap-6 pt-4 border-t border-slate-50">
-                       <button onClick={() => handleManualShare('Linkedin')} title="Share on LinkedIn" className="flex flex-col items-center gap-2 group">
-                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all rounded-full shadow-sm">
+                       <button onClick={() => handleManualShare('Linkedin')} title="LinkedIn" className="flex flex-col items-center gap-2 group">
+                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-[#0077B5] group-hover:text-white transition-all rounded-full shadow-sm">
                            <Linkedin className="w-5 h-5" />
                          </div>
                          <span className="text-[8px] font-black text-slate-400 group-hover:text-slate-900 uppercase tracking-widest">LinkedIn</span>
                        </button>
 
-                       <button onClick={() => handleManualShare('Twitter')} title="Share on X / Twitter" className="flex flex-col items-center gap-2 group">
-                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all rounded-full shadow-sm">
+                       <button onClick={() => handleManualShare('Twitter')} title="Twitter / X" className="flex flex-col items-center gap-2 group">
+                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-slate-950 group-hover:text-white transition-all rounded-full shadow-sm">
                            <Twitter className="w-5 h-5" />
                          </div>
                          <span className="text-[8px] font-black text-slate-400 group-hover:text-slate-900 uppercase tracking-widest">X</span>
                        </button>
 
-                       <button onClick={() => handleManualShare('Facebook')} title="Share on Facebook" className="flex flex-col items-center gap-2 group">
-                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-blue-800 group-hover:text-white transition-all rounded-full shadow-sm">
+                       <button onClick={() => handleManualShare('Facebook')} title="Facebook" className="flex flex-col items-center gap-2 group">
+                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-[#1877F2] group-hover:text-white transition-all rounded-full shadow-sm">
                            <Facebook className="w-5 h-5" />
                          </div>
                          <span className="text-[8px] font-black text-slate-400 group-hover:text-slate-900 uppercase tracking-widest">Facebook</span>
                        </button>
 
-                       <button onClick={() => handleManualShare('Instagram')} title="Share to Instagram" className="flex flex-col items-center gap-2 group">
-                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 group-hover:text-white transition-all rounded-full shadow-sm">
+                       <button onClick={() => handleManualShare('Instagram')} title="Instagram" className="flex flex-col items-center gap-2 group">
+                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] group-hover:text-white transition-all rounded-full shadow-sm">
                            <Instagram className="w-5 h-5" />
                          </div>
                          <span className="text-[8px] font-black text-slate-400 group-hover:text-slate-900 uppercase tracking-widest">Instagram</span>
                        </button>
 
-                       <button onClick={() => handleManualShare('WhatsApp')} title="Share on WhatsApp" className="flex flex-col items-center gap-2 group">
-                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-green-600 group-hover:text-white transition-all rounded-full shadow-sm">
+                       <button onClick={() => handleManualShare('WhatsApp')} title="WhatsApp" className="flex flex-col items-center gap-2 group">
+                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-[#25D366] group-hover:text-white transition-all rounded-full shadow-sm">
                            <MessageCircle className="w-5 h-5" />
                          </div>
                          <span className="text-[8px] font-black text-slate-400 group-hover:text-slate-900 uppercase tracking-widest">WhatsApp</span>
                        </button>
 
-                       <button onClick={() => handleManualShare('Email')} title="Share via Email" className="flex flex-col items-center gap-2 group">
-                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-red-600 group-hover:text-white transition-all rounded-full shadow-sm">
+                       <button onClick={() => handleManualShare('Email')} title="Email" className="flex flex-col items-center gap-2 group">
+                         <div className="p-3 bg-slate-50 text-slate-400 group-hover:bg-[#D44638] group-hover:text-white transition-all rounded-full shadow-sm">
                            <Mail className="w-5 h-5" />
                          </div>
                          <span className="text-[8px] font-black text-slate-400 group-hover:text-slate-900 uppercase tracking-widest">Email</span>
