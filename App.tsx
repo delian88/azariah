@@ -15,13 +15,14 @@ import ProgramsPage from './components/ProgramsPage';
 import StudioAMGPage from './components/StudioAMGPage';
 import NewsPage from './components/NewsPage';
 import ProductsPage from './components/ProductsPage';
+import TermsPage from './components/TermsPage';
 import Careers from './components/Careers';
 import CreAItube from './components/CreAItube';
 import ChatBot from './components/ChatBot';
 import Partners from './components/Partners';
 import PodOreSection from './components/PodOreSection';
 
-type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products';
+type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'terms';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -37,16 +38,17 @@ const App: React.FC = () => {
       else if (hash === '#studio-page') setView('studio');
       else if (hash === '#news-page') setView('news');
       else if (hash === '#products-page') setView('products');
-      else setView('home');
+      else if (hash === '#terms-page') setView('terms');
+      else if (hash === '#home' || hash === '') setView('home');
       
-      if (!hash.includes('-page') && hash.length > 1) {
+      if (hash.includes('-page')) {
+        window.scrollTo(0, 0);
+      } else if (hash.length > 1) {
         const id = hash.substring(1);
         setTimeout(() => {
           const el = document.getElementById(id);
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }, 100);
-      } else {
-        window.scrollTo(0, 0);
       }
     };
 
@@ -109,7 +111,8 @@ const App: React.FC = () => {
       programs: '#programs-page',
       studio: '#studio-page',
       news: '#news-page',
-      products: '#products-page'
+      products: '#products-page',
+      terms: '#terms-page'
     };
     window.location.hash = hashMapping[newView];
     setView(newView);
@@ -156,11 +159,12 @@ const App: React.FC = () => {
         {view === 'studio' && <StudioAMGPage />}
         {view === 'news' && <NewsPage />}
         {view === 'products' && <ProductsPage />}
+        {view === 'terms' && <TermsPage />}
         
         <Contact />
       </main>
 
-      <Footer />
+      <Footer onNavigate={navigateTo} />
       <ChatBot />
       
       <style>{`

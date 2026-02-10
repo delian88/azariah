@@ -2,13 +2,24 @@ import React from 'react';
 import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter, Facebook } from 'lucide-react';
 import Logo from './Logo';
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  onNavigate?: (view: any) => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const socialLinks = [
     { Icon: Linkedin, href: "#", label: "LinkedIn" },
     { Icon: Instagram, href: "#", label: "Instagram" },
     { Icon: Twitter, href: "https://x.com/AzariahGroup", label: "X" },
     { Icon: Facebook, href: "https://www.facebook.com/profile.php?id=61587353685276", label: "Facebook" }
   ];
+
+  const handleLinkClick = (e: React.MouseEvent, view: string) => {
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate(view);
+    }
+  };
 
   return (
     <footer className="bg-slate-950 text-slate-400 pt-32 pb-12 px-6 md:px-12 border-t border-slate-900">
@@ -37,18 +48,18 @@ const Footer: React.FC = () => {
         <div>
           <h4 className="text-white font-black mb-8 uppercase tracking-[0.3em] text-[11px] border-l-4 border-lime-500 pl-4">Divisions</h4>
           <ul className="space-y-4 text-sm font-bold uppercase tracking-widest">
-            <li><a href="#services-page" className="hover:text-white transition-colors">Strategy</a></li>
-            <li><a href="#services-page" className="hover:text-white transition-colors">Innovation</a></li>
-            <li><a href="#studio-page" className="hover:text-white transition-colors">Studio AMG</a></li>
-            <li><a href="#products-page" className="hover:text-white transition-colors">Digital OS</a></li>
+            <li><a href="#services-page" onClick={(e) => handleLinkClick(e, 'services')} className="hover:text-white transition-colors">Strategy</a></li>
+            <li><a href="#services-page" onClick={(e) => handleLinkClick(e, 'services')} className="hover:text-white transition-colors">Innovation</a></li>
+            <li><a href="#studio-page" onClick={(e) => handleLinkClick(e, 'studio')} className="hover:text-white transition-colors">Studio AMG</a></li>
+            <li><a href="#products-page" onClick={(e) => handleLinkClick(e, 'products')} className="hover:text-white transition-colors">Digital OS</a></li>
           </ul>
         </div>
 
         <div>
           <h4 className="text-white font-black mb-8 uppercase tracking-[0.3em] text-[11px] border-l-4 border-blue-600 pl-4">Company</h4>
           <ul className="space-y-4 text-sm font-bold uppercase tracking-widest">
-            <li><a href="#about-page" className="hover:text-white transition-colors">Who We Are</a></li>
-            <li><a href="#programs-page" className="hover:text-white transition-colors">Programs</a></li>
+            <li><a href="#about-page" onClick={(e) => handleLinkClick(e, 'about')} className="hover:text-white transition-colors">Who We Are</a></li>
+            <li><a href="#programs-page" onClick={(e) => handleLinkClick(e, 'programs')} className="hover:text-white transition-colors">Programs</a></li>
             <li><a href="#careers" className="hover:text-white transition-colors">Careers</a></li>
             <li><a href="#contact" className="hover:text-white transition-colors">Contact</a></li>
           </ul>
@@ -72,9 +83,9 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-600 uppercase tracking-[0.5em] font-black">
         <p>© {new Date().getFullYear()} AZARIAH MANAGEMENT GROUP. BUILT FOR SCALE.</p>
         <div className="flex space-x-8 mt-6 md:mt-0">
-          <a href="#" className="hover:text-white transition-colors">Privacy</a>
-          <a href="#" className="hover:text-white transition-colors">Terms</a>
-          <a href="#" className="hover:text-white transition-colors">Legal</a>
+          <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Privacy</a>
+          <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Terms</a>
+          <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Legal</a>
         </div>
       </div>
     </footer>
