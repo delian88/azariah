@@ -5,17 +5,23 @@ export interface StrategicResponse {
   sources?: Array<{ title: string; uri: string }>;
 }
 
+const getAIInstance = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    console.error("AMG Strategic Engine: API_KEY is missing. Please ensure it is set in your environment variables and redeploy.");
+  }
+  return new GoogleGenAI({ apiKey: apiKey || "" });
+};
+
 export const getStrategicInsight = async (problem: string): Promise<StrategicResponse> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = getAIInstance();
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview',
+      model: 'gemini-3-flash-preview',
       contents: `Provide a high-level strategic management recommendation for the following business challenge: "${problem}". 
-      Use real-time information where relevant to provide context on current market trends.
       Structure it with an executive summary, three actionable steps, and a potential risk assessment.`,
       config: {
         temperature: 0.7,
-        thinkingConfig: { thinkingBudget: 16384 },
         tools: [{ googleSearch: {} }]
       }
     });
@@ -30,15 +36,15 @@ export const getStrategicInsight = async (problem: string): Promise<StrategicRes
 
     return { text, sources };
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    throw new Error("Could not generate insight. Please check your connection and try again.");
+    console.error("Gemini API Error (Insight):", error);
+    throw error;
   }
 };
 
 export const startStrategicChat = () => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = getAIInstance();
   return ai.chats.create({
-    model: 'gemini-3-pro-preview',
+    model: 'gemini-3-flash-preview',
     config: {
       systemInstruction: `You are the Azariah Management Group (AMG) Virtual Advisor. 
       Your personality is professional yet warm, conversational, and highly engaging. 
@@ -52,12 +58,10 @@ export const startStrategicChat = () => {
       5. Studio AMG (Creative Media, Advocacy Storytelling).
 
       CONVERSATION GUIDELINES:
-      - Be human: If the user says "hello", respond with a warm greeting like "Hello! I'm doing well, thank you for asking. How are things with you today, and how can I help you navigate your strategic goals?"
-      - Maintain context: Remember previous parts of the conversation.
-      - Strategic Depth: While being conversational, always weave in AMG's expertise in strategy, impact, or technology when relevant.
-      - Call to Action: Encourage booking a discovery call for deep-dive audits, but only when it feels natural in the flow.
-      - Formatting: Use clear, readable paragraphs and bullet points for complex advice. Keep it interactive.`,
-      temperature: 0.9,
+      - Be human: Respond warmly to greetings.
+      - Strategic Depth: Weave in AMG's expertise in strategy, impact, or technology.
+      - Formatting: Use clear, readable paragraphs and bullet points.`,
+      temperature: 0.8,
     }
   });
 };

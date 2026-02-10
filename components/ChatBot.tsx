@@ -39,6 +39,9 @@ const ChatBot: React.FC = () => {
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
+    if (!chatRef.current && !process.env.API_KEY) {
+       console.warn("ChatBot: No API_KEY detected. Check your environment variables.");
+    }
     if (!chatRef.current) {
       chatRef.current = startStrategicChat();
     }
@@ -80,8 +83,14 @@ const ChatBot: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Chat Error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: "I'm sorry, I'm having trouble connecting to the strategic engine. Please check your connection or try again in a moment." }]);
+      console.error("AMG Chat Advisor Error:", error);
+      let errorMessage = "I'm sorry, I'm having trouble connecting to the strategic engine. Please check your connection or try again in a moment.";
+      
+      if (!process.env.API_KEY) {
+        errorMessage = "Configuration Error: The API Key is missing. Please ensure 'API_KEY' is set in your hosting environment and the app is redeployed.";
+      }
+
+      setMessages(prev => [...prev, { role: 'model', text: errorMessage }]);
       setIsLoading(false);
     } finally {
       setIsStreaming(false);
