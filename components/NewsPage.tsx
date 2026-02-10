@@ -1,17 +1,77 @@
 import React, { useState } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { NEWS_ITEMS } from '../constants';
-import { Calendar, Tag, ArrowRight, ChevronLeft, X, Share2, Globe, Sparkles } from 'lucide-react';
+import { 
+  Calendar, 
+  ArrowRight, 
+  ChevronLeft, 
+  X, 
+  Share2, 
+  Globe, 
+  Sparkles, 
+  Mail, 
+  MessageCircle, 
+  Copy, 
+  Check, 
+  ExternalLink 
+} from 'lucide-react';
 
 const NewsPage: React.FC = () => {
   const [selectedNews, setSelectedNews] = useState<any | null>(null);
+  const [copied, setCopied] = useState(false);
 
-  const handleShare = (platform: string) => {
+  const getValidUrl = () => {
+    try {
+      // Ensure we have a valid, absolute URL for sharing
+      // Navigator.share can be picky about localhost or file protocols
+      const currentUrl = window.location.href;
+      return new URL(currentUrl).href;
+    } catch (e) {
+      // Fallback if URL constructor fails
+      return window.location.origin + window.location.pathname + window.location.hash;
+    }
+  };
+
+  const handleNativeShare = async () => {
     if (!selectedNews) return;
     
-    const url = window.location.href;
-    const text = encodeURIComponent(selectedNews.title);
+    const shareUrl = getValidUrl();
+    const shareData = {
+      title: selectedNews.title,
+      text: selectedNews.summary,
+      url: shareUrl,
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        // If it's a real error (not user cancellation), fallback to copy
+        if ((err as Error).name !== 'AbortError') {
+          console.error('Error sharing:', err);
+          copyToClipboard();
+        }
+      }
+    } else {
+      // Fallback to manual copy if navigator.share is not supported or rejected the URL
+      copyToClipboard();
+    }
+  };
+
+  const copyToClipboard = () => {
+    const url = getValidUrl();
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleManualShare = (platform: string) => {
+    if (!selectedNews) return;
+    
+    const url = getValidUrl();
+    const text = selectedNews.title;
     const encodedUrl = encodeURIComponent(url);
+    const encodedText = encodeURIComponent(text);
 
     let shareUrl = '';
     switch (platform) {
@@ -19,10 +79,16 @@ const NewsPage: React.FC = () => {
         shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
         break;
       case 'Twitter':
-        shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${encodedUrl}`;
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
         break;
       case 'Facebook':
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+        break;
+      case 'WhatsApp':
+        shareUrl = `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`;
+        break;
+      case 'Email':
+        shareUrl = `mailto:?subject=${encodedText}&body=Check out this news from Azariah Management Group: ${encodedUrl}`;
         break;
       default:
         return;
@@ -103,9 +169,9 @@ const NewsPage: React.FC = () => {
             </button>
             <div className="flex items-center gap-4">
                <button 
-                 onClick={() => handleShare('Twitter')}
+                 onClick={handleNativeShare}
                  className="p-2 text-slate-400 hover:text-slate-950 transition-colors"
-                 title="Share on X"
+                 title="One-click share"
                >
                  <Share2 className="w-5 h-5" />
                </button>
@@ -138,30 +204,65 @@ const NewsPage: React.FC = () => {
 
                <div className="space-y-8 prose prose-slate prose-lg max-w-none">
                   {selectedNews.content.map((p: string, i: number) => (
-                    <p key={i} className="text-xl md:text-2xl text-slate-700 leading-relaxed font-medium">
+                    <p key={i} className="text-xl md:text-2xl text-slate-700 leading-relaxed font-medium whitespace-pre-line">
                       {p}
                     </p>
                   ))}
                </div>
 
                <div className="pt-20 border-t border-slate-100 flex flex-col md:flex-row gap-12 items-center justify-between">
-                  <div className="space-y-2">
-                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Share on social media</h4>
-                    <div className="flex gap-4">
-                       {['Linkedin', 'Twitter', 'Facebook'].map(s => (
-                         <button 
-                           key={s} 
-                           onClick={() => handleShare(s)}
-                           className="text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-blue-600 transition-colors"
-                         >
-                           {s}
-                         </button>
-                       ))}
+                  <div className="space-y-6 w-full md:w-auto">
+                    <div className="space-y-2">
+                       <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Share on social media</h4>
+                       <p className="text-[10px] text-slate-500 font-bold uppercase">Share this article with your network</p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-4">
+                       {/* PRIMARY ONE-CLICK SHARE */}
+                       <button 
+                         onClick={handleNativeShare}
+                         className="flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all group shadow-xl"
+                       >
+                         <Share2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                         <span className="text-xs font-black uppercase tracking-widest">One-Click Share</span>
+                       </button>
+
+                       {/* COPY LINK */}
+                       <button 
+                         onClick={copyToClipboard}
+                         className={`flex items-center gap-3 px-8 py-4 border-2 transition-all rounded-sm font-black uppercase tracking-widest text-xs ${
+                           copied 
+                           ? 'bg-lime-500 border-lime-500 text-slate-950' 
+                           : 'border-slate-200 text-slate-900 hover:border-slate-900'
+                         }`}
+                       >
+                         {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                         <span>{copied ? 'Copied!' : 'Copy Link'}</span>
+                       </button>
+                    </div>
+
+                    <div className="flex flex-wrap gap-6 pt-4">
+                       <button onClick={() => handleManualShare('Linkedin')} title="LinkedIn" className="text-slate-400 hover:text-blue-600 transition-colors">
+                         <ExternalLink className="w-5 h-5" />
+                       </button>
+                       <button onClick={() => handleManualShare('Twitter')} title="Twitter/X" className="text-slate-400 hover:text-slate-950 transition-colors">
+                         <Share2 className="w-5 h-5" />
+                       </button>
+                       <button onClick={() => handleManualShare('WhatsApp')} title="WhatsApp" className="text-slate-400 hover:text-green-600 transition-colors">
+                         <MessageCircle className="w-5 h-5" />
+                       </button>
+                       <button onClick={() => handleManualShare('Email')} title="Email" className="text-slate-400 hover:text-red-600 transition-colors">
+                         <Mail className="w-5 h-5" />
+                       </button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
+
+                  <div className="flex items-center gap-4 bg-slate-50 p-6 border border-slate-100 rounded-sm">
                      <Sparkles className="w-8 h-8 text-lime-500" />
-                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest max-w-[200px]">Strategic insight powered by Azariah Management Group</p>
+                     <div>
+                       <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Azariah Management Group</p>
+                       <p className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Strategic insight powered by Azariah Management Group</p>
+                     </div>
                   </div>
                </div>
             </div>
