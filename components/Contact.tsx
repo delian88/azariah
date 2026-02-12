@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import SectionWrapper from './SectionWrapper';
-import { Send, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Send, Loader2, CheckCircle2, AlertCircle, Phone, Mail } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -90,9 +90,16 @@ const Contact: React.FC = () => {
               <div className="text-blue-400 text-xs font-bold uppercase mb-1 tracking-widest">Response Time</div>
               <div className="text-sm">Typical response under 4 hours</div>
             </div>
-            <div className="pt-6 border-t border-slate-800">
+            <div className="pt-6 border-t border-slate-800 space-y-4">
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-2">Direct Inquiry</p>
-              <p className="text-sm font-bold text-lime-400">info@azariahmg.com</p>
+              <div className="flex items-center gap-3 group">
+                <Phone className="w-4 h-4 text-lime-500" />
+                <a href="tel:240-813-0308" className="text-sm font-bold text-white hover:text-lime-400 transition-colors">240-813-0308</a>
+              </div>
+              <div className="flex items-center gap-3 group">
+                <Mail className="w-4 h-4 text-blue-400" />
+                <a href="mailto:info@azariahmg.com" className="text-sm font-bold text-white hover:text-blue-400 transition-colors">info@azariahmg.com</a>
+              </div>
             </div>
           </div>
         </div>

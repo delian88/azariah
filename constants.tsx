@@ -10,7 +10,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Products', href: '#products-page', view: 'products' as any },
   { label: 'News', href: '#news-page', view: 'news' as any },
   { label: 'Studio AMG', href: '#studio-page', view: 'studio' as any },
-  { label: 'CreAItube', href: '#creaitube' },
+  { label: 'CreAItube', href: '#creaitube-page', view: 'creaitube' as any },
   { label: 'Contact', href: '#contact' }
 ];
 

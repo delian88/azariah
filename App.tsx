@@ -18,13 +18,14 @@ import ProductsPage from './components/ProductsPage';
 import TermsPage from './components/TermsPage';
 import PortfolioPage from './components/PortfolioPage';
 import PartnersPage from './components/PartnersPage';
+import CreAItubePage from './components/CreAItubePage';
 import Careers from './components/Careers';
 import CreAItube from './components/CreAItube';
 import ChatBot from './components/ChatBot';
 import Partners from './components/Partners';
 import PodOreSection from './components/PodOreSection';
 
-type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'terms' | 'portfolio' | 'partners';
+type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'terms' | 'portfolio' | 'partners' | 'creaitube';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -34,16 +35,21 @@ const App: React.FC = () => {
   useEffect(() => {
     const handleHashRouting = () => {
       const hash = window.location.hash;
-      if (hash === '#services-page') setView('services');
-      else if (hash === '#about-page') setView('about');
-      else if (hash === '#programs-page') setView('programs');
-      else if (hash === '#studio-page') setView('studio');
-      else if (hash === '#news-page') setView('news');
-      else if (hash === '#products-page') setView('products');
-      else if (hash === '#terms-page') setView('terms');
-      else if (hash === '#portfolio-page') setView('portfolio');
-      else if (hash === '#partners-page') setView('partners');
-      else if (hash === '#home' || hash === '') setView('home');
+      
+      let nextView: ViewState = 'home';
+      if (hash === '#services-page') nextView = 'services';
+      else if (hash === '#about-page') nextView = 'about';
+      else if (hash === '#programs-page') nextView = 'programs';
+      else if (hash === '#studio-page') nextView = 'studio';
+      else if (hash === '#news-page') nextView = 'news';
+      else if (hash === '#products-page') nextView = 'products';
+      else if (hash === '#terms-page') nextView = 'terms';
+      else if (hash === '#portfolio-page') nextView = 'portfolio';
+      else if (hash === '#partners-page') nextView = 'partners';
+      else if (hash === '#creaitube-page') nextView = 'creaitube';
+      else nextView = 'home';
+
+      setView(nextView);
       
       if (hash.includes('-page')) {
         window.scrollTo(0, 0);
@@ -51,8 +57,14 @@ const App: React.FC = () => {
         const id = hash.substring(1);
         setTimeout(() => {
           const el = document.getElementById(id);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          } else if (nextView === 'home') {
+            setTimeout(() => {
+              document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+          }
+        }, nextView === 'home' ? 300 : 100);
       }
     };
 
@@ -69,7 +81,6 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // SEO: Dynamic Document Title Management
   useEffect(() => {
     const titleMap: Record<ViewState, string> = {
       home: "Azariah Management Group | Strategic Intelligence & Media Impact",
@@ -81,7 +92,8 @@ const App: React.FC = () => {
       products: "Digital Products & Ecosystems | AMG",
       terms: "Terms & Conditions | Legal Standards | AMG",
       portfolio: "Evidence of Excellence | AMG Portfolio",
-      partners: "Strategic Ecosystem | Partners & Clients | AMG"
+      partners: "Strategic Ecosystem | Partners & Clients | AMG",
+      creaitube: "CreAItube | The New Media Economy | AMG"
     };
     
     document.title = titleMap[view] || "Azariah Management Group";
@@ -111,12 +123,6 @@ const App: React.FC = () => {
     const timer = setTimeout(() => {
       const revealElements = document.querySelectorAll('.reveal');
       revealElements.forEach(el => observerRef.current?.observe(el));
-      
-      setTimeout(() => {
-        const stuckElements = document.querySelectorAll('.reveal:not(.active)');
-        stuckElements.forEach(el => el.classList.add('active'));
-      }, 2000);
-
     }, 300);
 
     return () => {
@@ -136,7 +142,8 @@ const App: React.FC = () => {
       products: '#products-page',
       terms: '#terms-page',
       portfolio: '#portfolio-page',
-      partners: '#partners-page'
+      partners: '#partners-page',
+      creaitube: '#creaitube-page'
     };
     window.location.hash = hashMapping[newView];
     setView(newView);
@@ -186,57 +193,13 @@ const App: React.FC = () => {
         {view === 'terms' && <TermsPage />}
         {view === 'portfolio' && <PortfolioPage />}
         {view === 'partners' && <PartnersPage />}
+        {view === 'creaitube' && <CreAItubePage />}
         
         <Contact />
       </main>
 
       <Footer onNavigate={navigateTo} />
       <ChatBot />
-      
-      <style>{`
-        .reveal {
-          opacity: 0;
-          transform: translateY(30px);
-          transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .reveal.active {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        .text-shine {
-          background: linear-gradient(to right, #0f172a 10%, #005696 35%, #84cc16 50%, #005696 65%, #0f172a 90%);
-          background-size: 200% auto;
-          color: #000;
-          background-clip: text;
-          text-fill-color: transparent;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: shine 4s linear infinite;
-        }
-        .text-shine-white {
-          background: linear-gradient(to right, #ffffff 10%, #005696 35%, #84cc16 50%, #005696 65%, #ffffff 90%);
-          background-size: 200% auto;
-          background-clip: text;
-          text-fill-color: transparent;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: shine 4s linear infinite;
-        }
-        @keyframes shine {
-          to { background-position: 200% center; }
-        }
-        @keyframes loading-bar {
-          0% { transform: scaleX(0); }
-          100% { transform: scaleX(1); }
-        }
-        .animate-loading-bar {
-          animation: loading-bar 1.5s ease-in-out forwards;
-        }
-        .bg-grid-pattern {
-          background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
-          background-size: 30px 30px;
-        }
-      `}</style>
     </div>
   );
 };

@@ -51,7 +51,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <li><a href="#services-page" onClick={(e) => handleLinkClick(e, 'services')} className="hover:text-white transition-colors">Strategy</a></li>
             <li><a href="#services-page" onClick={(e) => handleLinkClick(e, 'services')} className="hover:text-white transition-colors">Innovation</a></li>
             <li><a href="#studio-page" onClick={(e) => handleLinkClick(e, 'studio')} className="hover:text-white transition-colors">Studio AMG</a></li>
-            <li><a href="#products-page" onClick={(e) => handleLinkClick(e, 'products')} className="hover:text-white transition-colors">Digital OS</a></li>
+            <li><a href="#creaitube-page" onClick={(e) => handleLinkClick(e, 'creaitube')} className="hover:text-white transition-colors">CreAItube</a></li>
           </ul>
         </div>
 
@@ -66,15 +66,19 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         <div>
-          <h4 className="text-white font-black mb-8 uppercase tracking-[0.3em] text-[11px] border-l-4 border-slate-600 pl-4">Intelligence</h4>
+          <h4 className="text-white font-black mb-8 uppercase tracking-[0.3em] text-[11px] border-l-4 border-slate-600 pl-4">Contact Info</h4>
           <ul className="space-y-6 text-xs font-bold uppercase tracking-widest">
             <li className="flex items-start gap-4">
               <MapPin className="w-5 h-5 text-lime-500 shrink-0" />
               <span>Upper Marlboro, MD, 20772 USA</span>
             </li>
             <li className="flex items-start gap-4">
+              <Phone className="w-5 h-5 text-lime-500 shrink-0" />
+              <a href="tel:240-813-0308" className="hover:text-white transition-colors">240-813-0308</a>
+            </li>
+            <li className="flex items-start gap-4">
               <Mail className="w-5 h-5 text-blue-500 shrink-0" />
-              <span className="break-all">info@azariahmg.com</span>
+              <a href="mailto:info@azariahmg.com" className="break-all hover:text-white transition-colors">info@azariahmg.com</a>
             </li>
           </ul>
         </div>

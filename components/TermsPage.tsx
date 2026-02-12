@@ -20,7 +20,8 @@ import {
   BarChart3,
   Clock,
   Printer,
-  Download
+  Download,
+  Phone
 } from 'lucide-react';
 
 const TermsPage: React.FC = () => {
@@ -251,11 +252,14 @@ const TermsPage: React.FC = () => {
                    <div className="space-y-2">
                       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500">Azariah Management Group</p>
                       <div className="flex flex-col gap-4">
+                        <a href="tel:240-813-0308" className="flex items-center gap-3 text-xl md:text-3xl font-black text-white hover:text-lime-500 transition-colors uppercase tracking-tighter">
+                          <Phone className="w-6 h-6 text-lime-500" /> 240-813-0308
+                        </a>
                         <a href="mailto:info@azariahmg.com" className="flex items-center gap-3 text-xl md:text-3xl font-black text-white hover:text-lime-500 transition-colors uppercase tracking-tighter">
                           <Mail className="w-6 h-6 text-blue-500" /> info@azariahmg.com
                         </a>
                         <a href="https://www.azariahmg.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-xl md:text-3xl font-black text-white hover:text-lime-500 transition-colors uppercase tracking-tighter">
-                          <Globe className="w-6 h-6 text-lime-500" /> www.azariahmg.com
+                          <Globe className="w-6 h-6 text-blue-400" /> www.azariahmg.com
                         </a>
                       </div>
                    </div>

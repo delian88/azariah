@@ -3,8 +3,8 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import Logo from './Logo';
 
 interface NavbarProps {
-  onNavigate?: (view: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners') => void;
-  currentView?: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners';
+  onNavigate?: (view: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners' | 'creaitube') => void;
+  currentView?: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners' | 'creaitube';
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
@@ -19,7 +19,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLinkClick = (e: React.MouseEvent, href: string, view?: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners') => {
+  const handleLinkClick = (e: React.MouseEvent, href: string, view?: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners' | 'creaitube') => {
     if (view) {
       e.preventDefault();
       onNavigate?.(view);
@@ -27,10 +27,12 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (href.startsWith('#')) {
       const el = document.getElementById(href.substring(1));
-      if (el) {
+      if (el && currentView === 'home') {
         e.preventDefault();
         setIsOpen(false);
         el.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        setIsOpen(false);
       }
     } else {
       setIsOpen(false);
@@ -47,7 +49,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
     { label: 'Products', href: '#products-page', view: 'products' as const },
     { label: 'News', href: '#news-page', view: 'news' as const },
     { label: 'Studio AMG', href: '#studio-page', view: 'studio' as const },
-    { label: 'CreAItube', href: '#creaitube' },
+    { label: 'CreAItube', href: '#creaitube-page', view: 'creaitube' as const },
   ];
 
   const isInternalView = currentView !== 'home';
@@ -89,11 +91,13 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           <a
             href="#contact"
             onClick={(e) => {
-               setIsOpen(false);
                const el = document.getElementById('contact');
-               if (el) {
+               if (el && currentView === 'home') {
                  e.preventDefault();
+                 setIsOpen(false);
                  el.scrollIntoView({ behavior: 'smooth' });
+               } else {
+                 setIsOpen(false);
                }
             }}
             className="px-4 py-2 bg-slate-900 text-white font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center group shadow-xl text-[8px] lg:text-[9px]"
@@ -128,11 +132,13 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           <a
             href="#contact"
             onClick={(e) => {
-               setIsOpen(false);
                const el = document.getElementById('contact');
-               if (el) {
+               if (el && currentView === 'home') {
                  e.preventDefault();
+                 setIsOpen(false);
                  el.scrollIntoView({ behavior: 'smooth' });
+               } else {
+                 setIsOpen(false);
                }
             }}
             className="block w-full py-4 bg-slate-900 text-white text-center font-black uppercase tracking-widest rounded-sm text-[10px] mt-4"
