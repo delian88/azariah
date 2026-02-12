@@ -16,6 +16,7 @@ import StudioAMGPage from './components/StudioAMGPage';
 import NewsPage from './components/NewsPage';
 import ProductsPage from './components/ProductsPage';
 import TermsPage from './components/TermsPage';
+import PrivacyPage from './components/PrivacyPage';
 import PortfolioPage from './components/PortfolioPage';
 import PartnersPage from './components/PartnersPage';
 import CreAItubePage from './components/CreAItubePage';
@@ -25,7 +26,7 @@ import ChatBot from './components/ChatBot';
 import Partners from './components/Partners';
 import PodOreSection from './components/PodOreSection';
 
-type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'terms' | 'portfolio' | 'partners' | 'creaitube';
+type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'terms' | 'privacy' | 'portfolio' | 'partners' | 'creaitube';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -44,6 +45,7 @@ const App: React.FC = () => {
       else if (hash === '#news-page') nextView = 'news';
       else if (hash === '#products-page') nextView = 'products';
       else if (hash === '#terms-page') nextView = 'terms';
+      else if (hash === '#privacy-page') nextView = 'privacy';
       else if (hash === '#portfolio-page') nextView = 'portfolio';
       else if (hash === '#partners-page') nextView = 'partners';
       else if (hash === '#creaitube-page') nextView = 'creaitube';
@@ -91,6 +93,7 @@ const App: React.FC = () => {
       news: "News & Insights | Azariah Management Group",
       products: "Digital Products & Ecosystems | AMG",
       terms: "Terms & Conditions | Legal Standards | AMG",
+      privacy: "Privacy Policy | Data Protection | AMG",
       portfolio: "Evidence of Excellence | AMG Portfolio",
       partners: "Strategic Ecosystem | Partners & Clients | AMG",
       creaitube: "CreAItube | The New Media Economy | AMG"
@@ -141,6 +144,7 @@ const App: React.FC = () => {
       news: '#news-page',
       products: '#products-page',
       terms: '#terms-page',
+      privacy: '#privacy-page',
       portfolio: '#portfolio-page',
       partners: '#partners-page',
       creaitube: '#creaitube-page'
@@ -191,6 +195,7 @@ const App: React.FC = () => {
         {view === 'news' && <NewsPage />}
         {view === 'products' && <ProductsPage />}
         {view === 'terms' && <TermsPage />}
+        {view === 'privacy' && <PrivacyPage />}
         {view === 'portfolio' && <PortfolioPage />}
         {view === 'partners' && <PartnersPage />}
         {view === 'creaitube' && <CreAItubePage />}

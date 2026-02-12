@@ -87,7 +87,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-600 uppercase tracking-[0.5em] font-black">
         <p>© {new Date().getFullYear()} AZARIAH MANAGEMENT GROUP. BUILT FOR SCALE.</p>
         <div className="flex space-x-8 mt-6 md:mt-0">
-          <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Privacy</a>
+          <a href="#privacy-page" onClick={(e) => handleLinkClick(e, 'privacy')} className="hover:text-white transition-colors">Privacy</a>
           <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Terms</a>
           <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Legal</a>
         </div>
