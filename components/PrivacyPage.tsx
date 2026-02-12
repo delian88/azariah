@@ -20,6 +20,12 @@ import {
 } from 'lucide-react';
 
 const PrivacyPage: React.FC = () => {
+  const today = new Date().toLocaleDateString('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric'
+  });
+
   const sections = [
     {
       id: "1",
@@ -206,7 +212,7 @@ const PrivacyPage: React.FC = () => {
           </h1>
           <div className="space-y-2">
             <p className="text-xs font-black uppercase tracking-widest text-slate-900">Azariah Management Group (AMG)</p>
-            <p className="text-xs font-bold uppercase tracking-widest text-slate-400 border-l-4 border-lime-500 pl-4">Effective Date: 04/17/2024</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-400 border-l-4 border-lime-500 pl-4">Effective Date: {today}</p>
           </div>
           <p className="text-lg text-slate-600 font-medium leading-relaxed max-w-3xl">
             Azariah Management Group (“AMG,” “we,” “our,” or “us”) respects your privacy and is committed to protecting the personal information you share with us. This Privacy Policy explains how we collect, use, store, and safeguard your information when you visit <a href="https://www.azariahmg.com" className="text-blue-600 underline">www.azariahmg.com</a> or engage with our services.
