@@ -208,7 +208,7 @@ const Contact: React.FC = () => {
               </>
             ) : (
               <>
-                <span>send to azariah to send</span>
+                <span>Submit</span>
                 <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </>
             )}
