@@ -105,7 +105,7 @@ const CreAItube: React.FC = () => {
         {/* ACCOUNT CREATION CTA */}
         <div className="pt-10 flex flex-col items-center text-center space-y-8">
            <div className="max-w-2xl space-y-4">
-              <h3 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter">Your Mission, Your Platform, Your Profits.</h3>
+              <h3 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter">Your Mission, Your Platform, Your Profit.</h3>
               <p className="text-slate-400 font-medium">Create video content, launch your podcast, and build a sustainable media empire within the AMG ecosystem.</p>
            </div>
            
