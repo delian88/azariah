@@ -25,6 +25,7 @@ import CreAItube from './components/CreAItube';
 import ChatBot from './components/ChatBot';
 import Partners from './components/Partners';
 import PodOreSection from './components/PodOreSection';
+import BrandSpotlight from './components/BrandSpotlight';
 
 type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'terms' | 'privacy' | 'portfolio' | 'partners' | 'creaitube';
 
@@ -177,6 +178,7 @@ const App: React.FC = () => {
           <>
             <Hero />
             <Philosophy />
+            <BrandSpotlight />
             <Partners />
             <Services onExploreMore={() => navigateTo('services')} />
             <About />
