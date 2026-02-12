@@ -38,10 +38,16 @@ const Contact: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // 1. SERVICE AND TEMPLATE CONFIG
-      const SERVICE_ID = 'default_service'; // This is standard in EmailJS, change if you have a custom one
+      /** 
+       * REQUIRED: Ensure these IDs match your EmailJS Dashboard exactly.
+       * Service ID: Created when you connect your email (Gmail/Outlook).
+       * Template IDs: Created in the "Email Templates" section.
+       */
+      const SERVICE_ID = 'default_service'; 
+      const ADMIN_TEMPLATE_ID = 'template_amg_admin';
+      const CLIENT_TEMPLATE_ID = 'template_amg_client';
       
-      // 2. DISPATCH TO ADMIN (info@azariahmg.com)
+      // 1. DATA FOR info@azariahmg.com
       const adminEmailParams = {
         to_email: 'info@azariahmg.com',
         from_name: formData.fullName,
@@ -51,7 +57,7 @@ const Contact: React.FC = () => {
         subject: `Strategic Inquiry: ${formData.fullName}`
       };
 
-      // 3. DISPATCH TO CLIENT (The Requested Boilerplate)
+      // 2. DATA FOR CLIENT (Using your specific boilerplate)
       const clientEmailParams = {
         to_name: formData.fullName,
         to_email: formData.email,
@@ -60,24 +66,24 @@ const Contact: React.FC = () => {
       };
 
       if ((window as any).emailjs) {
-        // Send internal notification
-        await (window as any).emailjs.send(SERVICE_ID, 'template_amg_admin', adminEmailParams);
+        // Dispatch Internal Notification
+        await (window as any).emailjs.send(SERVICE_ID, ADMIN_TEMPLATE_ID, adminEmailParams);
         
-        // Send "Thank You" boilerplate to client
-        await (window as any).emailjs.send(SERVICE_ID, 'template_amg_client', clientEmailParams);
+        // Dispatch "Thank You" Boilerplate to Client
+        await (window as any).emailjs.send(SERVICE_ID, CLIENT_TEMPLATE_ID, clientEmailParams);
         
         setToastMessage(`Your inquiry has been transmitted to info@azariahmg.com and a confirmation email was sent to ${formData.email}.`);
+        setShowToast(true);
+        setFormData({ fullName: '', email: '', organization: '', details: '' });
       } else {
-        throw new Error("Email engine initialization failed.");
+        throw new Error("Email engine not loaded");
       }
 
-      setShowToast(true);
-      setFormData({ fullName: '', email: '', organization: '', details: '' });
       setTimeout(() => setShowToast(false), 10000);
       
     } catch (error) {
-      console.error('SMTP Relay Error:', error);
-      alert("Mail server connection error. Please contact us directly at info@azariahmg.com.");
+      console.error('EmailJS Error:', error);
+      alert("Mail server connection error. Please ensure your EmailJS Service and Template IDs are correctly configured, or contact us directly at info@azariahmg.com.");
     } finally {
       setIsSubmitting(false);
     }
@@ -92,7 +98,7 @@ const Contact: React.FC = () => {
               <CheckCircle2 className="w-5 h-5 text-slate-900" />
             </div>
             <div className="flex-1">
-              <p className="font-black uppercase tracking-widest text-xs mb-1">Secure Delivery Complete</p>
+              <p className="font-black uppercase tracking-widest text-xs mb-1">Message Transmitted</p>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter leading-relaxed">
                 {toastMessage}
               </p>
@@ -115,10 +121,6 @@ const Contact: React.FC = () => {
             <div className="p-4 bg-slate-800 rounded-sm">
               <div className="text-blue-400 text-xs font-bold uppercase mb-1 tracking-widest">Office Hours</div>
               <div className="text-sm">Mon - Fri, 9:00 AM - 5:00 PM EST</div>
-            </div>
-            <div className="p-4 bg-slate-800 rounded-sm">
-              <div className="text-blue-400 text-xs font-bold uppercase mb-1 tracking-widest">Global Relay</div>
-              <div className="text-sm">End-to-End Encrypted SMTP</div>
             </div>
             <div className="pt-6 border-t border-slate-800 space-y-4">
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-2">Primary Channels</p>
@@ -202,11 +204,11 @@ const Contact: React.FC = () => {
             {isSubmitting ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                <span>Processing SMTP Handshake...</span>
+                <span>sending...</span>
               </>
             ) : (
               <>
-                <span>Send to info@azariahmg.com</span>
+                <span>send to azariah to send</span>
                 <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </>
             )}

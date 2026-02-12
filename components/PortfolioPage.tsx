@@ -10,7 +10,8 @@ import {
   Award, 
   Sparkles,
   ExternalLink,
-  Target
+  Target,
+  TrendingUp
 } from 'lucide-react';
 
 const PortfolioPage: React.FC = () => {
@@ -33,7 +34,7 @@ const PortfolioPage: React.FC = () => {
           <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none uppercase text-shine">
             Portfolio.
           </h1>
-          <p className="text-xl text-slate-600 font-medium border-l-4 border-lime-500 pl-6 max-w-2xl">
+          <p className="text-xl text-slate-600 font-medium border-l-4 border-blue-600 pl-6 max-w-2xl">
             From UK-wide cultural festivals to ethical AI deployments, explore how we translate strategic intelligence into measurable results.
           </p>
         </div>
@@ -105,23 +106,32 @@ const PortfolioPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
-      {/* METRICS SHOWCASE */}
+      {/* PROJECTED TARGET SECTION */}
       <SectionWrapper bg="dark" className="relative overflow-hidden py-32">
          <div className="absolute top-0 right-0 w-full h-full bg-grid-lines opacity-5 pointer-events-none"></div>
-         <div className="relative z-10 grid md:grid-cols-3 gap-12 text-center">
-            {[
-              { label: "Community Partners", value: "150+", icon: Target },
-              { label: "Projects Delivered", value: "45+", icon: CheckCircle2 },
-              { label: "Media Reach", value: "2.5M+", icon: Globe }
-            ].map((stat, i) => (
-              <div key={i} className="space-y-4 reveal">
-                 <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <stat.icon className="w-8 h-8 text-lime-400" />
+         <div className="relative z-10 space-y-16">
+            <div className="text-center space-y-4 reveal">
+               <div className="inline-flex items-center gap-2 text-lime-400 font-black text-[10px] uppercase tracking-[0.4em]">
+                  <TrendingUp className="w-4 h-4" /> Strategic Growth
+               </div>
+               <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter text-shine-white">Projected Target</h2>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-12 text-center">
+               {[
+                 { label: "Community Partners", value: "1000+", icon: Target },
+                 { label: "Projects Delivered", value: "45+", icon: CheckCircle2 },
+                 { label: "Media Reach", value: "2.5M+", icon: Globe }
+               ].map((stat, i) => (
+                 <div key={i} className="space-y-4 reveal">
+                    <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                       <stat.icon className="w-8 h-8 text-lime-400" />
+                    </div>
+                    <div className="text-5xl md:text-7xl font-black text-white tracking-tighter text-shine-white">{stat.value}</div>
+                    <div className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">{stat.label}</div>
                  </div>
-                 <div className="text-5xl md:text-7xl font-black text-white tracking-tighter text-shine-white">{stat.value}</div>
-                 <div className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">{stat.label}</div>
-              </div>
-            ))}
+               ))}
+            </div>
          </div>
       </SectionWrapper>
 

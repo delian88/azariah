@@ -30,7 +30,7 @@ const MentorshipPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Initialize EmailJS with Public Key: 47Un9Cdef_fd1YWOi
+  // Initialize EmailJS with your provided Public Key: 47Un9Cdef_fd1YWOi
   useEffect(() => {
     if ((window as any).emailjs) {
       (window as any).emailjs.init('47Un9Cdef_fd1YWOi');
@@ -48,6 +48,8 @@ const MentorshipPage: React.FC = () => {
 
     try {
       const SERVICE_ID = 'default_service';
+      const ADMIN_TEMPLATE_ID = 'template_amg_admin';
+      const CLIENT_TEMPLATE_ID = 'template_amg_client';
       
       const adminEmailParams = {
         to_email: 'info@azariahmg.com',
@@ -69,19 +71,19 @@ const MentorshipPage: React.FC = () => {
 
       if ((window as any).emailjs) {
         // Send to AMG Admin
-        await (window as any).emailjs.send(SERVICE_ID, 'template_amg_admin', adminEmailParams);
+        await (window as any).emailjs.send(SERVICE_ID, ADMIN_TEMPLATE_ID, adminEmailParams);
         // Send boilerplate to Applicant
-        await (window as any).emailjs.send(SERVICE_ID, 'template_amg_client', clientEmailParams);
+        await (window as any).emailjs.send(SERVICE_ID, CLIENT_TEMPLATE_ID, clientEmailParams);
+        
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+        setFormData({ fullName: '', email: '', linkedin: '', industry: '', interest: '', message: '' });
       } else {
         throw new Error("SDK Load Error");
       }
-      
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      setFormData({ fullName: '', email: '', linkedin: '', industry: '', interest: '', message: '' });
     } catch (error) {
-      console.error("Transmission Error:", error);
-      alert("Mail server connection error. Please email your application directly to info@azariahmg.com.");
+      console.error("Mentorship Email Error:", error);
+      alert("Mail server connection error. Please ensure your EmailJS configuration is correct, or email your application directly to info@azariahmg.com.");
       setIsSubmitting(false);
     }
   };
@@ -313,11 +315,11 @@ const MentorshipPage: React.FC = () => {
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" /> Finalizing Dispatch...
+                    <Loader2 className="w-5 h-5 animate-spin" /> <span>sending...</span>
                   </>
                 ) : (
                   <>
-                    Submit Mentorship Application <Send className="w-4 h-4" />
+                    <span>send to azariah to send</span> <Send className="w-4 h-4" />
                   </>
                 )}
               </button>
