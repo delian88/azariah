@@ -3,8 +3,8 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import Logo from './Logo';
 
 interface NavbarProps {
-  onNavigate?: (view: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products') => void;
-  currentView?: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products';
+  onNavigate?: (view: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners') => void;
+  currentView?: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners';
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
@@ -19,7 +19,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLinkClick = (e: React.MouseEvent, href: string, view?: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products') => {
+  const handleLinkClick = (e: React.MouseEvent, href: string, view?: 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners') => {
     if (view) {
       e.preventDefault();
       onNavigate?.(view);
@@ -40,6 +40,8 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
   const navLinks = [
     { label: 'Home', href: '#home', view: 'home' as const },
     { label: 'About Us', href: '#about-page', view: 'about' as const },
+    { label: 'Portfolio', href: '#portfolio-page', view: 'portfolio' as const },
+    { label: 'Partners', href: '#partners-page', view: 'partners' as const },
     { label: 'Services', href: '#services-page', view: 'services' as const },
     { label: 'Programs', href: '#programs-page', view: 'programs' as const },
     { label: 'Products', href: '#products-page', view: 'products' as const },
@@ -67,7 +69,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           onClick={handleLogoClick} 
           className="flex items-center group"
         >
-          {/* Reduced size: h-4 to h-6 range */}
           <Logo className="h-4 md:h-5 lg:h-6 transition-transform group-hover:scale-105 duration-500" />
         </a>
 

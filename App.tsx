@@ -16,13 +16,15 @@ import StudioAMGPage from './components/StudioAMGPage';
 import NewsPage from './components/NewsPage';
 import ProductsPage from './components/ProductsPage';
 import TermsPage from './components/TermsPage';
+import PortfolioPage from './components/PortfolioPage';
+import PartnersPage from './components/PartnersPage';
 import Careers from './components/Careers';
 import CreAItube from './components/CreAItube';
 import ChatBot from './components/ChatBot';
 import Partners from './components/Partners';
 import PodOreSection from './components/PodOreSection';
 
-type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'terms';
+type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'terms' | 'portfolio' | 'partners';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -39,6 +41,8 @@ const App: React.FC = () => {
       else if (hash === '#news-page') setView('news');
       else if (hash === '#products-page') setView('products');
       else if (hash === '#terms-page') setView('terms');
+      else if (hash === '#portfolio-page') setView('portfolio');
+      else if (hash === '#partners-page') setView('partners');
       else if (hash === '#home' || hash === '') setView('home');
       
       if (hash.includes('-page')) {
@@ -64,6 +68,24 @@ const App: React.FC = () => {
       window.removeEventListener('hashchange', handleHashRouting);
     };
   }, []);
+
+  // SEO: Dynamic Document Title Management
+  useEffect(() => {
+    const titleMap: Record<ViewState, string> = {
+      home: "Azariah Management Group | Strategic Intelligence & Media Impact",
+      services: "Strategic Services | Azariah Management Group",
+      about: "About Us | Who We Serve | AMG",
+      programs: "Signature Programs & Initiatives | AMG",
+      studio: "Studio AMG | Cinematic Storytelling & Media Production",
+      news: "News & Insights | Azariah Management Group",
+      products: "Digital Products & Ecosystems | AMG",
+      terms: "Terms & Conditions | Legal Standards | AMG",
+      portfolio: "Evidence of Excellence | AMG Portfolio",
+      partners: "Strategic Ecosystem | Partners & Clients | AMG"
+    };
+    
+    document.title = titleMap[view] || "Azariah Management Group";
+  }, [view]);
 
   useEffect(() => {
     if (loading) return;
@@ -112,7 +134,9 @@ const App: React.FC = () => {
       studio: '#studio-page',
       news: '#news-page',
       products: '#products-page',
-      terms: '#terms-page'
+      terms: '#terms-page',
+      portfolio: '#portfolio-page',
+      partners: '#partners-page'
     };
     window.location.hash = hashMapping[newView];
     setView(newView);
@@ -160,6 +184,8 @@ const App: React.FC = () => {
         {view === 'news' && <NewsPage />}
         {view === 'products' && <ProductsPage />}
         {view === 'terms' && <TermsPage />}
+        {view === 'portfolio' && <PortfolioPage />}
+        {view === 'partners' && <PartnersPage />}
         
         <Contact />
       </main>

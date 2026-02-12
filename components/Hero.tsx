@@ -7,21 +7,24 @@ const SLIDES = [
     poster: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2069',
     title: 'Azariah.',
     subtitle: 'Management Group',
-    description: 'We deliver high-performance consulting and media solutions for organizations that demand excellence and impact.'
+    description: 'We deliver high-performance consulting and media solutions for organizations that demand excellence and impact.',
+    alt: 'Corporate team working in modern office space'
   },
   {
     video: 'https://player.vimeo.com/external/371433917.sd.mp4?s=694406a461b40213032d8478418f430635489814&profile_id=164&oauth2_token_id=57447761',
     title: 'Impact Driven.',
     poster: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=2070',
     subtitle: 'Future-Ready Systems',
-    description: 'Integrating advanced technology and creative storytelling to maximize your reach and results.'
+    description: 'Integrating advanced technology and creative storytelling to maximize your reach and results.',
+    alt: 'Global digital connectivity network visualization'
   },
   {
     video: 'https://player.vimeo.com/external/403810419.sd.mp4?s=e52f5979f046e8c89c8a071c33f274a7b7a42142&profile_id=164&oauth2_token_id=57447761',
     title: 'Global Scale.',
     poster: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=2070',
     subtitle: 'Strategic Excellence',
-    description: 'Azariah Management Group partners with visionaries to transform complex challenges into scalable opportunities.'
+    description: 'Azariah Management Group partners with visionaries to transform complex challenges into scalable opportunities.',
+    alt: 'Modern workspace collaboration'
   }
 ];
 
@@ -86,6 +89,7 @@ const Hero: React.FC = () => {
             muted
             loop
             playsInline
+            aria-label={slide.alt}
             className="w-full h-full object-cover grayscale brightness-50 contrast-125"
           />
         </div>
@@ -154,12 +158,14 @@ const Hero: React.FC = () => {
         <div className="flex gap-2">
           <button 
             onClick={prevSlide}
+            aria-label="Previous slide"
             className="p-5 bg-white text-slate-950 rounded-none hover:bg-lime-500 transition-all shadow-xl"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <button 
             onClick={nextSlide}
+            aria-label="Next slide"
             className="p-5 bg-white text-slate-950 rounded-none hover:bg-lime-500 transition-all shadow-xl"
           >
             <ChevronRight className="w-6 h-6" />

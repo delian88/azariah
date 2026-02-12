@@ -58,10 +58,10 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div>
           <h4 className="text-white font-black mb-8 uppercase tracking-[0.3em] text-[11px] border-l-4 border-blue-600 pl-4">Company</h4>
           <ul className="space-y-4 text-sm font-bold uppercase tracking-widest">
+            <li><a href="#portfolio-page" onClick={(e) => handleLinkClick(e, 'portfolio')} className="hover:text-white transition-colors">Portfolio</a></li>
+            <li><a href="#partners-page" onClick={(e) => handleLinkClick(e, 'partners')} className="hover:text-white transition-colors">Partners</a></li>
             <li><a href="#about-page" onClick={(e) => handleLinkClick(e, 'about')} className="hover:text-white transition-colors">Who We Are</a></li>
             <li><a href="#programs-page" onClick={(e) => handleLinkClick(e, 'programs')} className="hover:text-white transition-colors">Programs</a></li>
-            <li><a href="#careers" className="hover:text-white transition-colors">Careers</a></li>
-            <li><a href="#contact" className="hover:text-white transition-colors">Contact</a></li>
           </ul>
         </div>
 
@@ -74,7 +74,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </li>
             <li className="flex items-start gap-4">
               <Mail className="w-5 h-5 text-blue-500 shrink-0" />
-              <span className="break-all">info@azariahmanage.com</span>
+              <span className="break-all">info@azariahmg.com</span>
             </li>
           </ul>
         </div>

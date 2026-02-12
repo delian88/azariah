@@ -1,28 +1,69 @@
 import { NavItem, NewsItem, ProductItem } from './types';
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: 'Home', href: '#home', view: 'home' },
-  { label: 'About Us', href: '#about-page', view: 'about' },
-  { label: 'Services', href: '#services-page', view: 'services' },
-  { label: 'Programs', href: '#programs-page', view: 'programs' },
-  { label: 'Products', href: '#products-page', view: 'products' },
-  { label: 'News', href: '#news-page', view: 'news' },
-  { label: 'Studio AMG', href: '#studio-page', view: 'studio' },
+  { label: 'Home', href: '#home', view: 'home' as any },
+  { label: 'About Us', href: '#about-page', view: 'about' as any },
+  { label: 'Services', href: '#services-page', view: 'services' as any },
+  { label: 'Portfolio', href: '#portfolio-page', view: 'portfolio' as any },
+  { label: 'Partners', href: '#partners-page', view: 'partners' as any },
+  { label: 'Programs', href: '#programs-page', view: 'programs' as any },
+  { label: 'Products', href: '#products-page', view: 'products' as any },
+  { label: 'News', href: '#news-page', view: 'news' as any },
+  { label: 'Studio AMG', href: '#studio-page', view: 'studio' as any },
   { label: 'CreAItube', href: '#creaitube' },
   { label: 'Contact', href: '#contact' }
 ];
 
 export const PARTNERS = [
-  { name: "Grey Consortium UK", url: "https://www.greyconsortium.com" },
-  { name: "Grey Consortium South Africa", url: "https://www.greyconsortium.com" },
-  { name: "Grey Cinema UK", url: "https://greytvchannel.co.uk/greycinema/" },
-  { name: "Knight of Columbus - St. Mathews Council Baltimore" },
-  { name: "Luxurious Decorations - London", url: "https://www.luxuriousdecorations.com" },
-  { name: "Foundation of Luv", url: "https://FoundationofLuv.org" },
-  { name: "World AI Force" },
-  { name: "Premegage Tech Solution", url: "https://www.premegagetech.com" },
-  { name: "NYCN - North America" },
-  { name: "BlackbyAngel", url: "https://blackbyangel.my.canva.site/" }
+  { name: "Grey Consortium UK", url: "https://www.greyconsortium.com", category: "Global Strategy", desc: "Technical and strategic partners for European market entry and media distribution." },
+  { name: "Grey Consortium South Africa", url: "https://www.greyconsortium.com", category: "Global Strategy", desc: "Pan-African operational partners for economic pathway development." },
+  { name: "Grey Cinema UK", url: "https://greytvchannel.co.uk/greycinema/", category: "Media & Culture", desc: "Collaborative partners for the Nolly Oh! Festival and African cinematic distribution." },
+  { name: "Knight of Columbus - St. Mathews Council Baltimore", category: "Community", desc: "Strategic partners for community governance and social impact programs in Maryland." },
+  { name: "Luxurious Decorations - London", url: "https://www.luxuriousdecorations.com", category: "Creative Services", desc: "Visual and experiential design partners for high-level events and studio productions." },
+  { name: "Foundation of Luv", url: "https://FoundationofLuv.org", category: "Social Impact", desc: "Strategic advisory partners for grassroots mobilization and social welfare initiatives." },
+  { name: "World AI Force", category: "Technology", desc: "Core partners for ethical AI implementation and digital capacity building for underserved communities." },
+  { name: "Premegage Tech Solution", url: "https://www.premegagetech.com", category: "Technology", desc: "Engineering partners for robust custom software and cybersecurity infrastructure." },
+  { name: "NYCN - North America", category: "Advocacy", desc: "Diaspora engagement partners for youth mobilization and cultural connectivity." },
+  { name: "BlackbyAngel", url: "https://blackbyangel.my.canva.site/", category: "Media & Advocacy", desc: "Proprietary partner for the BlackbyAngel talk series and mental health advocacy platforms." }
+];
+
+export const PORTFOLIO_PROJECTS = [
+  {
+    id: "proj-nolly-oh",
+    title: "Nolly Oh! Cultural Festival",
+    division: "Studio AMG",
+    impact: "UK-Wide cultural celebration reaching 50,000+ attendees across 5 major cities.",
+    description: "AMG served as the lead technical and strategic partner for the landmark Nollywood and Nigerian Cultural Festival in the UK. We managed the multi-city tour, media production, and stakeholder coordination.",
+    image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1925",
+    tags: ["Media", "Culture", "Event Strategy"]
+  },
+  {
+    id: "proj-world-ai",
+    title: "World AI Force Deployment",
+    division: "Innovation & Tech",
+    impact: "Upskilled 1,200+ professionals in ethical AI frameworks within 12 months.",
+    description: "Developed and deployed a comprehensive AI readiness toolkit for nonprofit organizations, ensuring secure and inclusive digital transformation.",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=2070",
+    tags: ["AI", "Tech for Good", "Consulting"]
+  },
+  {
+    id: "proj-silent-movement",
+    title: "The Silent Movement Visuals",
+    division: "Studio AMG",
+    impact: "Mobilized 50+ grassroots organizations for mental health advocacy.",
+    description: "A cinematic advocacy campaign that translated complex mental health data into powerful visual stories, sparking policy-level conversations in Maryland.",
+    image: "https://images.unsplash.com/photo-1542204113-e9354e746522?auto=format&fit=crop&q=80&w=1974",
+    tags: ["Advocacy", "Cinematic", "Wellness"]
+  },
+  {
+    id: "proj-game-gateway",
+    title: "G.A.M.E. Trade Ecosystem",
+    division: "Projects & Infra",
+    impact: "Facilitated $5M in diaspora-led investment into African innovation hubs.",
+    description: "Designed and implemented a verified partner network connecting North American investors with high-growth African tech startups.",
+    image: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=2006",
+    tags: ["Trade", "Innovation", "Global"]
+  }
 ];
 
 export const NEWS_ITEMS: NewsItem[] = [
