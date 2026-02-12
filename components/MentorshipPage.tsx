@@ -319,7 +319,7 @@ const MentorshipPage: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <span>send to azariah to send</span> <Send className="w-4 h-4" />
+                    <span>Submit</span> <Send className="w-4 h-4" />
                   </>
                 )}
               </button>
