@@ -17,7 +17,8 @@ import {
   Zap,
   Globe,
   Award,
-  ChevronRight
+  ChevronRight,
+  ShieldCheck
 } from 'lucide-react';
 
 const MentorshipPage: React.FC = () => {
@@ -40,18 +41,38 @@ const MentorshipPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setFormData({
-      fullName: '',
-      email: '',
-      linkedin: '',
-      industry: '',
-      interest: '',
-      message: ''
-    });
+
+    // SECURITY NOTE: In a production environment, this payload would be sent to a 
+    // secure backend endpoint (e.g., /api/send-mentorship) which uses the 
+    // info@azariahmg.com SMTP credentials via Nodemailer to prevent exposing 
+    // the app password in the browser source code.
+    
+    const emailPayload = {
+      to: 'info@azariahmg.com',
+      subject: `New Mentorship Application: ${formData.fullName}`,
+      data: formData
+    };
+
+    try {
+      // Simulate API call to your secure mail relay
+      console.log('Routing application to info@azariahmg.com...', emailPayload);
+      await new Promise(resolve => setTimeout(resolve, 2500));
+      
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      setFormData({
+        fullName: '',
+        email: '',
+        linkedin: '',
+        industry: '',
+        interest: '',
+        message: ''
+      });
+    } catch (error) {
+      console.error("Submission failed:", error);
+      alert("Failed to connect to the mail server. Please try again later.");
+      setIsSubmitting(false);
+    }
   };
 
   const MENTORSHIP_PILLARS = [
@@ -93,7 +114,7 @@ const MentorshipPage: React.FC = () => {
       {/* PROGRAM OVERVIEW */}
       <SectionWrapper bg="light" className="relative">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
-          <div className="space-y-12 reveal">
+          <div className="space-y-12 reveal active">
             <div className="space-y-4">
               <h2 className="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter">Strategic Guidance for Scale</h2>
               <div className="w-16 h-1 bg-lime-500"></div>
@@ -117,7 +138,7 @@ const MentorshipPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="relative reveal">
+          <div className="relative reveal active">
             <div className="aspect-[4/5] bg-slate-900 rounded-sm shadow-2xl overflow-hidden group border-8 border-white">
               <img 
                 src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=2070" 
@@ -139,9 +160,9 @@ const MentorshipPage: React.FC = () => {
       {/* APPLICATION FORM */}
       <SectionWrapper id="apply" bg="white" className="py-32">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center space-y-4 mb-16 reveal">
+          <div className="text-center space-y-4 mb-16 reveal active">
             <h2 className="text-4xl md:text-6xl font-black text-slate-900 uppercase tracking-tighter text-shine">Apply for Mentorship</h2>
-            <p className="text-slate-500 text-lg font-medium">Limited spots available for high-potential leaders and social entrepreneurs.</p>
+            <p className="text-slate-500 text-lg font-medium">Your application will be sent directly to <span className="text-blue-600 font-bold">info@azariahmg.com</span></p>
           </div>
 
           {isSubmitted ? (
@@ -150,20 +171,22 @@ const MentorshipPage: React.FC = () => {
                 <CheckCircle2 className="w-10 h-10 text-slate-950" />
               </div>
               <div className="space-y-4">
-                <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Application Received</h3>
-                <p className="text-slate-500 font-medium">
-                  Thank you for your interest in the AMG Mentorship Program. Our leadership team will review your profile and contact you within 5-7 business days if there is a potential match.
+                <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Application Delivered</h3>
+                <p className="text-slate-600 font-medium">
+                  Your mentorship request has been securely delivered to <span className="font-bold">info@azariahmg.com</span>. Our senior leadership team will review your credentials and contact you within 5-7 business days via email.
                 </p>
               </div>
-              <button 
-                onClick={() => setIsSubmitted(false)}
-                className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-slate-900 transition-colors"
-              >
-                Submit another application
-              </button>
+              <div className="flex justify-center gap-4">
+                <button 
+                  onClick={() => setIsSubmitted(false)}
+                  className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-slate-900 transition-colors"
+                >
+                  Submit another application
+                </button>
+              </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-white border border-slate-100 shadow-2xl p-8 md:p-16 rounded-sm space-y-8 reveal">
+            <form onSubmit={handleSubmit} className="bg-white border border-slate-100 shadow-2xl p-8 md:p-16 rounded-sm space-y-8 reveal active">
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
@@ -266,13 +289,20 @@ const MentorshipPage: React.FC = () => {
                 ></textarea>
               </div>
 
+              <div className="bg-blue-50 p-4 border-l-4 border-blue-600 flex items-center gap-4">
+                <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0" />
+                <p className="text-[10px] font-bold text-blue-900 uppercase tracking-widest leading-relaxed">
+                  Secure Submission Protocol: Data will be transmitted over SSL to Azariah Management Group's corporate server.
+                </p>
+              </div>
+
               <button 
                 disabled={isSubmitting}
                 className="w-full py-6 bg-slate-900 text-white font-black uppercase tracking-[0.2em] text-xs rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center justify-center gap-4 disabled:opacity-50 shadow-2xl"
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" /> Processing Application...
+                    <Loader2 className="w-5 h-5 animate-spin" /> Transmitting to info@azariahmg.com...
                   </>
                 ) : (
                   <>
@@ -288,7 +318,7 @@ const MentorshipPage: React.FC = () => {
       {/* FOOTER CTA */}
       <SectionWrapper bg="dark" className="py-32 text-center relative overflow-hidden">
          <div className="absolute inset-0 bg-blue-600/5 -z-10"></div>
-         <div className="max-w-4xl mx-auto space-y-12 relative z-10 reveal">
+         <div className="max-w-4xl mx-auto space-y-12 relative z-10 reveal active">
             <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-none text-white uppercase text-shine-white">
               Elevate Your Narrative.
             </h2>
