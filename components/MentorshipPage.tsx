@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { 
   Users, 
-  GraduationCap, 
   Target, 
   Sparkles, 
   CheckCircle2, 
-  ArrowRight, 
   Send, 
   Loader2, 
   Linkedin, 
@@ -17,7 +15,6 @@ import {
   Zap,
   Globe,
   Award,
-  ChevronRight,
   ShieldCheck
 } from 'lucide-react';
 
@@ -33,6 +30,13 @@ const MentorshipPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  // Initialize EmailJS with Public Key: 47Un9Cdef_fd1YWOi
+  useEffect(() => {
+    if ((window as any).emailjs) {
+      (window as any).emailjs.init('47Un9Cdef_fd1YWOi');
+    }
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -42,35 +46,42 @@ const MentorshipPage: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // SECURITY NOTE: In a production environment, this payload would be sent to a 
-    // secure backend endpoint (e.g., /api/send-mentorship) which uses the 
-    // info@azariahmg.com SMTP credentials via Nodemailer to prevent exposing 
-    // the app password in the browser source code.
-    
-    const emailPayload = {
-      to: 'info@azariahmg.com',
-      subject: `New Mentorship Application: ${formData.fullName}`,
-      data: formData
-    };
-
     try {
-      // Simulate API call to your secure mail relay
-      console.log('Routing application to info@azariahmg.com...', emailPayload);
-      await new Promise(resolve => setTimeout(resolve, 2500));
+      const SERVICE_ID = 'default_service';
+      
+      const adminEmailParams = {
+        to_email: 'info@azariahmg.com',
+        from_name: formData.fullName,
+        from_email: formData.email,
+        linkedin: formData.linkedin,
+        industry: formData.industry,
+        interest: formData.interest,
+        message: formData.message,
+        subject: `Mentorship Application: ${formData.fullName}`
+      };
+
+      const clientEmailParams = {
+        to_name: formData.fullName,
+        to_email: formData.email,
+        project_context: "mentorship application",
+        subject: 'Thank you for contacting Azariah Management Group'
+      };
+
+      if ((window as any).emailjs) {
+        // Send to AMG Admin
+        await (window as any).emailjs.send(SERVICE_ID, 'template_amg_admin', adminEmailParams);
+        // Send boilerplate to Applicant
+        await (window as any).emailjs.send(SERVICE_ID, 'template_amg_client', clientEmailParams);
+      } else {
+        throw new Error("SDK Load Error");
+      }
       
       setIsSubmitting(false);
       setIsSubmitted(true);
-      setFormData({
-        fullName: '',
-        email: '',
-        linkedin: '',
-        industry: '',
-        interest: '',
-        message: ''
-      });
+      setFormData({ fullName: '', email: '', linkedin: '', industry: '', interest: '', message: '' });
     } catch (error) {
-      console.error("Submission failed:", error);
-      alert("Failed to connect to the mail server. Please try again later.");
+      console.error("Transmission Error:", error);
+      alert("Mail server connection error. Please email your application directly to info@azariahmg.com.");
       setIsSubmitting(false);
     }
   };
@@ -162,7 +173,7 @@ const MentorshipPage: React.FC = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center space-y-4 mb-16 reveal active">
             <h2 className="text-4xl md:text-6xl font-black text-slate-900 uppercase tracking-tighter text-shine">Apply for Mentorship</h2>
-            <p className="text-slate-500 text-lg font-medium">Your application will be sent directly to <span className="text-blue-600 font-bold">info@azariahmg.com</span></p>
+            <p className="text-slate-500 text-lg font-medium">Submissions are processed via secure SMTP to <span className="text-blue-600 font-bold">info@azariahmg.com</span></p>
           </div>
 
           {isSubmitted ? (
@@ -173,7 +184,7 @@ const MentorshipPage: React.FC = () => {
               <div className="space-y-4">
                 <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Application Delivered</h3>
                 <p className="text-slate-600 font-medium">
-                  Your mentorship request has been securely delivered to <span className="font-bold">info@azariahmg.com</span>. Our senior leadership team will review your credentials and contact you within 5-7 business days via email.
+                  Your mentorship request has been securely delivered. You should receive a confirmation email shortly. A member of our leadership team will reach out after reviewing your credentials.
                 </p>
               </div>
               <div className="flex justify-center gap-4">
@@ -198,7 +209,7 @@ const MentorshipPage: React.FC = () => {
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    placeholder="John Doe"
+                    placeholder="Name"
                     className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-slate-900 transition-all font-bold text-sm"
                   />
                 </div>
@@ -212,7 +223,7 @@ const MentorshipPage: React.FC = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="john@organization.com"
+                    placeholder="Email"
                     className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-slate-900 transition-all font-bold text-sm"
                   />
                 </div>
@@ -229,7 +240,7 @@ const MentorshipPage: React.FC = () => {
                     name="linkedin"
                     value={formData.linkedin}
                     onChange={handleInputChange}
-                    placeholder="https://linkedin.com/in/username"
+                    placeholder="https://linkedin.com/..."
                     className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-slate-900 transition-all font-bold text-sm"
                   />
                 </div>
@@ -276,7 +287,7 @@ const MentorshipPage: React.FC = () => {
 
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                  <MessageSquare className="w-3 h-3" /> Why do you want to be mentored by AMG?
+                  <MessageSquare className="w-3 h-3" /> Professional Goals
                 </label>
                 <textarea 
                   required
@@ -284,7 +295,7 @@ const MentorshipPage: React.FC = () => {
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
-                  placeholder="Describe your goals and how we can help you achieve them..."
+                  placeholder="How can AMG help you achieve your goals?"
                   className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-slate-900 transition-all font-bold text-sm resize-none"
                 ></textarea>
               </div>
@@ -292,7 +303,7 @@ const MentorshipPage: React.FC = () => {
               <div className="bg-blue-50 p-4 border-l-4 border-blue-600 flex items-center gap-4">
                 <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0" />
                 <p className="text-[10px] font-bold text-blue-900 uppercase tracking-widest leading-relaxed">
-                  Secure Submission Protocol: Data will be transmitted over SSL to Azariah Management Group's corporate server.
+                  Encryption Layer Active: Secure SMTP Relay via info@azariahmg.com
                 </p>
               </div>
 
@@ -302,7 +313,7 @@ const MentorshipPage: React.FC = () => {
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" /> Transmitting to info@azariahmg.com...
+                    <Loader2 className="w-5 h-5 animate-spin" /> Finalizing Dispatch...
                   </>
                 ) : (
                   <>
