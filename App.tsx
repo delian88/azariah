@@ -12,6 +12,7 @@ import Logo from './components/Logo';
 import ServicesPage from './components/ServicesPage';
 import AboutPage from './components/AboutPage';
 import ProgramsPage from './components/ProgramsPage';
+import MentorshipPage from './components/MentorshipPage';
 import StudioAMGPage from './components/StudioAMGPage';
 import NewsPage from './components/NewsPage';
 import ProductsPage from './components/ProductsPage';
@@ -27,7 +28,7 @@ import Partners from './components/Partners';
 import PodOreSection from './components/PodOreSection';
 import BrandSpotlight from './components/BrandSpotlight';
 
-type ViewState = 'home' | 'services' | 'about' | 'programs' | 'studio' | 'news' | 'products' | 'terms' | 'privacy' | 'portfolio' | 'partners' | 'creaitube';
+export type ViewState = 'home' | 'services' | 'about' | 'programs' | 'mentorship' | 'studio' | 'news' | 'products' | 'terms' | 'privacy' | 'portfolio' | 'partners' | 'creaitube';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -42,6 +43,7 @@ const App: React.FC = () => {
       if (hash === '#services-page') nextView = 'services';
       else if (hash === '#about-page') nextView = 'about';
       else if (hash === '#programs-page') nextView = 'programs';
+      else if (hash === '#mentorship-page') nextView = 'mentorship';
       else if (hash === '#studio-page') nextView = 'studio';
       else if (hash === '#news-page') nextView = 'news';
       else if (hash === '#products-page') nextView = 'products';
@@ -90,6 +92,7 @@ const App: React.FC = () => {
       services: "Strategic Services | Azariah Management Group",
       about: "About Us | Who We Serve | AMG",
       programs: "Signature Programs & Initiatives | AMG",
+      mentorship: "Mentorship Program | Developing Future Leaders | AMG",
       studio: "Studio AMG | Cinematic Storytelling & Media Production",
       news: "News & Insights | Azariah Management Group",
       products: "Digital Products & Ecosystems | AMG",
@@ -141,6 +144,7 @@ const App: React.FC = () => {
       services: '#services-page',
       about: '#about-page',
       programs: '#programs-page',
+      mentorship: '#mentorship-page',
       studio: '#studio-page',
       news: '#news-page',
       products: '#products-page',
@@ -193,6 +197,7 @@ const App: React.FC = () => {
         {view === 'services' && <ServicesPage />}
         {view === 'about' && <AboutPage />}
         {view === 'programs' && <ProgramsPage />}
+        {view === 'mentorship' && <MentorshipPage />}
         {view === 'studio' && <StudioAMGPage />}
         {view === 'news' && <NewsPage />}
         {view === 'products' && <ProductsPage />}
