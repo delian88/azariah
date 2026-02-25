@@ -80,6 +80,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           <a href="#home" onClick={(e) => handleLinkClick(e, '#home', 'home')} className={`font-black uppercase tracking-widest transition-colors text-[8px] lg:text-[10px] ${textColorClass}`}>Home</a>
           <a href="#about-page" onClick={(e) => handleLinkClick(e, '#about-page', 'about')} className={`font-black uppercase tracking-widest transition-colors text-[8px] lg:text-[10px] ${textColorClass}`}>About Us</a>
           <a href="#portfolio-page" onClick={(e) => handleLinkClick(e, '#portfolio-page', 'portfolio')} className={`font-black uppercase tracking-widest transition-colors text-[8px] lg:text-[10px] ${textColorClass}`}>Portfolio</a>
+          <a href="#partners-page" onClick={(e) => handleLinkClick(e, '#partners-page', 'partners')} className={`font-black uppercase tracking-widest transition-colors text-[8px] lg:text-[10px] ${textColorClass}`}>Partners</a>
           
           {/* Programs Dropdown */}
           <div className="relative" ref={dropdownRef}>
@@ -148,6 +149,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
         <div className="md:hidden bg-white border-t border-slate-100 py-4 px-6 space-y-4 shadow-xl animate-in slide-in-from-top-4 duration-300 max-h-screen overflow-y-auto">
           <a href="#home" onClick={(e) => handleLinkClick(e, '#home', 'home')} className="block font-black uppercase tracking-widest text-slate-600 py-2 border-b border-slate-50 text-[10px]">Home</a>
           <a href="#about-page" onClick={(e) => handleLinkClick(e, '#about-page', 'about')} className="block font-black uppercase tracking-widest text-slate-600 py-2 border-b border-slate-50 text-[10px]">About Us</a>
+          <a href="#partners-page" onClick={(e) => handleLinkClick(e, '#partners-page', 'partners')} className="block font-black uppercase tracking-widest text-slate-600 py-2 border-b border-slate-50 text-[10px]">Partners</a>
           <div className="py-2 border-b border-slate-50">
             <p className="font-black uppercase tracking-widest text-slate-400 text-[8px] mb-2">Programs</p>
             <div className="pl-4 space-y-2">
