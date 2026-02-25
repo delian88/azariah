@@ -55,7 +55,7 @@ const WallfeelPage: React.FC<WallfeelPageProps> = ({ onBack }) => {
           </div>
           <div className="relative reveal">
             <img 
-              src="https://images.unsplash.com/photo-1615876234886-fd9a39faa97f?auto=format&fit=crop&q=80&w=1200" 
+              src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1200" 
               alt="WallFeel Luxury Decor" 
               className="w-full aspect-square object-cover rounded-sm shadow-2xl"
               referrerPolicy="no-referrer"
