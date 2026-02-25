@@ -1,6 +1,6 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
-import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ShieldCheck, Leaf, Users, Target, Zap, LayoutGrid } from 'lucide-react';
 
 interface WallfeelPageProps {
   onBack: () => void;
@@ -9,88 +9,210 @@ interface WallfeelPageProps {
 const WallfeelPage: React.FC<WallfeelPageProps> = ({ onBack }) => {
   return (
     <div className="pt-24 min-h-screen bg-white">
-      {/* HEADER */}
+      {/* HERO SECTION */}
       <SectionWrapper bg="white" className="pb-12 border-b border-slate-100">
-        <div className="reveal active">
-          <button 
-            onClick={onBack}
-            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors group mb-8"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Partners
-          </button>
-          <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none uppercase mb-6">
-            WallFeel <span className="text-shine">Showcase.</span>
-          </h1>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 reveal active">
+          <div className="space-y-4">
+            <button 
+              onClick={onBack}
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors group"
+            >
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Partners
+            </button>
+            <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none uppercase">
+              WallFeel <span className="text-shine">Luxurious.</span>
+            </h1>
+            <p className="text-xl text-slate-600 font-medium border-l-4 border-lime-500 pl-6 max-w-2xl">
+              Redefining Luxury Wall Coverings Since 2019.
+            </p>
+          </div>
         </div>
       </SectionWrapper>
 
-      {/* EDITORIAL CONTENT */}
+      {/* ABOUT SECTION */}
+      <SectionWrapper bg="light" className="py-20">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          <div className="space-y-8 reveal">
+            <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">About WallFeel</h2>
+            <div className="space-y-6 text-slate-600 font-medium leading-relaxed">
+              <p>
+                Founded in 2019, WallFeel is a leading provider of premium luxury wall coverings and custom interior wall solutions designed to transform residential and commercial spaces. We don’t just decorate walls we engineer statement environments that elevate brands, enhance lifestyles, and create unforgettable experiences.
+              </p>
+              <p>
+                Through our globally recognized premium line, Luxurious Decorations (LD16, LD8 & LD3), we deliver high-performance wall finishes crafted for modern luxury interiors.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-6 bg-white border border-slate-100 rounded-sm">
+                <p className="text-4xl font-black text-slate-900 mb-2">357+</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Clients Served</p>
+              </div>
+              <div className="p-6 bg-white border border-slate-100 rounded-sm">
+                <p className="text-4xl font-black text-slate-900 mb-2">2019</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Established</p>
+              </div>
+            </div>
+          </div>
+          <div className="relative reveal">
+            <img 
+              src="https://images.unsplash.com/photo-1615876234886-fd9a39faa97f?auto=format&fit=crop&q=80&w=1200" 
+              alt="WallFeel Luxury Decor" 
+              className="w-full aspect-square object-cover rounded-sm shadow-2xl"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute -bottom-8 -left-8 p-8 bg-slate-900 text-white max-w-xs hidden md:block">
+              <p className="text-xs font-black uppercase tracking-widest text-lime-500 mb-2">Our Mission</p>
+              <p className="text-sm font-medium leading-relaxed italic">
+                "We engineer statement environments that elevate brands and enhance lifestyles."
+              </p>
+            </div>
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* PREMIUM WALL COVERINGS */}
       <SectionWrapper bg="white" className="py-20">
-        <div className="max-w-3xl mx-auto space-y-16 reveal">
-          
-          {/* ABOUT */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter border-b-2 border-lime-500 pb-2 inline-block">
-              About WallFeel – Redefining Luxury Wall Coverings Since 2019
-            </h2>
-            <p className="text-lg text-slate-600 font-medium leading-relaxed">
-              Founded in 2019, WallFeel is a leading provider of premium luxury wall coverings and custom interior wall solutions designed to transform residential and commercial spaces. We don’t just decorate walls we engineer statement environments that elevate brands, enhance lifestyles, and create unforgettable experiences.
-            </p>
-            <p className="text-lg text-slate-600 font-medium leading-relaxed">
-              Through our globally recognized premium line, Luxurious Decorations (LD16, LD8 & LD3), we deliver high-performance wall finishes crafted for modern luxury interiors.
-            </p>
-          </div>
+        <div className="max-w-4xl mx-auto text-center space-y-8 mb-16 reveal">
+          <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">Premium Wall Coverings Built to Perform</h2>
+          <p className="text-lg text-slate-600 font-medium">
+            Our signature Premium Fabric Matte Finish is expertly manufactured in a state-of-the-art production facility to meet the highest global quality standards.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8 reveal">
+          {[
+            { icon: <Zap className="w-6 h-6" />, title: "Tear-resistant" },
+            { icon: <ShieldCheck className="w-6 h-6" />, title: "Fire-retardant" },
+            { icon: <CheckCircle2 className="w-6 h-6" />, title: "Stain-resistant" },
+            { icon: <Leaf className="w-6 h-6" />, title: "Water-resistant" },
+            { icon: <LayoutGrid className="w-6 h-6" />, title: "Fully customizable" },
+            { icon: <Target className="w-6 h-6" />, title: "Durable & Long-lasting" }
+          ].map((item, idx) => (
+            <div key={idx} className="p-8 bg-slate-50 border border-slate-100 rounded-sm flex items-center gap-4 group hover:bg-slate-900 hover:text-white transition-all duration-500">
+              <div className="text-lime-500 group-hover:scale-110 transition-transform">
+                {item.icon}
+              </div>
+              <p className="font-black uppercase tracking-widest text-[10px]">{item.title}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-16 p-12 bg-slate-900 text-white text-center rounded-sm reveal">
+          <p className="text-2xl font-black uppercase tracking-tighter mb-4">When durability meets design, your walls become assets not just surfaces.</p>
+          <p className="text-slate-400 font-medium">Ideal for luxury homes, upscale apartments, hotels, restaurants, lounges, corporate offices, airports, hospitals, schools, and commercial developments.</p>
+        </div>
+      </SectionWrapper>
 
-          {/* PREMIUM WALL COVERINGS */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter border-b-2 border-lime-500 pb-2 inline-block">
-              Premium Wall Coverings Built to Perform
-            </h2>
-            <p className="text-lg text-slate-600 font-medium leading-relaxed">
-              Our signature Premium Fabric Matte Finish is expertly manufactured in a state-of-the-art production facility to meet the highest global quality standards. Unlike traditional wallpaper or standard wall panels, WallFeel coverings are:
-            </p>
-            <ul className="grid grid-cols-2 gap-4 text-slate-600 font-bold uppercase tracking-widest text-[10px]">
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-lime-500" /> Tear-resistant</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-lime-500" /> Fire-retardant</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-lime-500" /> Stain-resistant</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-lime-500" /> Water-resistant</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-lime-500" /> Fully customizable</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-lime-500" /> Durable and long-lasting</li>
+      {/* MATERIAL INFORMATION */}
+      <SectionWrapper bg="light" className="py-20">
+        <div className="max-w-4xl mx-auto text-center space-y-4 mb-16 reveal">
+          <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">Material Information</h2>
+          <div className="h-1 w-24 bg-lime-500 mx-auto"></div>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8 reveal">
+          {/* Peel & Stick */}
+          <div className="bg-white p-8 border border-slate-100 rounded-sm space-y-6 flex flex-col h-full">
+            <div className="space-y-2">
+              <p className="text-xs font-black text-lime-600 uppercase tracking-widest">Option 01</p>
+              <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Peel & Stick</h3>
+            </div>
+            <ul className="space-y-3 flex-1">
+              {[
+                "PVC-free vinyl material",
+                "Smooth matte finish",
+                "Waterproof surface",
+                "Stain resistant and easy to clean",
+                "Marker-friendly surface",
+                "Fire retardant for added safety",
+                "Renter-friendly solution",
+                "Removes easily without leaving marks",
+                "Scratch resistant and fade-resistant in sunlight",
+                "Environmentally friendly",
+                "Not suitable for textured walls"
+              ].map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3 text-xs text-slate-600 font-medium">
+                  <div className="mt-1 w-1.5 h-1.5 bg-lime-500 rounded-full flex-shrink-0"></div>
+                  {item}
+                </li>
+              ))}
             </ul>
-            <p className="text-lg text-slate-600 font-medium leading-relaxed">
-              Our products are designed for both beauty and functionality making them ideal for luxury homes, upscale apartments, hotels, restaurants, lounges, corporate offices, airports, hospitals, schools, and commercial developments. When durability meets design, your walls become assets not just surfaces.
-            </p>
           </div>
 
-          {/* TRUSTED */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter border-b-2 border-lime-500 pb-2 inline-block">
-              Trusted by Luxury Clients & Commercial Developers
-            </h2>
-            <p className="text-lg text-slate-600 font-medium leading-relaxed">
-              Since inception, we have proudly served over 357 clients, partnering with homeowners, interior designers, architects, developers, hospitality brands, and corporate institutions seeking distinctive, high-impact interiors.
-            </p>
-            <p className="text-lg text-slate-600 font-medium leading-relaxed">
-              Every project is customized. Every installation is intentional. We collaborate closely with our clients to deliver tailored wall décor solutions that align with their brand identity, design vision, and performance requirements.
-            </p>
+          {/* Premium Matte */}
+          <div className="bg-white p-8 border border-slate-100 rounded-sm space-y-6 flex flex-col h-full">
+            <div className="space-y-2">
+              <p className="text-xs font-black text-blue-600 uppercase tracking-widest">Option 02</p>
+              <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Premium Matte</h3>
+            </div>
+            <ul className="space-y-3 flex-1">
+              {[
+                "Installed using wallpaper paste",
+                "Lightweight, thin fabric material",
+                "Smooth matte surface finish",
+                "Waterproof and long-lasting",
+                "Tear and stain resistant",
+                "Fire retardant for enhanced safety",
+                "Suitable for high-traffic areas and bathrooms",
+                "Scratch resistant and fade-resistant in sunlight",
+                "Environmentally friendly materials"
+              ].map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3 text-xs text-slate-600 font-medium">
+                  <div className="mt-1 w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0"></div>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* SUSTAINABLE */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter border-b-2 border-lime-500 pb-2 inline-block">
-              Sustainable Luxury Wall Solutions
-            </h2>
-            <p className="text-lg text-slate-600 font-medium leading-relaxed">
-              At WallFeel, innovation includes responsibility. We use eco-conscious, fully biodegradable materials, allowing you to upgrade your interiors while supporting sustainable building practices. Luxury should be bold and responsible.
-            </p>
+          {/* Premium Textured 3D */}
+          <div className="bg-white p-8 border border-slate-100 rounded-sm space-y-6 flex flex-col h-full">
+            <div className="space-y-2">
+              <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Option 03</p>
+              <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Premium Textured 3D</h3>
+            </div>
+            <ul className="space-y-3 flex-1">
+              {[
+                "Installed using wallpaper paste",
+                "Easy and seamless installation",
+                "Heavy, thick fabric construction",
+                "Deeply textured matte finish",
+                "Highly realistic 3D visual effects",
+                "Waterproof for added durability",
+                "Tear, stain, and scratch resistant",
+                "Fire retardant for safety compliance",
+                "Suitable for smooth and lightly textured walls",
+                "Ideal for high-traffic areas and bathrooms",
+                "Fade-resistant, even in direct sunlight",
+                "Environmentally friendly materials",
+                "Trusted by interior designers"
+              ].map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3 text-xs text-slate-600 font-medium">
+                  <div className="mt-1 w-1.5 h-1.5 bg-slate-900 rounded-full flex-shrink-0"></div>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
+        </div>
+      </SectionWrapper>
 
-          {/* WHY CHOOSE */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter border-b-2 border-lime-500 pb-2 inline-block">
-              Why Choose WallFeel?
-            </h2>
-            <div className="space-y-4">
+      {/* SUSTAINABLE LUXURY */}
+      <SectionWrapper bg="dark" className="py-20 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-lime-500/5 -z-10"></div>
+        <div className="max-w-4xl mx-auto space-y-8 reveal">
+          <Leaf className="w-12 h-12 text-lime-500 mx-auto" />
+          <h2 className="text-4xl font-black text-white uppercase tracking-tighter">Sustainable Luxury Wall Solutions</h2>
+          <p className="text-xl text-slate-400 font-medium leading-relaxed">
+            At WallFeel, innovation includes responsibility. We use eco-conscious, fully biodegradable materials, allowing you to upgrade your interiors while supporting sustainable building practices.
+          </p>
+          <p className="text-2xl font-black text-lime-500 uppercase tracking-widest italic">Luxury should be bold and responsible.</p>
+        </div>
+      </SectionWrapper>
+
+      {/* WHY CHOOSE WALLFEEL */}
+      <SectionWrapper bg="white" className="py-20">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          <div className="space-y-8 reveal">
+            <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Why Choose WallFeel?</h2>
+            <ul className="space-y-4">
               {[
                 "Industry-leading premium wall finishes",
                 "Custom design capabilities",
@@ -99,56 +221,29 @@ const WallfeelPage: React.FC<WallfeelPageProps> = ({ onBack }) => {
                 "Proven track record across residential and commercial sectors",
                 "Expert consultation and project support"
               ].map((item, idx) => (
-                <p key={idx} className="flex items-start gap-3 text-lg text-slate-600 font-medium leading-relaxed">
-                  <span className="text-lime-500 font-black">•</span> {item}
-                </p>
+                <li key={idx} className="flex items-center gap-4 p-4 border border-slate-50 hover:border-lime-500 transition-colors">
+                  <CheckCircle2 className="w-5 h-5 text-lime-500" />
+                  <span className="font-black uppercase tracking-widest text-[10px] text-slate-600">{item}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
-
-          {/* TRANSFORM */}
-          <div className="space-y-6 bg-slate-900 p-12 text-white rounded-sm">
-            <h2 className="text-3xl font-black uppercase tracking-tighter">Let’s Transform Your Walls</h2>
-            <p className="text-lg text-slate-400 font-medium leading-relaxed">
-              Your walls are powerful branding tools. They shape perception, influence experience, and define atmosphere. Be bold. Get noticed. Feel the Wall.
+          <div className="p-12 bg-slate-50 border border-slate-100 rounded-sm space-y-8 reveal">
+            <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Let’s Transform Your Walls</h3>
+            <p className="text-slate-600 font-medium leading-relaxed">
+              Your walls are powerful branding tools. They shape perception, influence experience, and define atmosphere.
             </p>
+            <div className="space-y-2">
+              <p className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Be bold. Get noticed.</p>
+              <p className="text-5xl font-black text-lime-600 uppercase tracking-tighter">Feel the Wall.</p>
+            </div>
             <button 
               onClick={() => window.location.hash = '#contact'}
-              className="px-8 py-4 bg-lime-500 text-slate-950 font-black uppercase tracking-widest text-[10px] rounded-sm hover:bg-white transition-colors"
+              className="w-full py-6 bg-slate-900 text-white font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-2xl"
             >
-              Contact us today for a consultation
+              Request a Consultation
             </button>
           </div>
-
-          {/* MATERIAL INFORMATION */}
-          <div className="pt-20 space-y-12">
-            <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter text-center">Material Information</h2>
-            
-            {/* 1. Peel & Stick */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-black text-slate-900 uppercase tracking-widest border-l-4 border-lime-500 pl-4">1. Peel & Stick</h3>
-              <p className="text-slate-600 font-medium leading-relaxed">
-                Our Peel & Stick solution is crafted from PVC-free vinyl material with a smooth matte finish. It features a waterproof surface that is stain resistant and easy to clean, even with markers. This fire retardant, renter-friendly solution removes easily without leaving marks. It is scratch resistant and fade-resistant in sunlight, making it an environmentally friendly choice, though it is not suitable for textured walls.
-              </p>
-            </div>
-
-            {/* 2. Premium Matte */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-black text-slate-900 uppercase tracking-widest border-l-4 border-blue-600 pl-4">2. Premium Matte</h3>
-              <p className="text-slate-600 font-medium leading-relaxed">
-                Installed using wallpaper paste, the Premium Matte is a lightweight, thin fabric material with a smooth matte surface finish. It is waterproof, long-lasting, and both tear and stain resistant. This fire retardant material is designed for enhanced safety and is suitable for high-traffic areas and bathrooms. It remains scratch resistant and fade-resistant in sunlight using environmentally friendly materials.
-              </p>
-            </div>
-
-            {/* 3. Premium Textured 3D */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-black text-slate-900 uppercase tracking-widest border-l-4 border-slate-900 pl-4">3. Premium Textured 3D</h3>
-              <p className="text-slate-600 font-medium leading-relaxed">
-                The Premium Textured 3D option is installed using wallpaper paste and offers an easy, seamless installation. It features a heavy, thick fabric construction with a deeply textured matte finish for highly realistic 3D visual effects. Waterproof, tear-resistant, and scratch-resistant, it is fire retardant for safety compliance. Suitable for both smooth and lightly textured walls, it is ideal for high-traffic areas and bathrooms. It is fade-resistant in direct sunlight and crafted from environmentally friendly materials trusted by interior designers.
-              </p>
-            </div>
-          </div>
-
         </div>
       </SectionWrapper>
     </div>
