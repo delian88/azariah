@@ -24,7 +24,8 @@ export const PARTNERS = [
   { name: "World AI Force", category: "Technology", desc: "Core partners for ethical AI implementation and digital capacity building for underserved communities." },
   { name: "Premegage Tech Solution", url: "https://www.premegagetech.com", category: "Technology", desc: "Engineering partners for robust custom software and cybersecurity infrastructure." },
   { name: "NYCN - North America", category: "Advocacy", desc: "Diaspora engagement partners for youth mobilization and cultural connectivity." },
-  { name: "BlackbyAngel", url: "https://blackbyangel.my.canva.site/", category: "Media & Advocacy", desc: "Proprietary partner for the BlackbyAngel talk series and mental health advocacy platforms." }
+  { name: "BlackbyAngel", url: "https://blackbyangel.my.canva.site/", category: "Media & Advocacy", desc: "Proprietary partner for the BlackbyAngel talk series and mental health advocacy platforms." },
+  { name: "Wallfeel Luxurious Decorations", category: "Creative Services", desc: "Redefining luxury wall coverings since 2019. High-performance, sustainable, and custom interior wall solutions." }
 ];
 
 export const PORTFOLIO_PROJECTS = [

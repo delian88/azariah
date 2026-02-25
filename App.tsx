@@ -21,6 +21,7 @@ import PrivacyPage from './components/PrivacyPage';
 import PortfolioPage from './components/PortfolioPage';
 import PartnersPage from './components/PartnersPage';
 import CatalogPage from './components/CatalogPage';
+import WallfeelPage from './components/WallfeelPage';
 import CreAItubePage from './components/CreAItubePage';
 import Careers from './components/Careers';
 import CreAItube from './components/CreAItube';
@@ -29,7 +30,7 @@ import Partners from './components/Partners';
 import PodOreSection from './components/PodOreSection';
 import BrandSpotlight from './components/BrandSpotlight';
 
-export type ViewState = 'home' | 'services' | 'about' | 'programs' | 'mentorship' | 'studio' | 'news' | 'products' | 'terms' | 'privacy' | 'portfolio' | 'partners' | 'creaitube' | 'catalog';
+export type ViewState = 'home' | 'services' | 'about' | 'programs' | 'mentorship' | 'studio' | 'news' | 'products' | 'terms' | 'privacy' | 'portfolio' | 'partners' | 'creaitube' | 'catalog' | 'wallfeel';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -53,6 +54,7 @@ const App: React.FC = () => {
       else if (hash === '#portfolio-page') nextView = 'portfolio';
       else if (hash === '#partners-page') nextView = 'partners';
       else if (hash === '#catalog-page') nextView = 'catalog';
+      else if (hash === '#wallfeel-page') nextView = 'wallfeel';
       else if (hash === '#creaitube-page') nextView = 'creaitube';
       else nextView = 'home';
 
@@ -103,6 +105,7 @@ const App: React.FC = () => {
       portfolio: "Evidence of Excellence | AMG Portfolio",
       partners: "Strategic Ecosystem | Partners & Clients | AMG",
       catalog: "Luxurious Catalog | Interior Decoration | AMG",
+      wallfeel: "WallFeel Luxurious Decorations | Premium Wall Coverings | AMG",
       creaitube: "CreAItube | The New Media Economy | AMG"
     };
     
@@ -156,6 +159,7 @@ const App: React.FC = () => {
       portfolio: '#portfolio-page',
       partners: '#partners-page',
       catalog: '#catalog-page',
+      wallfeel: '#wallfeel-page',
       creaitube: '#creaitube-page'
     };
     window.location.hash = hashMapping[newView];
@@ -210,6 +214,7 @@ const App: React.FC = () => {
         {view === 'portfolio' && <PortfolioPage />}
         {view === 'partners' && <PartnersPage onNavigate={navigateTo} />}
         {view === 'catalog' && <CatalogPage onBack={() => navigateTo('partners')} />}
+        {view === 'wallfeel' && <WallfeelPage onBack={() => navigateTo('partners')} />}
         {view === 'creaitube' && <CreAItubePage />}
         
         <Contact />

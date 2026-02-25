@@ -88,6 +88,14 @@ const PartnersPage: React.FC<PartnersPageProps> = ({ onNavigate }) => {
                            <LayoutGrid className="w-4 h-4 group-hover/btn:rotate-90 transition-transform" /> View Catalog
                          </button>
                        )}
+                       {partner.name === "Wallfeel Luxurious Decorations" && (
+                         <button 
+                           onClick={() => onNavigate?.('wallfeel')}
+                           className="mt-6 w-full py-4 bg-slate-50 text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-sm hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center gap-2 group/btn"
+                         >
+                           <Users className="w-4 h-4 group-hover/btn:scale-110 transition-transform" /> View Details
+                         </button>
+                       )}
                        <div className="pt-6 mt-6 border-t border-slate-50 flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-slate-300 group-hover:text-slate-900">
                           <ShieldCheck className="w-3 h-3 text-lime-500" /> Verified Partnership
                        </div>
