@@ -13,7 +13,7 @@ const CATALOG_IMAGES = [
       "Waterproof surface",
       "Stain resistant and easy to clean",
       "Marker-friendly surface",
-      "Fire rated for added safety",
+      "Fire Retardant",
       "Renter-friendly solution",
       "Removes easily without leaving marks",
       "Scratch resistant and fade-resistant in sunlight",
@@ -112,12 +112,12 @@ const CATALOG_IMAGES = [
     category: "Commercial"
   },
   {
-    url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=1200",
+    url: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=80&w=1200",
     title: "8D Mural - Geometric",
     category: "Wallpapers"
   },
   {
-    url: "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&q=80&w=1200",
+    url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1200",
     title: "Luxury Estate Entrance",
     category: "Real Estate"
   }
