@@ -19,7 +19,7 @@ export const PARTNERS = [
   { name: "Grey Consortium South Africa", url: "https://www.greyconsortium.com", category: "Global Strategy", desc: "Pan-African operational partners for economic pathway development." },
   { name: "Grey Cinema UK", url: "https://greytvchannel.co.uk/greycinema/", category: "Media & Culture", desc: "Collaborative partners for the Nolly Oh! Festival and African cinematic distribution." },
   { name: "Knight of Columbus - St. Mathews Council Baltimore", category: "Community", desc: "Strategic partners for community governance and social impact programs in Maryland." },
-  { name: "Luxurious Decorations - London", url: "https://www.luxuriousdecorations.com", category: "Creative Services", desc: "Visual and experiential design partners for high-level events and studio productions." },
+  { name: "Luxurious Decorations - London", url: "https://www.luxuriousdecorations.com", category: "Creative Services", desc: "It is a Premium Luxurious Interior decoration and real estate venture...with its 8D Mural Wallpapper it is transforming how walls come alive" },
   { name: "Foundation of Luv", url: "https://FoundationofLuv.org", category: "Social Impact", desc: "Strategic advisory partners for grassroots mobilization and social welfare initiatives." },
   { name: "World AI Force", category: "Technology", desc: "Core partners for ethical AI implementation and digital capacity building for underserved communities." },
   { name: "Premegage Tech Solution", url: "https://www.premegagetech.com", category: "Technology", desc: "Engineering partners for robust custom software and cybersecurity infrastructure." },
