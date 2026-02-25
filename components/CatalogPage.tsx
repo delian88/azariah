@@ -1,8 +1,26 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
-import { Image, ArrowLeft, Download, Play, Film } from 'lucide-react';
+import { Image, ArrowLeft, Download, Play, Film, X, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const CATALOG_IMAGES = [
+  {
+    url: "https://images.unsplash.com/photo-1634712282287-14ed57b9cc89?auto=format&fit=crop&q=80&w=1200",
+    title: "Marble Illusion Wallpaper",
+    category: "Wallpapers",
+    details: [
+      "PVC-free vinyl material",
+      "Smooth matte finish",
+      "Waterproof surface",
+      "Stain resistant and easy to clean",
+      "Marker-friendly surface",
+      "Fire rated for added safety",
+      "Renter-friendly solution",
+      "Removes easily without leaving marks",
+      "Scratch resistant and fade-resistant in sunlight",
+      "Environmentally friendly",
+      "Not suitable for textured walls"
+    ]
+  },
   {
     url: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1200",
     title: "Modern Minimalist Living",
@@ -137,6 +155,8 @@ interface CatalogPageProps {
 }
 
 const CatalogPage: React.FC<CatalogPageProps> = ({ onBack }) => {
+  const [selectedItem, setSelectedItem] = React.useState<any>(null);
+
   return (
     <div className="pt-24 min-h-screen bg-white">
       <SectionWrapper bg="white" className="pb-12 border-b border-slate-100">
@@ -172,7 +192,11 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onBack }) => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
           {CATALOG_IMAGES.map((img, idx) => (
-            <div key={idx} className="group relative aspect-[4/5] overflow-hidden bg-slate-200 reveal">
+            <div 
+              key={idx} 
+              className="group relative aspect-[4/5] overflow-hidden bg-slate-200 reveal cursor-pointer"
+              onClick={() => setSelectedItem(img)}
+            >
               <img 
                 src={img.url} 
                 alt={img.title}
@@ -188,6 +212,84 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onBack }) => {
           ))}
         </div>
       </SectionWrapper>
+
+      {/* MODAL */}
+      {selectedItem && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+          <div 
+            className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm"
+            onClick={() => setSelectedItem(null)}
+          ></div>
+          <div className="bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto relative z-10 rounded-sm shadow-2xl flex flex-col md:flex-row">
+            <button 
+              onClick={() => setSelectedItem(null)}
+              className="absolute top-4 right-4 p-2 bg-slate-900 text-white rounded-full hover:bg-lime-500 hover:text-slate-950 transition-all z-20"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="md:w-1/2 bg-slate-100">
+              <img 
+                src={selectedItem.url} 
+                alt={selectedItem.title}
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            
+            <div className="md:w-1/2 p-8 md:p-12 space-y-8">
+              <div>
+                <p className="text-[10px] font-black text-lime-600 uppercase tracking-widest mb-2">{selectedItem.category}</p>
+                <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">{selectedItem.title}</h2>
+              </div>
+              
+              {selectedItem.details && (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                    <CheckCircle2 className="w-4 h-4 text-lime-500" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Material Information</h4>
+                  </div>
+                  <ul className="grid grid-cols-1 gap-3">
+                    {selectedItem.details.map((detail: string, i: number) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-slate-600 font-medium">
+                        <div className="mt-1.5 w-1.5 h-1.5 bg-lime-500 rounded-full flex-shrink-0"></div>
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="p-4 bg-slate-50 border-l-4 border-blue-600 flex gap-3 items-start">
+                    <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <p className="text-xs text-slate-500 font-medium leading-relaxed italic">
+                      Note: Removes easily without leaving marks. Scratch resistant and fade-resistant in sunlight. Environmentally friendly. Not suitable for textured walls.
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              {!selectedItem.details && (
+                <p className="text-slate-500 font-medium leading-relaxed">
+                  Premium {selectedItem.category.toLowerCase()} solution from the AMG Luxurious collection. Designed for high-impact environments and sophisticated aesthetics.
+                </p>
+              )}
+              
+              <div className="pt-8 border-t border-slate-100 flex flex-col gap-4">
+                <button 
+                  onClick={() => {
+                    setSelectedItem(null);
+                    window.location.hash = '#contact';
+                  }}
+                  className="w-full py-4 bg-slate-900 text-white font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-xl"
+                >
+                  Inquire About This Item
+                </button>
+                <button className="w-full py-4 border border-slate-200 text-slate-400 font-black uppercase tracking-widest rounded-sm hover:border-slate-900 hover:text-slate-900 transition-all text-[10px]">
+                  Download Specifications
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* VIDEO SECTION */}
       <SectionWrapper bg="white" className="py-20">
