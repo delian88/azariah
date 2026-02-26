@@ -179,7 +179,7 @@ const App: React.FC = () => {
           <div className="absolute inset-0 bg-lime-500 animate-loading-bar origin-left"></div>
         </div>
         <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] animate-pulse">
-          Initializing Strategy...
+          loading....
         </p>
       </div>
     );
