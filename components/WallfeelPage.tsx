@@ -1,6 +1,6 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
-import { CheckCircle2, ShieldCheck, Leaf, Target, Zap, LayoutGrid } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, Leaf, Target, Zap, LayoutGrid, ArrowLeft } from 'lucide-react';
 
 interface WallfeelPageProps {
   onBack: () => void;
