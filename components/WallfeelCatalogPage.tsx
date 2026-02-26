@@ -1,0 +1,431 @@
+import React from 'react';
+import SectionWrapper from './SectionWrapper';
+import { Image, ArrowLeft, Download, Play, Film, X, CheckCircle2, AlertCircle } from 'lucide-react';
+
+const CATALOG_IMAGES = [
+  {
+    url: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1200",
+    title: "Marble Illusion Wallpaper",
+    category: "Premium Wall Coverings",
+    details: [
+      "PVC-free vinyl material",
+      "Smooth matte finish",
+      "Waterproof surface",
+      "Stain resistant and easy to clean",
+      "Marker-friendly surface",
+      "Fire Retardant",
+      "Renter-friendly solution",
+      "Removes easily without leaving marks",
+      "Scratch resistant and fade-resistant in sunlight",
+      "Environmentally friendly",
+      "Not suitable for textured walls"
+    ]
+  },
+  {
+    url: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=1200",
+    title: "Luxury Suite Decor",
+    category: "Hospitality"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1616137422495-1e9e46e2aa77?auto=format&fit=crop&q=80&w=1200",
+    title: "8D Mural Concept - Nature",
+    category: "Wallpapers"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1615876234886-fd9a39faa97f?auto=format&fit=crop&q=80&w=1200",
+    title: "Classic Elegance",
+    category: "Residential"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&q=80&w=1200",
+    title: "Contemporary Office Space",
+    category: "Commercial"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1617806118233-18e1ff208fa0?auto=format&fit=crop&q=80&w=1200",
+    title: "8D Mural Concept - Abstract",
+    category: "Wallpapers"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=1200",
+    title: "Scandinavian Kitchen",
+    category: "Interior Design"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600607687940-467f5b637a61?auto=format&fit=crop&q=80&w=1200",
+    title: "Zen Master Bedroom",
+    category: "Residential"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&q=80&w=1200",
+    title: "Urban Loft Concept",
+    category: "Commercial"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200",
+    title: "Art Deco Revival",
+    category: "Interior Design"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&q=80&w=1200",
+    title: "Coastal Retreat",
+    category: "Hospitality"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=1200",
+    title: "Industrial Chic Office",
+    category: "Commercial"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&q=80&w=1200",
+    title: "Bohemian Living Room",
+    category: "Residential"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&q=80&w=1200",
+    title: "Marble Luxe Bathroom",
+    category: "Hospitality"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&q=80&w=1200",
+    title: "Smart Home Integration",
+    category: "Technology"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?auto=format&fit=crop&q=80&w=1200",
+    title: "Penthouse Terrace",
+    category: "Real Estate"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&q=80&w=1200",
+    title: "Boutique Hotel Lobby",
+    category: "Hospitality"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&q=80&w=1200",
+    title: "Minimalist Workspace",
+    category: "Commercial"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=80&w=1200",
+    title: "8D Mural - Geometric",
+    category: "Wallpapers"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1200",
+    title: "Luxury Estate Entrance",
+    category: "Real Estate"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&q=80&w=1200",
+    title: "Velvet Texture Wall",
+    category: "Premium Matte"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&q=80&w=1200",
+    title: "Gold Leaf Accents",
+    category: "Luxury Finishes"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1616137466211-f939a420be84?auto=format&fit=crop&q=80&w=1200",
+    title: "Abstract Silk Pattern",
+    category: "Wallpapers"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1615529328331-f8917597711f?auto=format&fit=crop&q=80&w=1200",
+    title: "Deep Emerald Texture",
+    category: "Premium Matte"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1616486701797-0f33f61038ec?auto=format&fit=crop&q=80&w=1200",
+    title: "Brushed Copper Finish",
+    category: "Metallic"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1618221469555-7f3ad97540d6?auto=format&fit=crop&q=80&w=1200",
+    title: "Modern Slate Panels",
+    category: "Textured"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?auto=format&fit=crop&q=80&w=1200",
+    title: "Vintage Floral Mural",
+    category: "Wallpapers"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1615876063860-d971f6d929c0?auto=format&fit=crop&q=80&w=1200",
+    title: "Minimalist Concrete Look",
+    category: "Industrial"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&q=80&w=1200",
+    title: "Royal Navy Fabric",
+    category: "Premium Matte"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1618219740975-d429804f85e6?auto=format&fit=crop&q=80&w=1200",
+    title: "Geometric Gold Inlay",
+    category: "Luxury Finishes"
+  }
+];
+
+const CATALOG_VIDEOS = [
+  {
+    thumbnail: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=800",
+    title: "WallFeel Installation Masterclass",
+    duration: "12:45",
+    category: "Tutorial"
+  },
+  {
+    thumbnail: "https://images.unsplash.com/photo-1600607687940-467f5b637a61?auto=format&fit=crop&q=80&w=800",
+    title: "Luxury Penthouse Reveal",
+    duration: "08:12",
+    category: "Showcase"
+  },
+  {
+    thumbnail: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=800",
+    title: "Sustainable Materials Deep Dive",
+    duration: "05:30",
+    category: "Insights"
+  },
+  {
+    thumbnail: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=800",
+    title: "Behind the State-of-the-Art Factory",
+    duration: "06:15",
+    category: "Production"
+  },
+  {
+    thumbnail: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800",
+    title: "Custom Design Collaboration",
+    duration: "04:50",
+    category: "Process"
+  },
+  {
+    thumbnail: "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&q=80&w=800",
+    title: "Hotel Lobby Transformation",
+    duration: "07:20",
+    category: "Showcase"
+  },
+  {
+    thumbnail: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=800",
+    title: "Fire Retardant Testing",
+    duration: "03:45",
+    category: "Safety"
+  },
+  {
+    thumbnail: "https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&q=80&w=800",
+    title: "Residential Elegance Tour",
+    duration: "09:10",
+    category: "Showcase"
+  },
+  {
+    thumbnail: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&q=80&w=800",
+    title: "Eco-Conscious Production",
+    duration: "05:55",
+    category: "Sustainability"
+  },
+  {
+    thumbnail: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&q=80&w=800",
+    title: "The Future of Wall Coverings",
+    duration: "11:30",
+    category: "Vision"
+  }
+];
+
+interface WallfeelCatalogPageProps {
+  onBack: () => void;
+}
+
+const WallfeelCatalogPage: React.FC<WallfeelCatalogPageProps> = ({ onBack }) => {
+  const [selectedItem, setSelectedItem] = React.useState<any>(null);
+
+  return (
+    <div className="pt-24 min-h-screen bg-white">
+      <SectionWrapper bg="white" className="pb-12 border-b border-slate-100">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 reveal active">
+          <div className="space-y-4">
+            <button 
+              onClick={onBack}
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors group"
+            >
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to WallFeel
+            </button>
+            <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none uppercase">
+              WallFeel <span className="text-shine">Catalog.</span>
+            </h1>
+            <p className="text-lg text-slate-500 font-medium max-w-2xl">
+              Explore our premium collection of 30+ luxury wall coverings and cinematic showcases.
+            </p>
+          </div>
+          <div className="flex gap-4">
+             <button className="px-6 py-3 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center gap-2">
+               <Download className="w-4 h-4" /> Download PDF
+             </button>
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* IMAGE GALLERY */}
+      <SectionWrapper bg="light" className="py-20">
+        <div className="flex items-center gap-4 mb-12">
+          <Image className="w-5 h-5 text-lime-500" />
+          <h2 className="text-xs font-black uppercase tracking-[0.4em] text-slate-400">Visual Collection</h2>
+          <div className="h-[1px] flex-1 bg-slate-200"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
+          {CATALOG_IMAGES.map((img, idx) => (
+            <div 
+              key={idx} 
+              className="group relative aspect-[4/5] overflow-hidden bg-slate-200 reveal cursor-pointer"
+              onClick={() => setSelectedItem(img)}
+            >
+              <img 
+                src={img.url} 
+                alt={img.title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/60 transition-all duration-500 flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100">
+                <p className="text-[10px] font-black text-lime-500 uppercase tracking-widest mb-2">{img.category}</p>
+                <h3 className="text-2xl font-black text-white uppercase tracking-tighter leading-tight">{img.title}</h3>
+                <div className="mt-6 h-[2px] w-0 group-hover:w-full bg-lime-500 transition-all duration-700 delay-100"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </SectionWrapper>
+
+      {/* MODAL */}
+      {selectedItem && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+          <div 
+            className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm"
+            onClick={() => setSelectedItem(null)}
+          ></div>
+          <div className="bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto relative z-10 rounded-sm shadow-2xl flex flex-col md:flex-row">
+            <button 
+              onClick={() => setSelectedItem(null)}
+              className="absolute top-4 right-4 p-2 bg-slate-900 text-white rounded-full hover:bg-lime-500 hover:text-slate-950 transition-all z-20"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="md:w-1/2 bg-slate-100">
+              <img 
+                src={selectedItem.url} 
+                alt={selectedItem.title}
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            
+            <div className="md:w-1/2 p-8 md:p-12 space-y-8">
+              <div>
+                <p className="text-[10px] font-black text-lime-600 uppercase tracking-widest mb-2">{selectedItem.category}</p>
+                <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">{selectedItem.title}</h2>
+              </div>
+              
+              {selectedItem.details && (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                    <CheckCircle2 className="w-4 h-4 text-lime-500" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Material Information</h4>
+                  </div>
+                  <ul className="grid grid-cols-1 gap-3">
+                    {selectedItem.details.map((detail: string, i: number) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-slate-600 font-medium">
+                        <div className="mt-1.5 w-1.5 h-1.5 bg-lime-500 rounded-full flex-shrink-0"></div>
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="p-4 bg-slate-50 border-l-4 border-blue-600 flex gap-3 items-start">
+                    <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <p className="text-xs text-slate-500 font-medium leading-relaxed italic">
+                      Note: Removes easily without leaving marks. Scratch resistant and fade-resistant in sunlight. Environmentally friendly. Not suitable for textured walls.
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              {!selectedItem.details && (
+                <p className="text-slate-500 font-medium leading-relaxed">
+                  Premium {selectedItem.category.toLowerCase()} solution from the WallFeel Luxurious collection. Designed for high-impact environments and sophisticated aesthetics.
+                </p>
+              )}
+              
+              <div className="pt-8 border-t border-slate-100 flex flex-col gap-4">
+                <button 
+                  onClick={() => {
+                    setSelectedItem(null);
+                    window.location.hash = '#contact';
+                  }}
+                  className="w-full py-4 bg-slate-900 text-white font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-xl"
+                >
+                  Inquire About This Item
+                </button>
+                <button className="w-full py-4 border border-slate-200 text-slate-400 font-black uppercase tracking-widest rounded-sm hover:border-slate-900 hover:text-slate-900 transition-all text-[10px]">
+                  Download Specifications
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* VIDEO SECTION */}
+      <SectionWrapper bg="white" className="py-20">
+        <div className="flex items-center gap-4 mb-12">
+          <Film className="w-5 h-5 text-blue-600" />
+          <h2 className="text-xs font-black uppercase tracking-[0.4em] text-slate-400">Cinematic Showcases</h2>
+          <div className="h-[1px] flex-1 bg-slate-200"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {CATALOG_VIDEOS.map((video, idx) => (
+            <div key={idx} className="group relative aspect-video overflow-hidden bg-slate-900 rounded-sm reveal">
+              <img 
+                src={video.thumbnail} 
+                alt={video.title}
+                className="w-full h-full object-cover opacity-60 transition-transform duration-700 group-hover:scale-105"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 group-hover:bg-lime-500 group-hover:border-lime-500 transition-all duration-500">
+                  <Play className="w-6 h-6 text-white group-hover:text-slate-950 fill-current" />
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-slate-900 to-transparent">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <p className="text-[10px] font-black text-lime-500 uppercase tracking-widest mb-2">{video.category}</p>
+                    <h3 className="text-2xl font-black text-white uppercase tracking-tighter">{video.title}</h3>
+                  </div>
+                  <span className="text-[10px] font-black text-white/50 uppercase tracking-widest">{video.duration}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper bg="dark" className="py-20 text-center">
+        <div className="max-w-2xl mx-auto space-y-8 reveal">
+          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto">
+            <Image className="w-8 h-8 text-slate-300" />
+          </div>
+          <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter text-white">Request Custom Design</h2>
+          <p className="text-slate-400 font-medium">
+            Interested in a bespoke WallFeel solution or a full interior consultation? Our team is ready to bring your vision to life.
+          </p>
+          <button 
+            onClick={() => window.location.hash = '#contact'}
+            className="px-10 py-5 bg-lime-500 text-slate-950 font-black uppercase tracking-widest rounded-sm hover:bg-white transition-all"
+          >
+            Start a Project
+          </button>
+        </div>
+      </SectionWrapper>
+    </div>
+  );
+};
+
+export default WallfeelCatalogPage;

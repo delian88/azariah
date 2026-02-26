@@ -4,9 +4,10 @@ import { ArrowLeft, CheckCircle2, ShieldCheck, Leaf, Users, Target, Zap, LayoutG
 
 interface WallfeelPageProps {
   onBack: () => void;
+  onNavigate?: (view: any) => void;
 }
 
-const WallfeelPage: React.FC<WallfeelPageProps> = ({ onBack }) => {
+const WallfeelPage: React.FC<WallfeelPageProps> = ({ onBack, onNavigate }) => {
   return (
     <div className="pt-24 min-h-screen bg-white">
       {/* HERO SECTION */}
@@ -25,6 +26,14 @@ const WallfeelPage: React.FC<WallfeelPageProps> = ({ onBack }) => {
             <p className="text-xl text-slate-600 font-medium border-l-4 border-lime-500 pl-6 max-w-2xl">
               Redefining Luxury Wall Coverings Since 2019.
             </p>
+          </div>
+          <div className="flex gap-4">
+             <button 
+               onClick={() => onNavigate?.('wallfeel-catalog')}
+               className="px-8 py-4 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center gap-2 shadow-2xl"
+             >
+               <LayoutGrid className="w-4 h-4" /> View Catalog
+             </button>
           </div>
         </div>
       </SectionWrapper>
