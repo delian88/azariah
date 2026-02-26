@@ -5,7 +5,9 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
 // Handle both CLI (from Node.js bridge) and Web requests
-if (!isset($json)) {
+if (php_sapi_name() === 'cli') {
+    $json = file_get_contents('php://stdin');
+} else {
     $json = file_get_contents('php://input');
 }
 

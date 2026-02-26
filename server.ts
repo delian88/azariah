@@ -24,22 +24,18 @@ async function startServer() {
 
     try {
       // Use PHP bridge for Namecheap server compatibility
-      // We pass the data as a JSON string to the PHP script via CLI
       const payload = JSON.stringify({ fullName, email, organization, details });
       const phpScriptPath = path.join(process.cwd(), "mailer.php");
       
-      // Escape the payload for shell execution
-      const escapedPayload = payload.replace(/"/g, '\\"');
-      
-      exec(`php -r '$data = json_decode("${escapedPayload}", true); $_SERVER["REQUEST_METHOD"] = "POST"; $json = json_encode($data); include "${phpScriptPath}";'`, (error, stdout) => {
+      const child = exec(`php "${phpScriptPath}"`, (error, stdout) => {
         if (error) {
           console.error("PHP Execution Error:", error);
-          return res.status(500).json({ error: "Failed to process email via PHP" });
+          // If PHP is not available in this environment, it will fail here.
+          // On Namecheap, it should work.
+          return res.status(500).json({ error: "Failed to process email via PHP. Ensure PHP is installed." });
         }
         
         try {
-          // The PHP script outputs JSON, but might have some headers/whitespace
-          // We look for the JSON part in the output
           const jsonMatch = stdout.match(/\{.*\}/);
           const result = jsonMatch ? JSON.parse(jsonMatch[0]) : { success: false };
           
@@ -54,6 +50,11 @@ async function startServer() {
           res.status(500).json({ error: "Invalid response from mailer" });
         }
       });
+
+      if (child.stdin) {
+        child.stdin.write(payload);
+        child.stdin.end();
+      }
 
     } catch (error) {
       console.error("Bridge Error:", error);
