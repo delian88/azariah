@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { 
-  Camera, Play, Film, Tv, Megaphone, Sparkles, ArrowRight, 
-  MessageSquare, Users, Target, Heart, Globe, Clapperboard,
-  MonitorPlay, Mic2, Share2, Layers, Workflow, ShieldCheck,
-  CheckCircle2, XCircle, Zap, ExternalLink, Quote, FileText, Send,
-  Brain, Cpu, X, ChevronLeft, Info, Clock, BarChart3, Youtube
+  Camera, Play, Megaphone, Sparkles, ArrowRight, 
+  Users, Clapperboard,
+  MonitorPlay, Share2, 
+  Zap, ExternalLink, Send,
+  Brain, X, ChevronLeft, Info, Clock, BarChart3, Youtube
 } from 'lucide-react';
 
 const IMAGE_FALLBACK = "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071";

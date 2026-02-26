@@ -1,6 +1,6 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
-import { Play, Mic2, Coins, TrendingUp, Users, Video, ArrowRight, Wallet, Sparkles, UserPlus } from 'lucide-react';
+import { Play, Mic2, Coins, TrendingUp, Users, Video, Wallet, Sparkles, UserPlus } from 'lucide-react';
 
 const CreAItube: React.FC = () => {
   const MONETIZATION_FEATURES = [

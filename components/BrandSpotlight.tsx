@@ -1,5 +1,4 @@
 import React from 'react';
-import SectionWrapper from './SectionWrapper';
 
 const BrandSpotlight: React.FC = () => {
   return (

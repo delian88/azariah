@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { Send, Loader2, CheckCircle2, AlertCircle, Phone, Mail, ShieldCheck } from 'lucide-react';
 
@@ -12,14 +12,6 @@ const Contact: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-
-  // Initialize EmailJS with your provided Public Key
-  useEffect(() => {
-    if ((window as any).emailjs) {
-      // Public Key: 47Un9Cdef_fd1YWOi
-      (window as any).emailjs.init('47Un9Cdef_fd1YWOi');
-    }
-  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -38,52 +30,28 @@ const Contact: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      /** 
-       * REQUIRED: Ensure these IDs match your EmailJS Dashboard exactly.
-       * Service ID: Created when you connect your email (Gmail/Outlook).
-       * Template IDs: Created in the "Email Templates" section.
-       */
-      const SERVICE_ID = 'default_service'; 
-      const ADMIN_TEMPLATE_ID = 'template_amg_admin';
-      const CLIENT_TEMPLATE_ID = 'template_amg_client';
-      
-      // 1. DATA FOR info@azariahmg.com
-      const adminEmailParams = {
-        to_email: 'info@azariahmg.com',
-        from_name: formData.fullName,
-        from_email: formData.email,
-        organization: formData.organization || 'Individual',
-        message: formData.details,
-        subject: `Strategic Inquiry: ${formData.fullName}`
-      };
+      const response = await fetch('/api/inquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // 2. DATA FOR CLIENT (Using your specific boilerplate)
-      const clientEmailParams = {
-        to_name: formData.fullName,
-        to_email: formData.email,
-        project_context: formData.organization ? `project with ${formData.organization}` : "business goals",
-        subject: 'Thank you for contacting Azariah Management Group'
-      };
-
-      if ((window as any).emailjs) {
-        // Dispatch Internal Notification
-        await (window as any).emailjs.send(SERVICE_ID, ADMIN_TEMPLATE_ID, adminEmailParams);
-        
-        // Dispatch "Thank You" Boilerplate to Client
-        await (window as any).emailjs.send(SERVICE_ID, CLIENT_TEMPLATE_ID, clientEmailParams);
-        
-        setToastMessage(`Your inquiry has been transmitted to info@azariahmg.com and a confirmation email was sent to ${formData.email}.`);
-        setShowToast(true);
-        setFormData({ fullName: '', email: '', organization: '', details: '' });
-      } else {
-        throw new Error("Email engine not loaded");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send inquiry');
       }
+
+      setToastMessage(`Your inquiry has been received. A confirmation email was sent to ${formData.email}.`);
+      setShowToast(true);
+      setFormData({ fullName: '', email: '', organization: '', details: '' });
 
       setTimeout(() => setShowToast(false), 10000);
       
-    } catch (error) {
-      console.error('EmailJS Error:', error);
-      alert("Mail server connection error. Please ensure your EmailJS Service and Template IDs are correctly configured, or contact us directly at info@azariahmg.com.");
+    } catch (error: any) {
+      console.error('Inquiry Error:', error);
+      alert(error.message || "Failed to send inquiry. Please contact us directly at info@azariahmg.com.");
     } finally {
       setIsSubmitting(false);
     }

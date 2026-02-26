@@ -2,12 +2,8 @@ import React from 'react';
 import SectionWrapper from './SectionWrapper';
 import { PARTNERS } from '../constants';
 import { 
-  Globe, 
   Handshake, 
-  Target, 
   Briefcase, 
-  Award, 
-  Zap, 
   ShieldCheck, 
   ExternalLink,
   Users,

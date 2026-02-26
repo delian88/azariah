@@ -1,26 +1,13 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
 import { 
-  Shield, 
-  Info, 
-  Gavel, 
-  Scale, 
   Mail, 
   Globe, 
   Lock, 
   FileText, 
   AlertTriangle, 
-  Handshake, 
   Sparkles,
   ChevronRight,
-  ShieldCheck,
-  Briefcase,
-  Zap,
-  Target,
-  BarChart3,
-  Clock,
-  Printer,
-  Download,
   Phone
 } from 'lucide-react';
 

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Loader2, Sparkles, Minus, Zap, ArrowRight, Bot } from 'lucide-react';
+import { MessageSquare, X, Send, Loader2, Minus, Zap, ArrowRight, Bot } from 'lucide-react';
 import { startStrategicChat } from '../services/geminiService';
 import { GenerateContentResponse } from "@google/genai";
 

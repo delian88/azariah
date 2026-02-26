@@ -16,8 +16,7 @@ import {
   Linkedin,
   Twitter,
   Facebook,
-  Instagram,
-  ExternalLink
+  Instagram
 } from 'lucide-react';
 
 const NewsPage: React.FC = () => {
@@ -32,7 +31,7 @@ const NewsPage: React.FC = () => {
         return window.location.origin;
       }
       return new URL(currentUrl).href;
-    } catch (e) {
+    } catch {
       return window.location.origin;
     }
   };

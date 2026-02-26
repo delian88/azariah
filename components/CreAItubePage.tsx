@@ -7,12 +7,10 @@ import {
   TrendingUp, 
   Users, 
   Video, 
-  ArrowRight, 
   Wallet, 
   Sparkles, 
   UserPlus, 
   Youtube, 
-  Tv, 
   Zap,
   Globe,
   Share2

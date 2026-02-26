@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { PRODUCT_ITEMS } from '../constants';
 import { 
-  Zap, ArrowRight, CheckCircle2, ShoppingBag, 
-  ExternalLink, Layers, Sparkles, Globe, ShieldCheck, 
-  ChevronRight, Laptop, Smartphone, Rocket, X, Mail, User, Download, Loader2, AlertCircle
+  Zap, ArrowRight, CheckCircle2, 
+  ShieldCheck, 
+  Rocket, X, Mail, User, Download, Loader2, AlertCircle
 } from 'lucide-react';
 
 const ProductsPage: React.FC = () => {

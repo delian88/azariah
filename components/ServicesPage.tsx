@@ -1,11 +1,11 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
 import { 
-  ShieldCheck, Briefcase, Landmark, Cpu, Code2, Camera, 
+  Briefcase, Landmark, 
   CheckCircle2, Target, Globe, Heart, BarChart3, Share2,
-  Search, ClipboardList, Coins, Layout, Users, FileText,
-  Workflow, Settings, Layers, Sparkles, Monitor, Lock, Terminal,
-  Calendar, Zap, Play, Mic2, Tv, Video, Send, MessageSquare, Brain, Rocket,
+  Search, ClipboardList, Coins, Layout, Users, 
+  Workflow, Layers, Terminal,
+  Calendar, Zap, Mic2, Tv, Video, MessageSquare, Brain, Rocket,
   ShieldAlert, Database, Server, Smartphone, Laptop, Clapperboard, Film,
   MapPin, Lightbulb
 } from 'lucide-react';

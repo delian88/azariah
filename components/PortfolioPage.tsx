@@ -5,11 +5,9 @@ import {
   ArrowRight, 
   BarChart3, 
   Globe, 
-  Zap, 
   CheckCircle2, 
   Award, 
   Sparkles,
-  ExternalLink,
   Target,
   TrendingUp
 } from 'lucide-react';

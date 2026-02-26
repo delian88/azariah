@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { 
-  Users, 
   Target, 
   Sparkles, 
   CheckCircle2, 

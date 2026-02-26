@@ -4,8 +4,8 @@ import {
   Zap, ArrowRight, ChevronLeft, Heart, Globe, 
   Sparkles, Tv, Gamepad2, Brain, ShieldCheck, X, Info,
   Clapperboard, Share2, Target, Play, ShieldAlert, Scale,
-  BookOpen, LayoutDashboard, HeartHandshake, Users, BarChart3,
-  TrendingUp, MessageSquare, Megaphone, GraduationCap,
+  LayoutDashboard, 
+  TrendingUp, MessageSquare, Megaphone, 
   CheckCircle2, Link
 } from 'lucide-react';
 import { SIGNATURE_PROGRAMS } from '../constants';

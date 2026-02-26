@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, Zap, ArrowRight } from 'lucide-react';
 
 const SLIDES = [
   {
@@ -35,26 +35,26 @@ const Hero: React.FC = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
+  const nextSlide = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    setTimeout(() => setIsTransitioning(false), 800);
+  }, [isTransitioning]);
+
+  const prevSlide = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    setTimeout(() => setIsTransitioning(false), 800);
+  }, [isTransitioning]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       nextSlide();
     }, AUTO_SCROLL_INTERVAL);
     return () => clearInterval(timer);
-  }, [currentSlide, isTransitioning]);
-
-  const nextSlide = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
-    setTimeout(() => setIsTransitioning(false), 800);
-  };
-
-  const prevSlide = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
-    setTimeout(() => setIsTransitioning(false), 800);
-  };
+  }, [nextSlide]);
 
   const handleDotClick = (index: number) => {
     if (isTransitioning || index === currentSlide) return;

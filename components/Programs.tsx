@@ -3,9 +3,9 @@ import SectionWrapper from './SectionWrapper';
 import { SIGNATURE_PROGRAMS } from '../constants';
 import { 
   ExternalLink, Zap, X, ChevronLeft, Info, 
-  Play, Share2, Scale, Clapperboard, BarChart3,
+  Share2, Scale, Clapperboard, BarChart3,
   Tv, Gamepad2, Heart, Globe, Brain, ShieldCheck, ShieldAlert, Sparkles,
-  Download, Loader2, User, Mail, ArrowRight, Shield, CheckCircle2, FileText, Printer, AlertCircle
+  Download, Loader2, User, Mail, ArrowRight, Shield, FileText, Printer, AlertCircle
 } from 'lucide-react';
 
 const BLUEPRINT_DATA = {
