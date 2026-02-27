@@ -23,7 +23,7 @@ if (empty($fullName) || empty($email) || empty($details)) {
     exit;
 }
 
-$to_admin = "info@azariahmg.com";
+$to_admin = "info@azariahmg .com";
 $subject_admin = "New Strategic Inquiry: $fullName";
 
 $message_admin = "
