@@ -1,12 +1,21 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter, Facebook } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter, Facebook, ShieldCheck } from 'lucide-react';
 import Logo from './Logo';
+import { useContent } from '../context/ContentContext';
 
 interface FooterProps {
   onNavigate?: (view: any) => void;
 }
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+  const { settings, getSection, isAdmin } = useContent();
+  const section = getSection('footer');
+
+  const contactEmail = settings?.contact_email || "info@azariahmg.com";
+  const contactPhone = settings?.contact_phone || "240-813-0308";
+  const contactAddress = settings?.contact_address || "Upper Marlboro, MD, 20772 USA";
+  const footerDescription = section?.content || "AZARIAH MANAGEMENT GROUP: Advanced strategic consulting, engineering, and digital transformation for a borderless world.";
+
   const socialLinks = [
     { Icon: Linkedin, href: "#", label: "LinkedIn" },
     { Icon: Instagram, href: "#", label: "Instagram" },
@@ -27,7 +36,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="space-y-8">
           <Logo variant="dark" className="h-6" />
           <p className="text-slate-500 leading-relaxed font-bold text-sm">
-            AZARIAH MANAGEMENT GROUP: Advanced strategic consulting, engineering, and digital transformation for a borderless world.
+            {footerDescription}
           </p>
           <div className="flex space-x-2">
             {socialLinks.map((social, i) => (
@@ -70,15 +79,15 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <ul className="space-y-6 text-xs font-bold uppercase tracking-widest">
             <li className="flex items-start gap-4">
               <MapPin className="w-5 h-5 text-lime-500 shrink-0" />
-              <span>Upper Marlboro, MD, 20772 USA</span>
+              <span>{contactAddress}</span>
             </li>
             <li className="flex items-start gap-4">
               <Phone className="w-5 h-5 text-lime-500 shrink-0" />
-              <a href="tel:240-813-0308" className="hover:text-white transition-colors">240-813-0308</a>
+              <a href={`tel:${contactPhone}`} className="hover:text-white transition-colors">{contactPhone}</a>
             </li>
             <li className="flex items-start gap-4">
               <Mail className="w-5 h-5 text-blue-500 shrink-0" />
-              <a href="mailto:info@azariahmg.com" className="break-all hover:text-white transition-colors">info@azariahmg.com</a>
+              <a href={`mailto:${contactEmail}`} className="break-all hover:text-white transition-colors">{contactEmail}</a>
             </li>
           </ul>
         </div>
@@ -86,10 +95,18 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       
       <div className="max-w-7xl mx-auto pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-600 uppercase tracking-[0.5em] font-black">
         <p>© {new Date().getFullYear()} AZARIAH MANAGEMENT GROUP. BUILT FOR SCALE.</p>
-        <div className="flex space-x-8 mt-6 md:mt-0">
+        <div className="flex items-center space-x-8 mt-6 md:mt-0">
           <a href="#privacy-page" onClick={(e) => handleLinkClick(e, 'privacy')} className="hover:text-white transition-colors">Privacy</a>
           <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Terms</a>
           <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Legal</a>
+          <a 
+            href="#admin" 
+            onClick={(e) => handleLinkClick(e, 'admin')} 
+            className="flex items-center gap-1.5 text-lime-400 hover:text-white transition-colors px-2 py-1 bg-slate-900 border border-slate-800 rounded-sm hover:border-lime-500"
+          >
+            <ShieldCheck className="w-3 h-3 text-lime-400" />
+            {isAdmin ? "Admin Console" : "Admin Portal"}
+          </a>
         </div>
       </div>
     </footer>

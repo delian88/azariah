@@ -5,6 +5,8 @@ import nodemailer from "nodemailer";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
+import { apiRouter } from "./server/api";
+import { seedInitialData } from "./server/db";
 
 dotenv.config();
 
@@ -15,20 +17,37 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
-  // SMTP Configuration (Fallback for non-PHP environments like Preview)
+  // Static uploads serving for logos and media assets
+  const uploadsDir = path.join(process.cwd(), "uploads");
+  app.use("/uploads", express.static(uploadsDir));
+
+  // Initialize Database Schema & Seed Data
+  try {
+    await seedInitialData();
+  } catch (seedErr) {
+    console.warn("[Database Notice]: Could not complete initial seed:", seedErr);
+  }
+
+  // Mount Content & Admin Management APIs
+  app.use("/api", apiRouter);
+
+  // SMTP Configuration (Gmail SSL port 465)
+  const smtpPort = parseInt(process.env.SMTP_PORT || "465");
+  const isSecure = process.env.SMTP_SECURE === "true" || smtpPort === 465;
+
   const smtpConfig = {
     host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port: parseInt(process.env.SMTP_PORT || "587"),
-    secure: process.env.SMTP_SECURE === "true",
+    port: smtpPort,
+    secure: isSecure,
     auth: {
-      user: process.env.SMTP_USER || "taiwodele88@gmail.com",
-      pass: process.env.SMTP_PASS || "ucbznlbhnbogwuer",
+      user: process.env.SMTP_USER || "podoremetropolis@gmail.com",
+      pass: process.env.SMTP_PASS || "ptfjtrjyaidmyqrf",
     },
   };
 
   const transporter = nodemailer.createTransport(smtpConfig);
 
-  // API routes
+  // API routes: Contact Inquiry
   app.post("/api/inquiry", async (req, res) => {
     const { fullName, email, organization, details } = req.body;
 

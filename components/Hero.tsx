@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Zap, ArrowRight } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
-const SLIDES = [
+const DEFAULT_SLIDES = [
   {
     video: 'https://player.vimeo.com/external/434045526.sd.mp4?s=c27db08e124845114704b2d352332f1f50a80d2a&profile_id=164&oauth2_token_id=57447761',
     poster: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2069',
@@ -31,23 +32,38 @@ const SLIDES = [
 const AUTO_SCROLL_INTERVAL = 8000;
 
 const Hero: React.FC = () => {
+  const { getSection } = useContent();
+  const heroSection = getSection('hero');
+
+  const slides = (heroSection?.parsedData?.slides && heroSection.parsedData.slides.length > 0)
+    ? heroSection.parsedData.slides
+    : DEFAULT_SLIDES;
+
+  const badgeText = heroSection?.badge || "AZARIAH MANAGEMENT GROUP";
+  const ctaButtonText = heroSection?.ctaText || "Start Your Journey";
+  const ctaButtonLink = heroSection?.ctaLink || "#contact";
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
+  // Bound currentSlide within slides range if slides count changes
+  const activeSlideIndex = currentSlide % slides.length;
+  const activeSlide = slides[activeSlideIndex] || slides[0];
+
   const nextSlide = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
     setTimeout(() => setIsTransitioning(false), 800);
-  }, [isTransitioning]);
+  }, [isTransitioning, slides.length]);
 
   const prevSlide = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
     setTimeout(() => setIsTransitioning(false), 800);
-  }, [isTransitioning]);
+  }, [isTransitioning, slides.length]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -57,41 +73,54 @@ const Hero: React.FC = () => {
   }, [nextSlide]);
 
   const handleDotClick = (index: number) => {
-    if (isTransitioning || index === currentSlide) return;
+    if (isTransitioning || index === activeSlideIndex) return;
     setIsTransitioning(true);
     setCurrentSlide(index);
     setTimeout(() => setIsTransitioning(false), 800);
   };
 
-  const scrollToContact = () => {
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
+  const handleCtaClick = () => {
+    if (ctaButtonLink.startsWith("#")) {
+      const targetId = ctaButtonLink.substring(1);
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
     }
+    window.location.hash = ctaButtonLink;
   };
 
   return (
     <section id="home" className="relative h-screen w-full overflow-hidden bg-slate-950">
-      {/* Background Videos */}
-      {SLIDES.map((slide, index) => (
+      {/* Background Videos/Posters */}
+      {slides.map((slide: any, index: number) => (
         <div
           key={index}
           className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            index === currentSlide ? 'opacity-100' : 'opacity-0'
+            index === activeSlideIndex ? 'opacity-100' : 'opacity-0'
           }`}
         >
           <div className="absolute inset-0 bg-slate-950/40 z-10"></div>
-          <video
-            ref={el => { videoRefs.current[index] = el; }}
-            src={slide.video}
-            poster={slide.poster}
-            autoPlay
-            muted
-            loop
-            playsInline
-            aria-label={slide.alt}
-            className="w-full h-full object-cover grayscale brightness-50 contrast-125"
-          />
+          {slide.video ? (
+            <video
+              ref={el => { videoRefs.current[index] = el; }}
+              src={slide.video}
+              poster={slide.poster}
+              autoPlay
+              muted
+              loop
+              playsInline
+              aria-label={slide.alt || 'Azariah Hero Video'}
+              className="w-full h-full object-cover grayscale brightness-50 contrast-125"
+            />
+          ) : (
+            <img
+              src={slide.poster}
+              alt={slide.alt || 'Azariah Hero Image'}
+              className="w-full h-full object-cover grayscale brightness-50 contrast-125"
+            />
+          )}
         </div>
       ))}
 
@@ -103,28 +132,28 @@ const Hero: React.FC = () => {
         <div className="max-w-4xl space-y-8">
           <div className="inline-flex items-center gap-2 px-6 py-2 bg-white text-slate-950 rounded-none text-[12px] font-black tracking-[0.3em] uppercase shadow-2xl animate-in fade-in slide-in-from-left-8 duration-1000">
             <Zap className="w-4 h-4 fill-slate-950" />
-            AZARIAH MANAGEMENT GROUP
+            {badgeText}
           </div>
 
           <div className="space-y-2 overflow-hidden">
             <h1 className="text-7xl sm:text-8xl md:text-[9rem] font-black text-white leading-[0.8] tracking-tighter transition-all duration-700 text-shine-white">
-              {SLIDES[currentSlide].title}
+              {activeSlide.title}
             </h1>
             <p className="text-3xl md:text-5xl font-black text-lime-400 tracking-tighter uppercase italic">
-              {SLIDES[currentSlide].subtitle}
+              {activeSlide.subtitle}
             </p>
           </div>
 
           <p className="text-xl md:text-2xl text-slate-300 leading-relaxed font-bold max-w-2xl animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">
-            {SLIDES[currentSlide].description}
+            {activeSlide.description}
           </p>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
             <button 
-              onClick={scrollToContact}
+              onClick={handleCtaClick}
               className="px-12 py-7 bg-lime-500 text-slate-950 font-black rounded-none hover:bg-white transition-all flex items-center justify-center group shadow-2xl text-lg tracking-widest uppercase border-r-8 border-slate-900 active:translate-y-1 active:border-r-0"
             >
-              Start Your Journey
+              {ctaButtonText}
               <ArrowRight className="w-6 h-6 ml-4 group-hover:translate-x-2 transition-transform" />
             </button>
             <div className="px-8 py-7 bg-slate-900/80 backdrop-blur-md border border-white/10 text-white font-black uppercase tracking-widest text-xs flex items-center gap-4">
@@ -138,17 +167,17 @@ const Hero: React.FC = () => {
       {/* Slider Controls */}
       <div className="absolute bottom-12 left-6 md:left-12 z-30 flex flex-col md:flex-row items-start md:items-center gap-8">
         <div className="flex gap-4">
-          {SLIDES.map((_, i) => (
+          {slides.map((_: any, i: number) => (
             <button
               key={i}
               onClick={() => handleDotClick(i)}
               className={`relative h-1 overflow-hidden transition-all duration-500 rounded-none ${
-                i === currentSlide ? 'w-32 bg-white/20' : 'w-8 bg-white/10 hover:bg-white/40'
+                i === activeSlideIndex ? 'w-32 bg-white/20' : 'w-8 bg-white/10 hover:bg-white/40'
               }`}
             >
-              {i === currentSlide && (
+              {i === activeSlideIndex && (
                 <div 
-                  key={currentSlide}
+                  key={activeSlideIndex}
                   className="absolute inset-0 bg-lime-500 animate-progress"
                 />
               )}

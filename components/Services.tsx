@@ -2,27 +2,35 @@ import React from 'react';
 import * as LucideIcons from 'lucide-react';
 import { WHAT_WE_DO, HOW_WE_WORK, DIVISIONS } from '../constants';
 import SectionWrapper from './SectionWrapper';
+import { useContent } from '../context/ContentContext';
 
 interface ServicesProps {
   onExploreMore?: () => void;
 }
 
 const Services: React.FC<ServicesProps> = ({ onExploreMore }) => {
+  const { getSection } = useContent();
+  const section = getSection('services');
+
+  const title = section?.title || "What We Do";
+  const subtitle = section?.content || section?.subtitle || "This integrated model helps your organization grow with clarity, capacity, and purpose through a multi-faceted approach.";
+  const ctaText = section?.ctaText || "Explore Our Full Service Suite";
+
   return (
     <div id="what-we-do">
       <SectionWrapper bg="light">
         <div className="space-y-16">
           <div className="max-w-3xl space-y-6">
             <div className="w-12 h-1 bg-slate-900"></div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight uppercase text-shine">What We Do</h2>
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight uppercase text-shine">{title}</h2>
             <p className="text-slate-600 text-lg leading-relaxed font-medium">
-              This integrated model helps your organization grow with clarity, capacity, and purpose through a multi-faceted approach.
+              {subtitle}
             </p>
             <button 
               onClick={onExploreMore}
               className="group flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-900 hover:text-blue-700 transition-colors"
             >
-              Explore Our Full Service Suite <LucideIcons.ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+              {ctaText} <LucideIcons.ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
             </button>
           </div>
 

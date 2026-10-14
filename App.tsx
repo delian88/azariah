@@ -30,13 +30,34 @@ import ChatBot from './components/ChatBot';
 import Partners from './components/Partners';
 import PodOreSection from './components/PodOreSection';
 import BrandSpotlight from './components/BrandSpotlight';
+import AdminDashboard from './components/AdminDashboard';
+import { ContentProvider, useContent } from './context/ContentContext';
+import { ShieldCheck } from 'lucide-react';
 
-export type ViewState = 'home' | 'services' | 'about' | 'programs' | 'mentorship' | 'studio' | 'news' | 'products' | 'terms' | 'privacy' | 'portfolio' | 'partners' | 'creaitube' | 'catalog' | 'wallfeel' | 'wallfeel-catalog';
+export type ViewState = 
+  | 'home' 
+  | 'services' 
+  | 'about' 
+  | 'programs' 
+  | 'mentorship' 
+  | 'studio' 
+  | 'news' 
+  | 'products' 
+  | 'terms' 
+  | 'privacy' 
+  | 'portfolio' 
+  | 'partners' 
+  | 'creaitube' 
+  | 'catalog' 
+  | 'wallfeel' 
+  | 'wallfeel-catalog'
+  | 'admin';
 
-const App: React.FC = () => {
+const MainApp: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<ViewState>('home');
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const { isAdmin } = useContent();
 
   useEffect(() => {
     const handleHashRouting = () => {
@@ -58,11 +79,12 @@ const App: React.FC = () => {
       else if (hash === '#wallfeel-page') nextView = 'wallfeel';
       else if (hash === '#wallfeel-catalog-page') nextView = 'wallfeel-catalog';
       else if (hash === '#creaitube-page') nextView = 'creaitube';
+      else if (hash === '#admin' || hash === '#admin-page') nextView = 'admin';
       else nextView = 'home';
 
       setView(nextView);
       
-      if (hash.includes('-page')) {
+      if (hash.includes('-page') || hash === '#admin') {
         window.scrollTo(0, 0);
       } else if (hash.length > 1) {
         const id = hash.substring(1);
@@ -84,7 +106,7 @@ const App: React.FC = () => {
 
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1500);
+    }, 1200);
 
     return () => {
       clearTimeout(timer);
@@ -104,15 +126,18 @@ const App: React.FC = () => {
       products: "Digital Products & Ecosystems | AMG",
       terms: "Terms & Conditions | Legal Standards | AMG",
       privacy: "Privacy Policy | Data Protection | AMG",
-      portfolio: "Evidence of Excellence | AMG Portfolio",
-      partners: "Strategic Ecosystem | Partners & Clients | AMG",
-      catalog: "Luxurious Catalog | Interior Decoration | AMG",
-      wallfeel: "WallFeel Luxurious Decorations | Premium Wall Coverings | AMG",
-      'wallfeel-catalog': "WallFeel Catalog | Premium Wall Coverings | AMG",
-      creaitube: "CreAItube | The New Media Economy | AMG"
+      portfolio: "Case Studies & Strategic Portfolio | AMG",
+      partners: "Strategic Partners & Global Alliances | AMG",
+      catalog: "General Product Catalog | AMG",
+      wallfeel: "Wallfeel Luxury Decor | AMG",
+      'wallfeel-catalog': "Wallfeel Product Catalog | AMG",
+      creaitube: "CreAItube | AI-Driven Creative Hub | AMG",
+      admin: "Admin Console | Azariah Management Group",
     };
-    
-    document.title = titleMap[view] || "Azariah Management Group";
+
+    if (titleMap[view]) {
+      document.title = titleMap[view];
+    }
   }, [view]);
 
   useEffect(() => {
@@ -164,7 +189,8 @@ const App: React.FC = () => {
       catalog: '#catalog-page',
       wallfeel: '#wallfeel-page',
       'wallfeel-catalog': '#wallfeel-catalog-page',
-      creaitube: '#creaitube-page'
+      creaitube: '#creaitube-page',
+      admin: '#admin',
     };
     window.location.hash = hashMapping[newView];
     setView(newView);
@@ -185,8 +211,13 @@ const App: React.FC = () => {
     );
   }
 
+  // Admin Dashboard View (Full Screen)
+  if (view === 'admin') {
+    return <AdminDashboard onBackToHome={() => navigateTo('home')} />;
+  }
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white relative">
       <Navbar onNavigate={navigateTo} currentView={view} />
       
       <main>
@@ -227,7 +258,27 @@ const App: React.FC = () => {
 
       <Footer onNavigate={navigateTo} />
       <ChatBot />
+
+      {/* Floating Quick Admin Access when logged in */}
+      {isAdmin && (
+        <button
+          onClick={() => navigateTo('admin')}
+          className="fixed bottom-6 left-6 z-[90] px-4 py-2 bg-slate-900/90 text-lime-400 border border-lime-500/40 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-2 shadow-2xl hover:bg-lime-500 hover:text-slate-950 transition-all backdrop-blur-md"
+          title="Edit Sections & Logo"
+        >
+          <ShieldCheck className="w-4 h-4" />
+          <span>Edit Website</span>
+        </button>
+      )}
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <ContentProvider>
+      <MainApp />
+    </ContentProvider>
   );
 };
 

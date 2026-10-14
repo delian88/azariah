@@ -1,4 +1,5 @@
 import React from 'react';
+import { useContent, getAssetUrl } from '../context/ContentContext';
 
 interface LogoProps {
   className?: string;
@@ -7,12 +8,54 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ className = "h-8", variant = 'light' }) => {
   const isDark = variant === 'dark';
-  
+  const { settings } = useContent();
+
+  const logoUrl = settings?.logo_url;
+  const brandText = settings?.logo_text || "AZARIAH";
+  const brandSubtext = settings?.logo_subtext || "MANAGEMENT";
+
+  // Split brandText into two colored parts if starts with AZARIAH
+  let firstPart = brandText;
+  let secondPart = "";
+  if (brandText.toUpperCase().startsWith("AZARI") && brandText.length > 5) {
+    firstPart = brandText.substring(0, 5);
+    secondPart = brandText.substring(5);
+  }
+
   // Colors sampled from the official logo
   const colorBlue = "#005696";
   const colorGreen = "#84cc16";
-  const colorGray = "#71717a"; // Management text color
+  const colorGray = "#71717a";
   const managementColor = isDark ? "#94a3b8" : colorGray;
+
+  // If a custom logo image has been uploaded or configured in the backend
+  if (logoUrl && logoUrl.trim() !== "") {
+    return (
+      <div className={`flex items-center gap-2 ${className}`}>
+        <img
+          src={getAssetUrl(logoUrl)}
+          alt={brandText}
+          className="h-full w-auto max-h-12 object-contain"
+          onError={(e) => {
+            // Fallback if image fails to load
+            (e.target as HTMLElement).style.display = 'none';
+          }}
+        />
+        <div className="flex flex-col leading-[0.8] -space-y-0.5">
+          <div className="font-bold tracking-tighter text-xl md:text-2xl uppercase flex items-baseline">
+            <span style={{ color: isDark ? "#ffffff" : colorBlue }}>{firstPart}</span>
+            {secondPart && <span style={{ color: colorGreen }}>{secondPart}</span>}
+          </div>
+          <div 
+            className="text-[7px] md:text-[8px] font-medium tracking-[0.2em] uppercase"
+            style={{ color: managementColor }}
+          >
+            {brandSubtext}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -67,14 +110,14 @@ const Logo: React.FC<LogoProps> = ({ className = "h-8", variant = 'light' }) => 
       {/* Brand Typography - Refined sizing for compact header */}
       <div className="flex flex-col leading-[0.8] -space-y-0.5">
         <div className="font-bold tracking-tighter text-xl md:text-2xl uppercase flex items-baseline">
-          <span style={{ color: isDark ? "#ffffff" : colorBlue }}>AZARI</span>
-          <span style={{ color: colorGreen }}>AH</span>
+          <span style={{ color: isDark ? "#ffffff" : colorBlue }}>{firstPart}</span>
+          {secondPart && <span style={{ color: colorGreen }}>{secondPart}</span>}
         </div>
         <div 
           className="text-[7px] md:text-[8px] font-medium tracking-[0.2em] uppercase"
           style={{ color: managementColor }}
         >
-          MANAGEMENT
+          {brandSubtext}
         </div>
         <div 
           className="text-sm md:text-base font-black tracking-widest uppercase"

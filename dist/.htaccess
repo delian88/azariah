@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Route API requests to PHP API router
+  RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+
+  # 2. Allow existing files and directories (like /uploads/*, /assets/*) to be served directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 3. Route all other requests to index.html for SPA routing
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Security & CORS Headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+</IfModule>

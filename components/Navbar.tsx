@@ -3,8 +3,8 @@ import { Menu, X, ChevronRight, ChevronDown } from 'lucide-react';
 import Logo from './Logo';
 
 interface NavbarProps {
-  onNavigate?: (view: 'home' | 'services' | 'about' | 'programs' | 'mentorship' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners' | 'creaitube') => void;
-  currentView?: 'home' | 'services' | 'about' | 'programs' | 'mentorship' | 'studio' | 'news' | 'products' | 'portfolio' | 'partners' | 'creaitube';
+  onNavigate?: (view: any) => void;
+  currentView?: any;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {

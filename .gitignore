@@ -1,0 +1,21 @@
+﻿node_modules/
+.env
+.env.local
+.env.*.local
+
+# Backups & Archives
+*.zip
+vendor.zip
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE & AI Tooling
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+
+# Prisma
+/generated/prisma

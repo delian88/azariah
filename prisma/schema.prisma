@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admin_users")
+}
+
+model SiteSetting {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       String   @db.LongText
+  type        String   @default("text") // text, image, json
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model SectionContent {
+  id         Int      @id @default(autoincrement())
+  sectionKey String   @unique // e.g. hero, philosophy, about, services, strategic_ai, contact, footer, spotlight
+  badge      String?  @db.Text
+  title      String?  @db.Text
+  subtitle   String?  @db.Text
+  content    String?  @db.LongText
+  ctaText    String?  @db.Text
+  ctaLink    String?  @db.Text
+  mediaUrl   String?  @db.Text
+  data       String?  @db.LongText // JSON array or object for complex cards/stats
+  updatedAt  DateTime @updatedAt
+
+  @@map("section_contents")
+}
+
+model UploadedMedia {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  url          String
+  createdAt    DateTime @default(now())
+
+  @@map("uploaded_media")
+}
+
+model AdminOtp {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  otpCode     String   @db.VarChar(10)
+  deviceToken String   @db.VarChar(128)
+  ipAddress   String?  @db.VarChar(64)
+  userAgent   String?  @db.Text
+  expiresAt   DateTime
+  used        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([userId, otpCode, deviceToken, used], map: "idx_otp_verify")
+  @@map("admin_otps")
+}
+
+model AdminDevice {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  deviceToken  String   @db.VarChar(128)
+  deviceName   String?  @db.VarChar(255)
+  ipAddress    String?  @db.VarChar(64)
+  userAgent    String?  @db.Text
+  trustedUntil DateTime
+  lastLoginAt  DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, deviceToken], map: "idx_user_device")
+  @@map("admin_devices")
+}
+

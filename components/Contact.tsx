@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { Send, Loader2, CheckCircle2, AlertCircle, Phone, Mail, ShieldCheck } from 'lucide-react';
+import { useContent, getApiUrl } from '../context/ContentContext';
 
 const Contact: React.FC = () => {
+  const { settings, getSection } = useContent();
+  const section = getSection('contact');
+
+  const contactEmail = settings?.contact_email || "info@azariahmg.com";
+  const contactPhone = settings?.contact_phone || "+1 (443) 222-0000";
+  const officeHours = settings?.office_hours || "Mon - Fri, 9:00 AM - 5:00 PM EST";
+  const title = section?.title || "Strategic Inquiry";
+  const subtitle = section?.subtitle || `Direct transmission to ${contactEmail}`;
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -31,7 +41,8 @@ const Contact: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/mailer.php', {
+      // Primary: Try API endpoint (bridges PHP mailer)
+      const response = await fetch(getApiUrl('api/inquiry'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -52,7 +63,7 @@ const Contact: React.FC = () => {
 
     } catch (error: any) {
       console.error('Inquiry Error:', error);
-      alert(error.message || "Failed to send inquiry. Please contact us at info@azariahmg.com.");
+      alert(error.message || `Failed to send inquiry. Please contact us directly at ${contactEmail}.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -88,10 +99,10 @@ const Contact: React.FC = () => {
         <div className="md:col-span-2 bg-slate-900 p-10 md:p-16 text-white space-y-10">
           <div>
             <h2 className="text-3xl font-bold mb-4 uppercase tracking-tighter">
-              Strategic Inquiry
+              {title}
             </h2>
             <p className="text-slate-400">
-              Direct transmission to <span className="text-blue-400">info@azariahmg.com</span>
+              {subtitle}
             </p>
           </div>
 
@@ -99,7 +110,7 @@ const Contact: React.FC = () => {
             {/* Office hours */}
             <div className="p-4 bg-slate-800 rounded-sm flex items-center gap-3">
               <Phone className="w-5 h-5 text-lime-500" />
-              <div className="text-sm">Mon - Fri, 9:00 AM - 5:00 PM EST</div>
+              <div className="text-sm">{officeHours}</div>
             </div>
 
             {/* Contact channels */}
@@ -110,10 +121,16 @@ const Contact: React.FC = () => {
 
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-blue-400" />
-                <a href="mailto:info@azariahmg.com" className="text-sm font-bold hover:text-blue-400">
-                  info@azariahmg.com
+                <a href={`mailto:${contactEmail}`} className="text-sm font-bold hover:text-blue-400">
+                  {contactEmail}
                 </a>
               </div>
+              {contactPhone && (
+                <div className="flex items-center gap-3 text-xs text-slate-400">
+                  <Phone className="w-3.5 h-3.5 text-lime-400" />
+                  <span>{contactPhone}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
