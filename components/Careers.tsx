@@ -1,8 +1,15 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
 import { Users, GraduationCap, Handshake, ArrowRight, Star } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const Careers: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('careers_section');
+  const badge = section?.badge || "Career & Growth";
+  const title = section?.title || "Pathways to Excellence";
+  const content = section?.content || "Join the Azariah Manage mission. We build ecosystems where talent meets opportunity and strategy meets impact.";
+
   const CAREER_PATHWAYS = [
     {
       title: "Mentorship",
@@ -44,13 +51,13 @@ const Careers: React.FC = () => {
       <div className="space-y-16 relative z-10">
         <div className="max-w-3xl space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-sm">
-            <Star className="w-3 h-3 text-lime-400" /> Career & Growth
+            <Star className="w-3 h-3 text-lime-400" /> {badge}
           </div>
           <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight uppercase text-shine">
-            Pathways to Excellence
+            {title}
           </h2>
           <p className="text-xl text-slate-600 leading-relaxed font-medium">
-            Join the Azariah Manage mission. We build ecosystems where talent meets opportunity and strategy meets impact.
+            {content}
           </p>
         </div>
 

@@ -1,8 +1,15 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
 import { Globe, ArrowRight, Eye } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const AboutPage: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('about_page');
+  const badge = section?.badge || "The AMG Global Narrative";
+  const title = section?.title || "Strategic \nExcellence.";
+  const mainContent = section?.content || "Azariah Management Group (AMG) is a global strategic consulting, technology innovation, and media enterprise providing international business advisory and cross border growth solutions. Headquartered in the United States and serving clients across the U.S., United Kingdom, Africa, and global diaspora markets, AMG supports entrepreneurs, startups, nonprofits, and institutions in building scalable, compliant, and impact driven organizations. We operate at the intersection of strategy, technology, storytelling, and community development — delivering integrated solutions for modern global enterprises.";
+
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
@@ -16,10 +23,10 @@ const AboutPage: React.FC = () => {
       <SectionWrapper bg="white" className="relative overflow-hidden pb-8">
         <div className="max-w-5xl space-y-6 reveal active">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-800 text-[9px] font-black uppercase tracking-widest rounded-full border border-blue-100">
-            <Globe className="w-3.5 h-3.5 text-lime-600" /> The AMG Global Narrative
+            <Globe className="w-3.5 h-3.5 text-lime-600" /> {badge}
           </div>
-          <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.9] uppercase text-shine">
-            Strategic <br /> Excellence.
+          <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.9] uppercase text-shine whitespace-pre-line">
+            {title}
           </h1>
         </div>
       </SectionWrapper>
@@ -31,7 +38,7 @@ const AboutPage: React.FC = () => {
           <div className="space-y-4">
             <h3 className="text-xs font-black uppercase tracking-widest text-blue-600">About Azariah Management Group (AMG)</h3>
             <p className="text-base md:text-lg text-slate-700 font-bold leading-relaxed">
-              Azariah Management Group (AMG) is a global strategic consulting, technology innovation, and media enterprise providing international business advisory and cross border growth solutions. Headquartered in the United States and serving clients across the U.S., United Kingdom, Africa, and global diaspora markets, AMG supports entrepreneurs, startups, nonprofits, and institutions in building scalable, compliant, and impact driven organizations. We operate at the intersection of strategy, technology, storytelling, and community development — delivering integrated solutions for modern global enterprises.
+              {mainContent}
             </p>
           </div>
 

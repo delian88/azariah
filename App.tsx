@@ -213,7 +213,14 @@ const MainApp: React.FC = () => {
 
   // Admin Dashboard View (Full Screen)
   if (view === 'admin') {
-    return <AdminDashboard onBackToHome={() => navigateTo('home')} />;
+    return (
+      <AdminDashboard
+        onBackToHome={() => navigateTo('home')}
+        onNavigate={(route) => {
+          window.location.hash = route;
+        }}
+      />
+    );
   }
 
   return (

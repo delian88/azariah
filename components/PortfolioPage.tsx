@@ -1,6 +1,7 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
 import { PORTFOLIO_PROJECTS } from '../constants';
+import { useContent } from '../context/ContentContext';
 import { 
   ArrowRight, 
   BarChart3, 
@@ -13,6 +14,12 @@ import {
 } from 'lucide-react';
 
 const PortfolioPage: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('portfolio_page');
+  const badge = section?.badge || "Evidence of Excellence";
+  const title = section?.title || "Portfolio.";
+  const content = section?.content || "From UK-wide cultural festivals to ethical AI deployments, explore how we translate strategic intelligence into measurable results.";
+
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
@@ -27,13 +34,13 @@ const PortfolioPage: React.FC = () => {
         <div className="absolute top-0 right-0 w-1/4 h-full bg-slate-50 -skew-x-12 translate-x-1/2 -z-10"></div>
         <div className="max-w-4xl space-y-6 reveal active">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
-            <Award className="w-4 h-4 text-lime-400" /> Evidence of Excellence
+            <Award className="w-4 h-4 text-lime-400" /> {badge}
           </div>
           <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none uppercase text-shine">
-            Portfolio.
+            {title}
           </h1>
           <p className="text-xl text-slate-600 font-medium border-l-4 border-blue-600 pl-6 max-w-2xl">
-            From UK-wide cultural festivals to ethical AI deployments, explore how we translate strategic intelligence into measurable results.
+            {content}
           </p>
         </div>
       </SectionWrapper>

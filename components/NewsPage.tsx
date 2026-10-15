@@ -18,8 +18,15 @@ import {
   Facebook,
   Instagram
 } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const NewsPage: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('news_page');
+  const badge = section?.badge || "Global Intelligence";
+  const title = section?.title || "News & Press.";
+  const content = section?.content || "Stay informed with the latest organizational updates, industry insights, and impact reports from Azariah Management Group.";
+
   const [selectedNews, setSelectedNews] = useState<any | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -115,13 +122,13 @@ const NewsPage: React.FC = () => {
         <div className="absolute top-0 right-0 w-1/4 h-full bg-slate-50 -skew-x-12 translate-x-1/2 -z-10"></div>
         <div className="max-w-4xl space-y-8 reveal active">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-800 text-xs font-black uppercase tracking-widest rounded-full border border-blue-100">
-            <Globe className="w-4 h-4" /> Global Intelligence
+            <Globe className="w-4 h-4" /> {badge}
           </div>
           <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none text-shine">
-            News & Press.
+            {title}
           </h1>
           <p className="text-xl text-slate-600 leading-relaxed font-medium border-l-4 border-lime-500 pl-6 max-w-2xl">
-            Stay informed with the latest organizational updates, industry insights, and impact reports from Azariah Management Group.
+            {content}
           </p>
         </div>
       </SectionWrapper>

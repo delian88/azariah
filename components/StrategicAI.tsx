@@ -2,8 +2,15 @@ import React, { useState } from 'react';
 import { Sparkles, Send, Loader2, RefreshCw, ExternalLink, Globe } from 'lucide-react';
 import { getStrategicInsight, StrategicResponse } from '../services/geminiService';
 import SectionWrapper from './SectionWrapper';
+import { useContent } from '../context/ContentContext';
 
 const StrategicAI: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('strategic_ai');
+  const badge = section?.badge || "Advanced Strategic Engine";
+  const title = section?.title || "Strategic Insight Engine";
+  const content = section?.content || "Leverage Pro-grade models and real-time Google Search grounding to analyze your business challenges.";
+
   const [input, setInput] = useState('');
   const [result, setResult] = useState<StrategicResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -52,13 +59,13 @@ const StrategicAI: React.FC = () => {
         <div className="space-y-4">
           <div className="inline-flex items-center space-x-2 text-blue-400 font-mono text-xs md:text-sm tracking-widest uppercase">
             <Sparkles className="w-4 h-4" />
-            <span>Advanced Strategic Engine</span>
+            <span>{badge}</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight px-4 text-shine-white">
-            Strategic Insight Engine
+            {title}
           </h2>
           <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto px-4">
-            Leverage Pro-grade models and real-time Google Search grounding to analyze your business challenges.
+            {content}
           </p>
         </div>
 

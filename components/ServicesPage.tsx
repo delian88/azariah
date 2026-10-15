@@ -9,8 +9,17 @@ import {
   ShieldAlert, Database, Server, Smartphone, Laptop, Clapperboard, Film,
   MapPin, Lightbulb
 } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const ServicesPage: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('services_page');
+  const badge = section?.badge || "Integrated Strategic Ecosystem";
+  const title = section?.title || "Strategy, Innovation & Impact—Built for Organizations Ready to Grow";
+  const content = section?.content || "Azariah Management Group (AMG) provides integrated consulting, program execution, innovation support, and creative storytelling that help organizations drive measurable community impact and sustainable growth.";
+  const subtitle = section?.subtitle || "Serving Government, Private Sector, & Global Non-Profits.";
+  const mediaUrl = section?.mediaUrl || "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=2000";
+
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
@@ -26,21 +35,19 @@ const ServicesPage: React.FC = () => {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-800 text-xs font-black uppercase tracking-widest rounded-full border border-blue-100 animate-pulse">
-              <Globe className="w-4 h-4" /> Integrated Strategic Ecosystem
+              <Globe className="w-4 h-4" /> {badge}
             </div>
             
             <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-[1.1] text-shine">
-              Strategy, Innovation & Impact—Built for Organizations Ready to Grow
+              {title}
             </h1>
             
             <div className="space-y-6 text-xl text-slate-600 leading-relaxed font-medium border-l-4 border-lime-500 pl-6">
               <p>
-                Azariah Management Group (AMG) provides integrated consulting, program execution,
-                innovation support, and creative storytelling that help organizations drive measurable community
-                impact and sustainable growth.
+                {content}
               </p>
               <p className="text-base text-slate-500 font-bold uppercase tracking-widest">
-                Serving Government, Private Sector, & Global Non-Profits.
+                {subtitle}
               </p>
             </div>
           </div>
@@ -48,7 +55,7 @@ const ServicesPage: React.FC = () => {
           <div className="relative reveal active">
             <div className="absolute inset-0 bg-gradient-to-tr from-lime-500/10 to-blue-600/10 blur-3xl rounded-full"></div>
             <div className="relative aspect-square bg-slate-900 rounded-sm shadow-2xl overflow-hidden group border-8 border-white">
-               <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=2000" className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000" />
+               <img src={mediaUrl} alt="Strategic Services" className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000" />
                <div className="absolute inset-0 flex items-center justify-center p-12 text-center bg-blue-900/20 backdrop-blur-[2px]">
                   <p className="text-3xl font-black text-white leading-tight uppercase tracking-tighter text-shine-white">Turning Purpose into Measurable Progress.</p>
                </div>

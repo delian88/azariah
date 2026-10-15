@@ -150,11 +150,18 @@ const CATALOG_VIDEOS = [
   }
 ];
 
+import { useContent } from '../context/ContentContext';
+
 interface CatalogPageProps {
   onBack: () => void;
 }
 
 const CatalogPage: React.FC<CatalogPageProps> = ({ onBack }) => {
+  const { getSection } = useContent();
+  const section = getSection('catalog_page');
+  const badge = section?.badge || "Executive Solutions Suite";
+  const title = section?.title || "Luxurious Catalog.";
+  const content = section?.content || "Explore our premium collection of 20+ interior decorations, real estate ventures, and transformative 8D Mural Wallpapers.";
   const [selectedItem, setSelectedItem] = React.useState<any>(null);
 
   return (
@@ -168,11 +175,14 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onBack }) => {
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Partners
             </button>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-700 text-[9px] font-black uppercase tracking-widest rounded-sm">
+              {badge}
+            </div>
             <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none uppercase">
-              Luxurious <span className="text-shine">Catalog.</span>
+              {title}
             </h1>
             <p className="text-lg text-slate-500 font-medium max-w-2xl">
-              Explore our premium collection of 20+ interior decorations, real estate ventures, and transformative 8D Mural Wallpapers.
+              {content}
             </p>
           </div>
           <div className="flex gap-4">

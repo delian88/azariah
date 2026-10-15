@@ -4,7 +4,7 @@ import { Send, Loader2, CheckCircle2, AlertCircle, Phone, Mail, ShieldCheck } fr
 import { useContent, getApiUrl } from '../context/ContentContext';
 
 const Contact: React.FC = () => {
-  const { settings, getSection } = useContent();
+  const { settings, getSection, showToast } = useContent();
   const section = getSection('contact');
 
   const contactEmail = settings?.contact_email || "info@azariahmg.com";
@@ -21,8 +21,6 @@ const Contact: React.FC = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -34,7 +32,7 @@ const Contact: React.FC = () => {
     if (isSubmitting) return;
 
     if (!formData.fullName || !formData.email || !formData.details) {
-      alert("Please fill in all required fields.");
+      showToast("Please fill in all required fields (Name, Email, and Details).", "error");
       return;
     }
 
@@ -56,14 +54,12 @@ const Contact: React.FC = () => {
         throw new Error(data.error || "Failed to send inquiry.");
       }
 
-      setToastMessage(`Your inquiry has been received. A confirmation email was sent to ${formData.email}.`);
-      setShowToast(true);
+      showToast(`Inquiry sent! A confirmation email was dispatched to ${formData.email}.`, "success", 8000);
       setFormData({ fullName: '', email: '', organization: '', details: '' });
-      setTimeout(() => setShowToast(false), 10000);
 
     } catch (error: any) {
       console.error('Inquiry Error:', error);
-      alert(error.message || `Failed to send inquiry. Please contact us directly at ${contactEmail}.`);
+      showToast(error.message || `Failed to send inquiry. Please email ${contactEmail} directly.`, "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -72,26 +68,7 @@ const Contact: React.FC = () => {
   return (
     <SectionWrapper id="contact" bg="light" className="relative">
 
-      {showToast && (
-        <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md">
-          <div className="bg-slate-900 text-white p-6 rounded-sm shadow-2xl border-l-4 border-lime-500 flex items-start gap-4">
-            <div className="bg-lime-500 p-2 rounded-full shrink-0">
-              <CheckCircle2 className="w-5 h-5 text-slate-900" />
-            </div>
-            <div className="flex-1">
-              <p className="font-black uppercase tracking-widest text-xs mb-1">
-                Message Transmitted
-              </p>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter leading-relaxed">
-                {toastMessage}
-              </p>
-            </div>
-            <button onClick={() => setShowToast(false)} className="text-slate-500 hover:text-white shrink-0">
-              <AlertCircle className="w-4 h-4 rotate-45" />
-            </button>
-          </div>
-        </div>
-      )}
+
 
       <div className="max-w-5xl mx-auto bg-white rounded-sm shadow-2xl overflow-hidden grid md:grid-cols-5">
 

@@ -15,8 +15,15 @@ import {
   Globe,
   Share2
 } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const CreAItubePage: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('creaitube_page');
+  const badge = section?.badge || "The New Media Economy";
+  const title = section?.title || "CreAItube \n& Podcast.";
+  const content = section?.content || "The ultimate platform for modern creators where strategic storytelling meets decentralized monetization.";
+
   const MONETIZATION_FEATURES = [
     {
       title: "Earn Per View",
@@ -45,13 +52,13 @@ const CreAItubePage: React.FC = () => {
         <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
            <div className="space-y-8 reveal active">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
-                <Sparkles className="w-3 h-3 text-lime-400" /> The New Media Economy
+                <Sparkles className="w-3 h-3 text-lime-400" /> {badge}
               </div>
-              <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-none text-shine-white uppercase">
-                CreAItube <br /> & Podcast.
+              <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-none text-shine-white uppercase whitespace-pre-line">
+                {title}
               </h1>
               <p className="text-xl md:text-2xl text-slate-400 leading-relaxed font-medium max-w-xl">
-                The ultimate platform for modern creators where strategic storytelling meets decentralized monetization. 
+                {content}
               </p>
               <div className="flex flex-wrap gap-4 pt-6">
                 <button className="px-12 py-6 bg-lime-500 text-slate-950 font-black rounded-sm hover:bg-white transition-all shadow-xl uppercase tracking-widest text-xs flex items-center gap-3">

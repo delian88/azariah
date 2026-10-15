@@ -9,8 +9,16 @@ import {
   CheckCircle2, Link
 } from 'lucide-react';
 import { SIGNATURE_PROGRAMS } from '../constants';
+import { useContent } from '../context/ContentContext';
 
 const ProgramsPage: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('programs_page');
+  const badge = section?.badge || "High-Impact Ventures";
+  const title = section?.title || "The Engine of Innovation.";
+  const content = section?.content || "Our signature programs are the living proof of our commitment to community impact and economic growth.";
+  const mediaUrl = section?.mediaUrl || "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=2071";
+
   const [selectedProgram, setSelectedProgram] = useState<any | null>(null);
 
   const getProgramIcon = (title: string) => {
@@ -108,19 +116,19 @@ const ProgramsPage: React.FC = () => {
         <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 reveal active">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-lime-50 text-lime-800 text-xs font-black uppercase tracking-widest rounded-full border border-lime-100 animate-pulse">
-              <Zap className="w-4 h-4 fill-lime-500" /> High-Impact Ventures
+              <Zap className="w-4 h-4 fill-lime-500" /> {badge}
             </div>
             <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none text-shine">
-              The Engine of Innovation.
+              {title}
             </h1>
             <p className="text-xl text-slate-600 leading-relaxed font-medium border-l-4 border-blue-600 pl-6">
-              Our signature programs are the living proof of our commitment to community impact and economic growth.
+              {content}
             </p>
           </div>
           <div className="relative reveal active">
              <div className="aspect-square bg-slate-900 rounded-sm shadow-2xl overflow-hidden group">
                 <img 
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=2071" 
+                  src={mediaUrl} 
                   alt="Innovation" 
                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 opacity-60 group-hover:opacity-100"
                 />

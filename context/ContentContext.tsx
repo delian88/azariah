@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 
 export interface SiteSettings {
   logo_url?: string;
@@ -61,6 +62,13 @@ export interface DeviceInfo {
   isTrusted: number | boolean;
 }
 
+export interface ToastNotification {
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'info';
+  title?: string;
+}
+
 interface ContentContextType {
   settings: SiteSettings;
   sections: Record<string, SectionContent>;
@@ -75,6 +83,7 @@ interface ContentContextType {
   fetchDevices: () => Promise<DeviceInfo[]>;
   revokeDevice: (deviceId?: number, deviceToken?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  showToast: (message: string, type?: 'success' | 'error' | 'info', duration?: number) => void;
   updateSettings: (newSettings: Partial<SiteSettings>) => Promise<{ success: boolean; error?: string }>;
   updateSection: (sectionKey: string, data: Partial<SectionContent>) => Promise<{ success: boolean; error?: string }>;
   uploadMedia: (file: File, setAsLogo?: boolean) => Promise<{ success: boolean; url?: string; error?: string }>;
@@ -145,6 +154,21 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
     return dev;
   });
+
+  // Global Toast Notifications State
+  const [toasts, setToasts] = useState<ToastNotification[]>([]);
+
+  const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'success', duration = 4500) => {
+    const id = Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, duration);
+  }, []);
+
+  const dismissToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
 
   const fetchContent = useCallback(async () => {
     try {
@@ -314,6 +338,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setAdminUser(null);
     localStorage.removeItem("amg_admin_token");
     localStorage.removeItem("amg_admin_user");
+    showToast("Signed out successfully. Session closed.", "info");
   };
 
   const updateSettings = async (newSettings: Partial<SiteSettings>) => {
@@ -415,6 +440,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         fetchDevices,
         revokeDevice,
         logout,
+        showToast,
         updateSettings,
         updateSection,
         uploadMedia,
@@ -423,6 +449,43 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }}
     >
       {children}
+
+      {/* Global Toast Notification Container */}
+      <div className="fixed top-6 right-6 z-[99999] flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4">
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className={`pointer-events-auto p-4 rounded-sm shadow-2xl backdrop-blur-xl border flex items-start gap-3 transition-all duration-300 animate-in slide-in-from-top-2 ${
+              toast.type === 'error'
+                ? 'bg-red-950/95 border-red-500/50 text-red-200'
+                : toast.type === 'info'
+                ? 'bg-slate-900/95 border-blue-500/50 text-blue-200'
+                : 'bg-slate-900/95 border-lime-500/50 text-slate-100'
+            }`}
+          >
+            {toast.type === 'error' ? (
+              <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+            ) : toast.type === 'info' ? (
+              <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+            ) : (
+              <CheckCircle2 className="w-5 h-5 text-lime-400 shrink-0 mt-0.5" />
+            )}
+            <div className="flex-1 text-xs">
+              <p className="font-black uppercase tracking-wider text-[10px] mb-0.5">
+                {toast.type === 'error' ? 'Action Notice' : toast.type === 'info' ? 'System Notification' : 'Success'}
+              </p>
+              <p className="text-slate-200 leading-relaxed font-medium">{toast.message}</p>
+            </div>
+            <button
+              onClick={() => dismissToast(toast.id)}
+              className="text-slate-400 hover:text-white p-1 shrink-0 transition-colors"
+              title="Dismiss notification"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+      </div>
     </ContentContext.Provider>
   );
 };

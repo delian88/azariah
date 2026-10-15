@@ -1,6 +1,7 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
 import { PARTNERS } from '../constants';
+import { useContent } from '../context/ContentContext';
 import { 
   Handshake, 
   Briefcase, 
@@ -15,6 +16,12 @@ interface PartnersPageProps {
 }
 
 const PartnersPage: React.FC<PartnersPageProps> = ({ onNavigate }) => {
+  const { getSection } = useContent();
+  const section = getSection('partners_page');
+  const badge = section?.badge || "Strategic Ecosystem";
+  const title = section?.title || "Partners & Clients.";
+  const content = section?.content || "We collaborate with global visionaries, technology leaders, and community advocates to bridge the gap between innovation and impact.";
+
   const categories = ["Global Strategy", "Media & Culture", "Technology", "Social Impact", "Community", "Creative Services"];
 
   const scrollToContact = () => {
@@ -31,13 +38,13 @@ const PartnersPage: React.FC<PartnersPageProps> = ({ onNavigate }) => {
         <div className="absolute top-0 right-0 w-1/4 h-full bg-slate-50 -skew-x-12 translate-x-1/2 -z-10"></div>
         <div className="max-w-4xl space-y-6 reveal active">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
-            <Handshake className="w-4 h-4 text-lime-500" /> Strategic Ecosystem
+            <Handshake className="w-4 h-4 text-lime-500" /> {badge}
           </div>
           <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none uppercase text-shine">
-            Partners & Clients.
+            {title}
           </h1>
           <p className="text-xl text-slate-600 font-medium border-l-4 border-blue-600 pl-6 max-w-2xl">
-            We collaborate with global visionaries, technology leaders, and community advocates to bridge the gap between innovation and impact.
+            {content}
           </p>
         </div>
       </SectionWrapper>

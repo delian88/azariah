@@ -6,8 +6,15 @@ import {
   ShieldCheck, 
   Rocket, X, Mail, User, Download, Loader2, AlertCircle
 } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const ProductsPage: React.FC = () => {
+  const { showToast, getSection } = useContent();
+  const section = getSection('products_page');
+  const badge = section?.badge || "Digital Infrastructure";
+  const title = section?.title || "The Product Ecosystem.";
+  const content = section?.content || "Our digital tools and frameworks are designed to move organizations from baseline operations to high-impact excellence.";
+
   const [isDocModalOpen, setIsDocModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,13 +72,13 @@ const ProductsPage: React.FC = () => {
         <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 reveal active">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-lime-50 text-lime-800 text-xs font-black uppercase tracking-widest rounded-full border border-lime-100 animate-pulse">
-              <Zap className="w-4 h-4 fill-lime-500" /> Digital Infrastructure
+              <Zap className="w-4 h-4 fill-lime-500" /> {badge}
             </div>
             <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none text-shine">
-              The Product Ecosystem.
+              {title}
             </h1>
             <p className="text-xl text-slate-600 leading-relaxed font-medium border-l-4 border-blue-600 pl-6">
-              Our digital tools and frameworks are designed to move organizations from baseline operations to high-impact excellence.
+              {content}
             </p>
           </div>
           <div className="relative reveal active">
@@ -234,7 +241,10 @@ const ProductsPage: React.FC = () => {
                 <div className="pt-4 flex flex-col gap-4">
                    <a 
                      href="#" 
-                     onClick={(e) => { e.preventDefault(); alert("Simulated download: " + selectedProduct?.title + "_Documentation.pdf"); }}
+                     onClick={(e) => { 
+                       e.preventDefault(); 
+                       showToast(`Downloading: ${selectedProduct?.title || 'Product'}_Blueprint.pdf`, "success"); 
+                     }}
                      className="w-full py-6 bg-lime-500 text-slate-950 font-black uppercase tracking-[0.2em] text-xs rounded-sm hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center gap-4 shadow-xl"
                    >
                      Download Blueprint PDF <Download className="w-4 h-4" />

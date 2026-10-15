@@ -231,11 +231,18 @@ const CATALOG_VIDEOS = [
   }
 ];
 
+import { useContent } from '../context/ContentContext';
+
 interface WallfeelCatalogPageProps {
   onBack: () => void;
 }
 
 const WallfeelCatalogPage: React.FC<WallfeelCatalogPageProps> = ({ onBack }) => {
+  const { getSection } = useContent();
+  const section = getSection('wallfeel_catalog_page');
+  const badge = section?.badge || "Artisan Finishes";
+  const title = section?.title || "WallFeel Catalog.";
+  const content = section?.content || "Explore our premium collection of 30+ luxury wall coverings and cinematic showcases.";
   const [selectedItem, setSelectedItem] = React.useState<any>(null);
 
   return (
@@ -249,11 +256,14 @@ const WallfeelCatalogPage: React.FC<WallfeelCatalogPageProps> = ({ onBack }) => 
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to WallFeel
             </button>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-700 text-[9px] font-black uppercase tracking-widest rounded-sm">
+              {badge}
+            </div>
             <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none uppercase">
-              WallFeel <span className="text-shine">Catalog.</span>
+              {title}
             </h1>
             <p className="text-lg text-slate-500 font-medium max-w-2xl">
-              Explore our premium collection of 30+ luxury wall coverings and cinematic showcases.
+              {content}
             </p>
           </div>
           <div className="flex gap-4">

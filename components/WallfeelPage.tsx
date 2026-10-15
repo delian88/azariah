@@ -1,6 +1,7 @@
 import React from 'react';
 import SectionWrapper from './SectionWrapper';
 import { CheckCircle2, ShieldCheck, Leaf, Target, Zap, LayoutGrid, ArrowLeft } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 interface WallfeelPageProps {
   onBack: () => void;
@@ -8,6 +9,12 @@ interface WallfeelPageProps {
 }
 
 const WallfeelPage: React.FC<WallfeelPageProps> = ({ onBack, onNavigate }) => {
+  const { getSection } = useContent();
+  const section = getSection('wallfeel_page');
+  const badge = section?.badge || "Luxury Interior Systems";
+  const title = section?.title || "WallFeel Luxurious.";
+  const content = section?.content || "Redefining Luxury Wall Coverings Since 2019.";
+
   return (
     <div className="pt-24 min-h-screen bg-white">
       {/* HERO SECTION */}
@@ -20,11 +27,14 @@ const WallfeelPage: React.FC<WallfeelPageProps> = ({ onBack, onNavigate }) => {
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Partners
             </button>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-lime-50 text-lime-800 text-[9px] font-black uppercase tracking-widest rounded-sm border border-lime-100">
+              {badge}
+            </div>
             <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none uppercase">
-              WallFeel <span className="text-shine">Luxurious.</span>
+              {title}
             </h1>
             <p className="text-xl text-slate-600 font-medium border-l-4 border-lime-500 pl-6 max-w-2xl">
-              Redefining Luxury Wall Coverings Since 2019.
+              {content}
             </p>
           </div>
           <div className="flex gap-4">

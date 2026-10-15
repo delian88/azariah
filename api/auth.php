@@ -139,6 +139,15 @@ if ($action === 'login' && $method === 'POST') {
             'name' => $user['name']
         ]);
 
+        // Send HTML Login Alert Notification
+        sendAdminLoginAlertEmail(
+            $user['email'],
+            $user['name'] ?: 'Administrator',
+            $deviceName,
+            $ip,
+            'Recognized Device (7-Day Bypass)'
+        );
+
         sendJson([
             'success' => true,
             'requiresOtp' => false,
@@ -297,6 +306,15 @@ if ($action === 'verify-otp' && $method === 'POST') {
         'email' => $user['email'],
         'name' => $user['name']
     ]);
+
+    // Send HTML Login Alert Notification
+    sendAdminLoginAlertEmail(
+        $user['email'],
+        $user['name'] ?: 'Administrator',
+        $deviceName,
+        $ip,
+        '2FA Verification Code (New 7-Day Trust Granted)'
+    );
 
     sendJson([
         'success' => true,

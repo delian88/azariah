@@ -15,8 +15,15 @@ import {
   Settings,
   Bell
 } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const PrivacyPage: React.FC = () => {
+  const { getSection } = useContent();
+  const sec = getSection('privacy_page');
+  const badge = sec?.badge || "Data Handling Statement";
+  const title = sec?.title || "Privacy Policy.";
+  const introContent = sec?.content || "Azariah Management Group (“AMG,” “we,” “our,” or “us”) respects your privacy and is committed to protecting the personal information you share with us. This Privacy Policy explains how we collect, use, store, and safeguard your information when you visit www.azariahmg.com or engage with our services.";
+
   const today = new Date().toLocaleDateString('en-US', {
     month: '2-digit',
     day: '2-digit',
@@ -202,17 +209,17 @@ const PrivacyPage: React.FC = () => {
         <div className="absolute top-0 right-0 w-1/4 h-full bg-slate-50 -skew-x-12 translate-x-1/2 -z-10"></div>
         <div className="max-w-4xl space-y-6 reveal active">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-xl">
-            <ShieldCheck className="w-4 h-4 text-lime-400" /> Data Handling Statement
+            <ShieldCheck className="w-4 h-4 text-lime-400" /> {badge}
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none uppercase text-shine">
-            Privacy Policy.
+            {title}
           </h1>
           <div className="space-y-2">
             <p className="text-xs font-black uppercase tracking-widest text-slate-900">Azariah Management Group (AMG)</p>
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400 border-l-4 border-lime-500 pl-4">Effective Date: {today}</p>
           </div>
           <p className="text-lg text-slate-600 font-medium leading-relaxed max-w-3xl">
-            Azariah Management Group (“AMG,” “we,” “our,” or “us”) respects your privacy and is committed to protecting the personal information you share with us. This Privacy Policy explains how we collect, use, store, and safeguard your information when you visit <a href="https://www.azariahmg.com" className="text-blue-600 underline">www.azariahmg.com</a> or engage with our services.
+            {introContent}
           </p>
           <p className="text-sm font-black uppercase text-slate-400 italic">By using our website or services, you consent to the practices described in this policy.</p>
         </div>

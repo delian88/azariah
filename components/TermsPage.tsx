@@ -10,8 +10,14 @@ import {
   ChevronRight,
   Phone
 } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const TermsPage: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('terms_page');
+  const badge = section?.badge || "Professional Standards";
+  const title = section?.title || "Terms & Conditions.";
+
   const today = new Date().toLocaleDateString('en-US', {
     month: '2-digit',
     day: '2-digit',
@@ -25,10 +31,10 @@ const TermsPage: React.FC = () => {
         <div className="absolute top-0 right-0 w-1/4 h-full bg-slate-50 -skew-x-12 translate-x-1/2 -z-10"></div>
         <div className="max-w-4xl space-y-6 reveal active">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
-            <Lock className="w-4 h-4 text-lime-500" /> Professional Standards
+            <Lock className="w-4 h-4 text-lime-500" /> {badge}
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none uppercase text-shine">
-            Terms & Conditions.
+            {title}
           </h1>
           <div className="flex flex-col md:flex-row md:items-center gap-4 text-xs font-black uppercase tracking-widest text-slate-400">
              <span className="text-slate-900">Azariah Management Group (AMG)</span>

@@ -87,7 +87,15 @@ const BLUEPRINT_DATA = {
   about: "Azariah Management Group is a multidisciplinary consulting, media, and impact firm delivering strategy-driven solutions across community development, advocacy, media production, and organizational growth."
 };
 
+import { useContent } from '../context/ContentContext';
+
 const Programs: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('programs_section');
+  const badge = section?.badge || "Signature Ventures";
+  const title = section?.title || "Innovation & Storytelling";
+  const subtitle = section?.subtitle || section?.content || "We don't just consult; we build. Explore our ecosystem of high-impact platforms and programs.";
+  const ctaText = section?.ctaText || "Book Discovery Call";
   const [selectedProgram, setSelectedProgram] = useState<any | null>(null);
   const [isBlueprintModalOpen, setIsBlueprintModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -315,13 +323,13 @@ const Programs: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="space-y-6 max-w-2xl">
             <div className="inline-flex items-center gap-2 text-lime-600 font-black text-xs uppercase tracking-widest">
-              <Zap className="w-4 h-4 fill-lime-500" /> Signature Ventures
+              <Zap className="w-4 h-4 fill-lime-500" /> {badge}
             </div>
             <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none text-shine">
-              Innovation & Storytelling
+              {title}
             </h2>
             <p className="text-xl text-slate-600 font-medium">
-              We don't just consult; we build. Explore our ecosystem of high-impact platforms and programs.
+              {subtitle}
             </p>
           </div>
           <div className="hidden md:block">
@@ -374,7 +382,7 @@ const Programs: React.FC = () => {
               onClick={scrollToContact}
               className="w-full md:w-auto px-12 py-6 bg-slate-900 text-white font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-2xl uppercase tracking-widest text-sm"
             >
-              Book Discovery Call
+              {ctaText}
             </button>
             <button 
               onClick={() => setIsBlueprintModalOpen(true)}

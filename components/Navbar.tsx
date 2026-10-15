@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ChevronRight, ChevronDown } from 'lucide-react';
 import Logo from './Logo';
+import { useContent } from '../context/ContentContext';
 
 interface NavbarProps {
   onNavigate?: (view: any) => void;
@@ -8,6 +9,11 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
+  const { getSection } = useContent();
+  const headerSection = getSection('header');
+  const ctaText = headerSection?.ctaText || headerSection?.parsedData?.navCtaText || 'Work With Us';
+  const ctaLink = headerSection?.ctaLink || headerSection?.parsedData?.navCtaLink || '#contact';
+
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [programsDropdownOpen, setProgramsDropdownOpen] = useState(false);
@@ -117,20 +123,24 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           <a href="#creaitube-page" onClick={(e) => handleLinkClick(e, '#creaitube-page', 'creaitube')} className={`font-black uppercase tracking-widest transition-colors text-[8px] lg:text-[10px] ${textColorClass}`}>CreAItube</a>
 
           <a
-            href="#contact"
+            href={ctaLink}
             onClick={(e) => {
-               const el = document.getElementById('contact');
-               if (el && currentView === 'home') {
-                 e.preventDefault();
-                 setIsOpen(false);
-                 el.scrollIntoView({ behavior: 'smooth' });
+               if (ctaLink.startsWith('#')) {
+                 const el = document.getElementById(ctaLink.substring(1));
+                 if (el && currentView === 'home') {
+                   e.preventDefault();
+                   setIsOpen(false);
+                   el.scrollIntoView({ behavior: 'smooth' });
+                 } else {
+                   setIsOpen(false);
+                 }
                } else {
                  setIsOpen(false);
                }
             }}
             className="px-4 py-2 bg-slate-900 text-white font-black uppercase tracking-widest rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all flex items-center group shadow-xl text-[8px] lg:text-[9px]"
           >
-            Work With Us
+            {ctaText}
             <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
@@ -159,7 +169,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           </div>
           <a href="#services-page" onClick={(e) => handleLinkClick(e, '#services-page', 'services')} className="block font-black uppercase tracking-widest text-slate-600 py-2 border-b border-slate-50 text-[10px]">Services</a>
           <a href="#studio-page" onClick={(e) => handleLinkClick(e, '#studio-page', 'studio')} className="block font-black uppercase tracking-widest text-slate-600 py-2 border-b border-slate-50 text-[10px]">Studio AMG</a>
-          <a href="#contact" onClick={(e) => handleLinkClick(e, '#contact')} className="block w-full py-4 bg-slate-900 text-white text-center font-black uppercase tracking-widest rounded-sm text-[10px] mt-4">Work With Us</a>
+          <a href={ctaLink} onClick={(e) => handleLinkClick(e, ctaLink)} className="block w-full py-4 bg-slate-900 text-white text-center font-black uppercase tracking-widest rounded-sm text-[10px] mt-4">{ctaText}</a>
         </div>
       )}
     </nav>

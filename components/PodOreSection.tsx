@@ -5,8 +5,17 @@ import {
   ShoppingBag, MessageSquare, BarChart3, Rocket, Users2, 
   GraduationCap, Plus, ArrowRight, Sparkles 
 } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const PodOreSection: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('podore_section');
+  const badge = section?.badge || "A Global Digital Ecosystem";
+  const title = section?.title || "Create Your \nPodOre Account.";
+  const content = section?.content || "Join World AI Force. PodOre is a community-based platform where innovators meet, collaborate, and scale their digital impact.";
+  const ctaText = section?.ctaText || "Create PodOre Account";
+  const ctaLink = section?.ctaLink || "https://worldaiforce.org/";
+
   const FEATURES = [
     { icon: Users, title: "POD FEED", desc: "Share tech" },
     { icon: Briefcase, title: "CAREERS", desc: "Jobs/Hiring" },
@@ -23,7 +32,11 @@ const PodOreSection: React.FC = () => {
   ];
 
   const handleCreateAccount = () => {
-    window.open("https://worldaiforce.org/", "_blank");
+    if (ctaLink.startsWith('http')) {
+      window.open(ctaLink, "_blank");
+    } else {
+      window.location.hash = ctaLink;
+    }
   };
 
   return (
@@ -34,13 +47,13 @@ const PodOreSection: React.FC = () => {
         <div className="space-y-10">
           <div className="space-y-6 reveal">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-800 text-[10px] font-black uppercase tracking-widest rounded-full border border-blue-100">
-              <Sparkles className="w-4 h-4 text-lime-600" /> A Global Digital Ecosystem
+              <Sparkles className="w-4 h-4 text-lime-600" /> {badge}
             </div>
-            <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none text-shine">
-              Create Your <br /> PodOre Account.
+            <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none text-shine whitespace-pre-line">
+              {title}
             </h2>
             <p className="text-xl text-slate-600 font-medium max-w-xl leading-relaxed">
-              Join <span className="text-blue-600 font-black">World AI Force</span>. PodOre is a community-based platform where innovators meet, collaborate, and scale their digital impact.
+              {content}
             </p>
           </div>
 
@@ -59,7 +72,7 @@ const PodOreSection: React.FC = () => {
               onClick={handleCreateAccount}
               className="px-12 py-7 bg-blue-600 text-white font-black rounded-sm hover:bg-slate-900 transition-all shadow-2xl flex items-center gap-4 group uppercase tracking-widest text-sm hover:-translate-y-1"
             >
-              Create PodOre Account
+              {ctaText}
               <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
             </button>
           </div>

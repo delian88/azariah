@@ -16,8 +16,15 @@ import {
   Award,
   ShieldCheck
 } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const MentorshipPage: React.FC = () => {
+  const { showToast, getSection } = useContent();
+  const section = getSection('mentorship_page');
+  const badge = section?.badge || "Pathways to Excellence";
+  const title = section?.title || "Developing \nThe Next Era of \nGlobal Leaders.";
+  const content = section?.content || "Azariah Management Group’s Mentorship Program bridges the gap between emerging talent and high-level strategic expertise.";
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -76,13 +83,14 @@ const MentorshipPage: React.FC = () => {
         
         setIsSubmitting(false);
         setIsSubmitted(true);
+        showToast("Mentorship application submitted successfully! Confirmation sent to your email.", "success", 8000);
         setFormData({ fullName: '', email: '', linkedin: '', industry: '', interest: '', message: '' });
       } else {
         throw new Error("SDK Load Error");
       }
     } catch (error) {
       console.error("Mentorship Email Error:", error);
-      alert("Mail server connection error. Please ensure your EmailJS configuration is correct, or email your application directly to info@azariahmg.com.");
+      showToast("Mail server connection error. Please email your application directly to info@azariahmg.com.", "error");
       setIsSubmitting(false);
     }
   };
@@ -112,13 +120,13 @@ const MentorshipPage: React.FC = () => {
         <div className="absolute top-0 right-0 w-1/4 h-full bg-slate-50 -skew-x-12 translate-x-1/2 -z-10"></div>
         <div className="max-w-4xl space-y-8 reveal active">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-lime-50 text-lime-800 text-[10px] font-black uppercase tracking-widest rounded-full border border-lime-100 shadow-sm">
-            <Award className="w-4 h-4 text-lime-600" /> Pathways to Excellence
+            <Award className="w-4 h-4 text-lime-600" /> {badge}
           </div>
-          <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none text-shine uppercase">
-            Developing <br /> The Next Era of <br /> Global Leaders.
+          <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none text-shine uppercase whitespace-pre-line">
+            {title}
           </h1>
           <p className="text-xl text-slate-600 leading-relaxed font-medium border-l-4 border-blue-600 pl-6 max-w-2xl">
-            Azariah Management Group’s Mentorship Program bridges the gap between emerging talent and high-level strategic expertise.
+            {content}
           </p>
         </div>
       </SectionWrapper>

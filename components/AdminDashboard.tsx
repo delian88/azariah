@@ -13,7 +13,6 @@ import {
   Save,
   RefreshCw,
   Sliders,
-  Database,
   ExternalLink,
   Eye,
   KeyRound,
@@ -24,16 +23,281 @@ import {
   Clock,
   Trash2,
   Mail,
-  ShieldAlert
+  ShieldAlert,
+  Search,
+  Filter,
+  Folder,
+  Code,
+  Layout,
+  Globe,
+  Compass,
+  ArrowUpRight,
+  Check,
+  X,
+  FileCode,
+  Tv,
+  Film
 } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
 import Logo from './Logo';
 
-interface AdminDashboardProps {
-  onBackToHome: () => void;
+export interface SectionMeta {
+  key: string;
+  category: 'header' | 'landing' | 'page' | 'footer';
+  label: string;
+  tag: string;
+  description: string;
+  route: string;
 }
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) => {
+export const ALL_SECTIONS_CONFIG: SectionMeta[] = [
+  // --- Header & Navigation ---
+  {
+    key: 'header',
+    category: 'header',
+    label: 'Header & Global Navigation',
+    tag: 'NAV',
+    description: 'Site-wide top navigation bar, logo styling, announcement notice, and primary navigation CTA button.',
+    route: '#home',
+  },
+
+  // --- Landing Page Sections (12 sections) ---
+  {
+    key: 'hero',
+    category: 'landing',
+    label: '1. Hero Main Screen',
+    tag: 'HERO',
+    description: 'Dynamic 3-slide visual presentation, primary headline, mission tagline, and engagement CTA.',
+    route: '#home',
+  },
+  {
+    key: 'philosophy',
+    category: 'landing',
+    label: '2. Strategic Philosophy',
+    tag: 'PHILOSOPHY',
+    description: 'Core corporate doctrine, foundational pillars of intelligence, and narrative paragraphs.',
+    route: '#philosophy',
+  },
+  {
+    key: 'brand_spotlight',
+    category: 'landing',
+    label: '3. Brand Spotlight Showcase',
+    tag: 'SPOTLIGHT',
+    description: 'High-impact multimedia embed (CreAItube showcase), featured badge, and corporate spotlight narrative.',
+    route: '#brand-spotlight',
+  },
+  {
+    key: 'partners_section',
+    category: 'landing',
+    label: '4. Strategic Partners Grid',
+    tag: 'PARTNERS',
+    description: 'Global institutional alliances, corporate partners marquee, and joint-venture network narrative.',
+    route: '#partners',
+  },
+  {
+    key: 'services',
+    category: 'landing',
+    label: '5. Core Capabilities (What We Do)',
+    tag: 'SERVICES',
+    description: 'Strategic advisory, intelligence gathering, media impact, and technology consulting matrix.',
+    route: '#services',
+  },
+  {
+    key: 'about',
+    category: 'landing',
+    label: '6. Corporate Overview (About AMG)',
+    tag: 'ABOUT',
+    description: 'Institutional background, track record, organizational profile, and performance metrics.',
+    route: '#about',
+  },
+  {
+    key: 'programs_section',
+    category: 'landing',
+    label: '7. Programs & Initiatives',
+    tag: 'PROGRAMS',
+    description: 'Executive accelerator programs, media labs, and enterprise fellowship application banner.',
+    route: '#programs',
+  },
+  {
+    key: 'strategic_ai',
+    category: 'landing',
+    label: '8. Strategic AI Integration',
+    tag: 'AI INTEL',
+    description: 'Autonomous workflows, algorithmic market intelligence, and generative media architecture.',
+    route: '#strategic-ai',
+  },
+  {
+    key: 'creaitube_section',
+    category: 'landing',
+    label: '9. CreAItube Studio Highlight',
+    tag: 'CREAITUBE',
+    description: 'Automated video generation suite, digital creator pipeline, and media studio highlight.',
+    route: '#creaitube',
+  },
+  {
+    key: 'podore_section',
+    category: 'landing',
+    label: '10. PodOre Infrastructure',
+    tag: 'PODORE',
+    description: 'Critical raw materials, mineral commodities, ethical supply chains, and enterprise portal.',
+    route: '#podore',
+  },
+  {
+    key: 'careers_section',
+    category: 'landing',
+    label: '11. Careers & Global Talent',
+    tag: 'CAREERS',
+    description: 'Strategic hiring, elite talent acquisition, organizational culture, and career portal.',
+    route: '#careers',
+  },
+  {
+    key: 'contact',
+    category: 'landing',
+    label: '12. Global Inquiries & Engagement',
+    tag: 'CONTACT',
+    description: 'Corporate engagement intake, headquarters coordinates, inquiry routing, and consultation CTA.',
+    route: '#contact',
+  },
+
+  // --- Dedicated Standalone Pages (15 pages) ---
+  {
+    key: 'services_page',
+    category: 'page',
+    label: 'Services & Capabilities Page',
+    tag: 'PAGE',
+    description: 'Dedicated capabilities portal, enterprise solutions directory, and bespoke consulting packages.',
+    route: '#services-page',
+  },
+  {
+    key: 'about_page',
+    category: 'page',
+    label: 'Corporate Profile & Leadership Page',
+    tag: 'PAGE',
+    description: 'Comprehensive corporate history, executive leadership bio, vision, and governance standards.',
+    route: '#about-page',
+  },
+  {
+    key: 'programs_page',
+    category: 'page',
+    label: 'Programs & Masterclasses Page',
+    tag: 'PAGE',
+    description: 'Complete directory of enterprise accelerators, executive cohorts, and specialized masterclasses.',
+    route: '#programs-page',
+  },
+  {
+    key: 'mentorship_page',
+    category: 'page',
+    label: 'Executive Mentorship & Fellowship',
+    tag: 'PAGE',
+    description: 'High-level advisory mentorship, 1-on-1 strategic guidance, and fellowship cohorts.',
+    route: '#mentorship-page',
+  },
+  {
+    key: 'studio_page',
+    category: 'page',
+    label: 'Studio AMG Creative Lab Page',
+    tag: 'PAGE',
+    description: 'State-of-the-art production studio, commercial film, audio mastering, and content labs.',
+    route: '#studio-page',
+  },
+  {
+    key: 'news_page',
+    category: 'page',
+    label: 'Intelligence & Insights Feed Page',
+    tag: 'PAGE',
+    description: 'Press releases, strategic intelligence briefs, geopolitical reports, and media appearances.',
+    route: '#news-page',
+  },
+  {
+    key: 'products_page',
+    category: 'page',
+    label: 'Technology & Media Products Page',
+    tag: 'PAGE',
+    description: 'Software platforms, proprietary analytical engines, and commercialized media products.',
+    route: '#products-page',
+  },
+  {
+    key: 'portfolio_page',
+    category: 'page',
+    label: 'Case Studies & Track Record Page',
+    tag: 'PAGE',
+    description: 'Documented client outcomes, strategic media campaigns, and advisory case studies.',
+    route: '#portfolio-page',
+  },
+  {
+    key: 'partners_page',
+    category: 'page',
+    label: 'Alliance Network & Co-Ventures Page',
+    tag: 'PAGE',
+    description: 'Global partner directory, joint venture frameworks, and international alliance opportunities.',
+    route: '#partners-page',
+  },
+  {
+    key: 'catalog_page',
+    category: 'page',
+    label: 'Corporate Publication & Catalog Page',
+    tag: 'PAGE',
+    description: 'Official corporate dossiers, downloadable strategic whitepapers, and product catalogs.',
+    route: '#catalog-page',
+  },
+  {
+    key: 'wallfeel_page',
+    category: 'page',
+    label: 'Wallfeel Luxury Brand Portal',
+    tag: 'PAGE',
+    description: 'Luxury acoustic wall coverings, bespoke interior architecture, and designer brand showcase.',
+    route: '#wallfeel-page',
+  },
+  {
+    key: 'wallfeel_catalog_page',
+    category: 'page',
+    label: 'Wallfeel Luxury Catalog & Swatches',
+    tag: 'PAGE',
+    description: 'Interactive swatch catalog, surface textures, material specs, and architectural order portal.',
+    route: '#wallfeel-catalog-page',
+  },
+  {
+    key: 'creaitube_page',
+    category: 'page',
+    label: 'CreAItube Autonomous Studio Page',
+    tag: 'PAGE',
+    description: 'Standalone portal for CreAItube AI video automation platform, creator tools, and API access.',
+    route: '#creaitube-page',
+  },
+  {
+    key: 'terms_page',
+    category: 'page',
+    label: 'Terms of Service & Compliance Page',
+    tag: 'PAGE',
+    description: 'Terms of engagement, client agreements, intellectual property governance, and legal notices.',
+    route: '#terms-page',
+  },
+  {
+    key: 'privacy_page',
+    category: 'page',
+    label: 'Global Privacy & Data Policy Page',
+    tag: 'PAGE',
+    description: 'Worldwide data protection policy, privacy compliance, cookie declarations, and rights.',
+    route: '#privacy-page',
+  },
+
+  // --- Footer & Legal ---
+  {
+    key: 'footer',
+    category: 'footer',
+    label: 'Global Footer & Compliance Bar',
+    tag: 'FOOTER',
+    description: 'Site-wide footer, corporate legal tagline, accreditation badges, and copyright notice.',
+    route: '#footer',
+  },
+];
+
+interface AdminDashboardProps {
+  onBackToHome: () => void;
+  onNavigate?: (route: string) => void;
+}
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, onNavigate }) => {
   const {
     settings,
     sections,
@@ -46,6 +310,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
     fetchDevices,
     revokeDevice,
     logout,
+    showToast: globalToast,
     updateSettings,
     updateSection,
     uploadMedia,
@@ -75,6 +340,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
   // Active Tab
   const [activeTab, setActiveTab] = useState<'branding' | 'sections' | 'media' | 'system'>('branding');
   const [activeSectionKey, setActiveSectionKey] = useState<string>('hero');
+
+  // CMS Section Navigation & Search State
+  const [sectionCategoryFilter, setSectionCategoryFilter] = useState<'all' | 'landing' | 'page' | 'header' | 'footer'>('all');
+  const [sectionSearch, setSectionSearch] = useState<string>('');
+  const [galleryModalOpen, setGalleryModalOpen] = useState(false);
+  const [advancedJsonOpen, setAdvancedJsonOpen] = useState(false);
+  const [rawJsonText, setRawJsonText] = useState<string>('{}');
+  const [jsonError, setJsonError] = useState<string | null>(null);
 
   // Notification Toast
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -135,6 +408,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
   useEffect(() => {
     const sec = sections[activeSectionKey];
     if (sec) {
+      const dataObj = sec.parsedData || (sec.data ? (typeof sec.data === 'string' ? JSON.parse(sec.data) : sec.data) : {});
       setSectionForm({
         badge: sec.badge || '',
         title: sec.title || '',
@@ -143,8 +417,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
         ctaText: sec.ctaText || '',
         ctaLink: sec.ctaLink || '',
         mediaUrl: sec.mediaUrl || '',
-        parsedData: sec.parsedData || {},
+        parsedData: dataObj,
       });
+      setRawJsonText(JSON.stringify(dataObj, null, 2));
+      setJsonError(null);
+    } else {
+      setSectionForm({
+        badge: '',
+        title: '',
+        subtitle: '',
+        content: '',
+        ctaText: '',
+        ctaLink: '',
+        mediaUrl: '',
+        parsedData: {},
+      });
+      setRawJsonText('{}');
+      setJsonError(null);
     }
   }, [activeSectionKey, sections]);
 
@@ -171,8 +460,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
     }
   }, [isAdmin]);
 
-  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
-    setToast({ message, type });
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+    setToast({ message, type: type === 'info' ? 'success' : type });
+    globalToast?.(message, type);
     setTimeout(() => setToast(null), 4000);
   };
 
@@ -205,15 +495,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
     setAuthLoading(false);
     if (!res.success) {
       setAuthError(res.error || 'Authentication failed');
+      showToast(res.error || 'Authentication failed. Please check credentials.', 'error');
     } else if (res.requiresOtp) {
       setOtpStep(true);
       setOtpEmail(res.emailMasked || res.email || username);
       setOtpReason(res.reason || 'Unrecognized device detected');
       setOtpDevCode(res.devOtpCode || '');
       setResendCountdown(30);
-      showToast('Security verification code sent to ' + (res.emailMasked || res.email));
+      showToast('Security verification code sent to ' + (res.emailMasked || res.email), 'info');
     } else {
-      showToast('Welcome back, Administrator!');
+      showToast('Welcome back, Administrator! Direct session activated.');
     }
   };
 
@@ -279,9 +570,32 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
     }
   };
 
-  const handleSaveSection = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePreviewRoute = (route: string) => {
+    if (onNavigate) {
+      onNavigate(route);
+    } else {
+      window.location.hash = route;
+    }
+    showToast(`Navigated to preview '${route}'. Admin session remains active.`, 'info');
+  };
+
+  const handleSaveSection = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setIsSaving(true);
+
+    let customData = sectionForm.parsedData;
+    if (advancedJsonOpen && rawJsonText.trim()) {
+      try {
+        customData = JSON.parse(rawJsonText);
+        setJsonError(null);
+      } catch (err: any) {
+        setJsonError(`Invalid JSON syntax: ${err.message}`);
+        setIsSaving(false);
+        showToast('Please fix JSON syntax errors before saving.', 'error');
+        return;
+      }
+    }
+
     const res = await updateSection(activeSectionKey, {
       badge: sectionForm.badge,
       title: sectionForm.title,
@@ -290,13 +604,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
       ctaText: sectionForm.ctaText,
       ctaLink: sectionForm.ctaLink,
       mediaUrl: sectionForm.mediaUrl,
-      data: sectionForm.parsedData,
+      data: customData,
     });
     setIsSaving(false);
     if (res.success) {
-      showToast(`Section '${activeSectionKey.toUpperCase()}' updated successfully!`);
+      showToast(`Section '${activeSectionKey.toUpperCase()}' saved successfully!`);
     } else {
       showToast(res.error || 'Failed to update section', 'error');
+    }
+  };
+
+  const handleSectionMediaUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    const file = files[0];
+    const res = await uploadMedia(file, false);
+    setIsUploading(false);
+
+    if (res.success && res.url) {
+      setSectionForm((prev) => ({ ...prev, mediaUrl: res.url! }));
+      showToast('Media asset uploaded and attached to section!');
+      loadMedia();
+    } else {
+      showToast(res.error || 'Failed to upload media', 'error');
     }
   };
 
@@ -604,27 +936,36 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
                 Live Admin
               </span>
               <span className="text-xs font-bold text-slate-300 hidden md:inline">
-                MySQL Backend Active
+                Enterprise System Active
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <button
-              onClick={onBackToHome}
+              onClick={() => {
+                onBackToHome();
+                showToast('Switched to live website view. Session remains active.', 'info');
+              }}
               className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold flex items-center gap-2 transition-colors border border-slate-700"
             >
               <ExternalLink className="w-3.5 h-3.5 text-lime-400" /> View Website
             </button>
             <button
-              onClick={refreshContent}
+              onClick={async () => {
+                await refreshContent();
+                showToast('Content synchronized successfully.');
+              }}
               className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-sm text-xs transition-colors border border-slate-700"
-              title="Refresh Data from MySQL"
+              title="Refresh Content"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
             <button
-              onClick={logout}
+              onClick={() => {
+                logout();
+                showToast('Logged out successfully. Session closed.', 'info');
+              }}
               className="px-4 py-2 bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/50 rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors"
             >
               <LogOut className="w-3.5 h-3.5" /> Logout
@@ -643,7 +984,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
             </p>
 
             <button
-              onClick={() => setActiveTab('branding')}
+              onClick={() => {
+                setActiveTab('branding');
+                showToast('Switched to Logo & Brand Identity configuration.', 'info');
+              }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
                 activeTab === 'branding'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
@@ -654,7 +998,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
             </button>
 
             <button
-              onClick={() => setActiveTab('sections')}
+              onClick={() => {
+                setActiveTab('sections');
+                showToast('Switched to Dynamic Sections Content editor.', 'info');
+              }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
                 activeTab === 'sections'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
@@ -665,7 +1012,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
             </button>
 
             <button
-              onClick={() => setActiveTab('media')}
+              onClick={() => {
+                setActiveTab('media');
+                showToast('Switched to Media & Asset Gallery.', 'info');
+              }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
                 activeTab === 'media'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
@@ -676,26 +1026,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
             </button>
 
             <button
-              onClick={() => setActiveTab('system')}
+              onClick={() => {
+                setActiveTab('system');
+                showToast('Switched to System Security & Devices.', 'info');
+              }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
                 activeTab === 'system'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
             >
-              <Database className="w-4 h-4" /> System & Security
+              <ShieldCheck className="w-4 h-4" /> System & Security
             </button>
           </div>
 
-          {/* Database Info Card */}
+          {/* System Status Card */}
           <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 text-[11px] space-y-2 text-slate-400">
             <div className="flex items-center gap-2 text-slate-200 font-bold uppercase tracking-wider text-[10px]">
               <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span>
-              Database Status
+              System Status
             </div>
-            <p>Database: <strong className="text-white">MySQL (azariah_db)</strong></p>
-            <p>Host: <strong className="text-white">localhost:3306</strong></p>
-            <p>Admin: <strong className="text-lime-400">{adminUser?.username || 'admin'}</strong></p>
+            <p>Environment: <strong className="text-white">Live Production</strong></p>
+            <p>Services: <strong className="text-lime-400">Synchronized & Active</strong></p>
+            <p>Admin: <strong className="text-slate-200">{adminUser?.username || 'Administrator'}</strong></p>
           </div>
         </aside>
 
@@ -763,7 +1116,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
                   <label className="border-2 border-dashed border-slate-700 hover:border-lime-500 p-6 rounded-sm flex flex-col items-center justify-center cursor-pointer transition-colors bg-slate-950/50">
                     <Upload className="w-8 h-8 text-slate-400 mb-2" />
                     <span className="text-xs font-bold text-slate-200">
-                      {isUploading ? 'Uploading to MySQL/Server...' : 'Click or Drag Logo to Upload'}
+                      {isUploading ? 'Uploading file...' : 'Click or Drag Logo to Upload'}
                     </span>
                     <span className="text-[10px] text-slate-500 mt-1">
                       Max size: 10MB
@@ -914,250 +1267,806 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
             </div>
           )}
 
-          {/* TAB 2: SECTIONS TEXT */}
-          {activeTab === 'sections' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-sm p-6 md:p-8 space-y-6">
-              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-slate-800 pb-4">
-                <div>
-                  <h2 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
-                    <FileText className="w-6 h-6 text-lime-400" /> Website Sections Text Editor
-                  </h2>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Select a section to edit its headlines, narrative text, call-to-actions, and badges.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleSaveSection}
-                  disabled={isSaving}
-                  className="px-6 py-2.5 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-widest rounded-sm flex items-center gap-2 transition-all"
-                >
-                  <Save className="w-4 h-4" /> {isSaving ? 'Saving...' : 'Save Section'}
-                </button>
-              </div>
+          {/* TAB 2: SECTIONS TEXT & CMS */}
+          {activeTab === 'sections' && (() => {
+            const filteredSections = ALL_SECTIONS_CONFIG.filter((sec) => {
+              const matchesCat = sectionCategoryFilter === 'all' || sec.category === sectionCategoryFilter;
+              const matchesQuery =
+                !sectionSearch.trim() ||
+                sec.label.toLowerCase().includes(sectionSearch.toLowerCase()) ||
+                sec.key.toLowerCase().includes(sectionSearch.toLowerCase()) ||
+                sec.description.toLowerCase().includes(sectionSearch.toLowerCase()) ||
+                sec.route.toLowerCase().includes(sectionSearch.toLowerCase());
+              return matchesCat && matchesQuery;
+            });
 
-              {/* Section Selector Pills */}
-              <div className="flex flex-wrap gap-2 pt-2">
-                {[
-                  { key: 'hero', label: '1. Hero Banner' },
-                  { key: 'philosophy', label: '2. Philosophy' },
-                  { key: 'about', label: '3. About AMG' },
-                  { key: 'services', label: '4. What We Do' },
-                  { key: 'strategic_ai', label: '5. Strategic AI' },
-                  { key: 'contact', label: '6. Contact Section' },
-                  { key: 'footer', label: '7. Footer Statement' },
-                ].map((sec) => (
-                  <button
-                    key={sec.key}
-                    type="button"
-                    onClick={() => setActiveSectionKey(sec.key)}
-                    className={`px-4 py-2 rounded-sm text-xs font-black uppercase tracking-wider transition-all ${
-                      activeSectionKey === sec.key
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'bg-slate-950 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-                    }`}
-                  >
-                    {sec.label}
-                  </button>
-                ))}
-              </div>
+            const currentSectionMeta = ALL_SECTIONS_CONFIG.find((s) => s.key === activeSectionKey) || {
+              key: activeSectionKey,
+              category: 'landing' as const,
+              label: activeSectionKey.toUpperCase(),
+              tag: 'CUSTOM',
+              description: 'Custom content section',
+              route: '#home',
+            };
 
-              {/* Section Form */}
-              <form onSubmit={handleSaveSection} className="space-y-6 pt-4 border-t border-slate-800">
-                <div className="grid md:grid-cols-2 gap-4">
+            const wordCount = (sectionForm.content || '').trim() ? (sectionForm.content || '').trim().split(/\s+/).length : 0;
+            const charCount = (sectionForm.content || '').length;
+
+            return (
+              <div className="bg-slate-900 border border-slate-800 rounded-sm p-6 md:p-8 space-y-6">
+                {/* CMS Master Header */}
+                <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-800 pb-5">
                   <div className="space-y-1">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      Section Badge / Tagline
-                    </label>
-                    <input
-                      type="text"
-                      value={sectionForm.badge}
-                      onChange={(e) => setSectionForm({ ...sectionForm, badge: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none"
-                      placeholder="e.g. CORE PHILOSOPHY"
-                    />
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="px-2.5 py-0.5 bg-lime-500/15 border border-lime-500/30 text-lime-400 text-[10px] font-black uppercase tracking-widest rounded-sm">
+                        Content Management System
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-mono">
+                        29 Pages & Sections Live & Synchronized
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
+                      <FileText className="w-6 h-6 text-lime-400" /> Website Sections & Pages Editor
+                    </h2>
+                    <p className="text-xs text-slate-400">
+                      Organized section-by-section and page-by-page. Modify copy, headlines, media banners, and action links with instant live synchronization.
+                    </p>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      Main Title / Headline
-                    </label>
-                    <input
-                      type="text"
-                      value={sectionForm.title}
-                      onChange={(e) => setSectionForm({ ...sectionForm, title: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none"
-                      placeholder="Section Headline"
-                    />
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => handlePreviewRoute(currentSectionMeta.route)}
+                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors"
+                      title={`Preview '${currentSectionMeta.label}' on website`}
+                    >
+                      <Eye className="w-3.5 h-3.5 text-lime-400" />
+                      <span>Preview Live</span>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-slate-400" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSaveSection}
+                      disabled={isSaving}
+                      className="px-6 py-2 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-widest rounded-sm flex items-center gap-2 transition-all shadow-lg shadow-lime-500/20 active:translate-y-0.5"
+                    >
+                      {isSaving ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 animate-spin" /> Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" /> Save Section
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    Subtitle / Supporting Tagline
-                  </label>
-                  <input
-                    type="text"
-                    value={sectionForm.subtitle}
-                    onChange={(e) => setSectionForm({ ...sectionForm, subtitle: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none"
-                    placeholder="Subtitle or framing sentence"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    Main Narrative / Content Text
-                  </label>
-                  <textarea
-                    rows={6}
-                    value={sectionForm.content}
-                    onChange={(e) => setSectionForm({ ...sectionForm, content: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs leading-relaxed focus:border-lime-500 focus:outline-none resize-y"
-                    placeholder="Full descriptive narrative for this section..."
-                  />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      Call To Action Button Text
-                    </label>
-                    <input
-                      type="text"
-                      value={sectionForm.ctaText}
-                      onChange={(e) => setSectionForm({ ...sectionForm, ctaText: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none"
-                      placeholder="e.g. Start Your Journey"
-                    />
+                {/* Category Navigation Pills & Quick Search */}
+                <div className="space-y-3 pt-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {[
+                      { key: 'all', label: 'All Items', count: ALL_SECTIONS_CONFIG.length },
+                      { key: 'landing', label: '🌟 Landing Page', count: ALL_SECTIONS_CONFIG.filter((s) => s.category === 'landing').length },
+                      { key: 'page', label: '📄 Dedicated Pages', count: ALL_SECTIONS_CONFIG.filter((s) => s.category === 'page').length },
+                      { key: 'header', label: '🔝 Header & Nav', count: ALL_SECTIONS_CONFIG.filter((s) => s.category === 'header').length },
+                      { key: 'footer', label: '🔻 Footer & Legal', count: ALL_SECTIONS_CONFIG.filter((s) => s.category === 'footer').length },
+                    ].map((cat) => (
+                      <button
+                        key={cat.key}
+                        type="button"
+                        onClick={() => setSectionCategoryFilter(cat.key as any)}
+                        className={`px-3.5 py-1.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 ${
+                          sectionCategoryFilter === cat.key
+                            ? 'bg-lime-500 text-slate-950 shadow-md font-black'
+                            : 'bg-slate-950 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                        }`}
+                      >
+                        <span>{cat.label}</span>
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-sm ${
+                          sectionCategoryFilter === cat.key ? 'bg-slate-950/20 text-slate-950 font-bold' : 'bg-slate-800 text-slate-400'
+                        }`}>
+                          {cat.count}
+                        </span>
+                      </button>
+                    ))}
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      CTA Button Link / Anchor
-                    </label>
+                  {/* Search Bar */}
+                  <div className="relative">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="text"
-                      value={sectionForm.ctaLink}
-                      onChange={(e) => setSectionForm({ ...sectionForm, ctaLink: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none"
-                      placeholder="e.g. #contact or #services-page"
+                      value={sectionSearch}
+                      onChange={(e) => setSectionSearch(e.target.value)}
+                      placeholder="Filter sections and pages by title, section key, or route (e.g. wallfeel, about, hero, header)..."
+                      className="w-full pl-10 pr-10 py-2.5 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none placeholder:text-slate-500 transition-colors"
                     />
+                    {sectionSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setSectionSearch('')}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white"
+                        title="Clear search"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                {/* Specific custom fields per section */}
-                {activeSectionKey === 'philosophy' && (
-                  <div className="p-4 bg-slate-950 border border-slate-800 rounded-sm space-y-4">
-                    <h4 className="text-xs font-black uppercase tracking-wider text-lime-400">
-                      Philosophy Pillar Paragraphs
-                    </h4>
-                    <div className="space-y-3">
-                      <div className="space-y-1">
-                        <label className="text-[11px] text-slate-400">Supporting Paragraph 1</label>
-                        <textarea
-                          rows={3}
-                          value={sectionForm.parsedData?.paragraph1 || ''}
-                          onChange={(e) =>
-                            setSectionForm({
-                              ...sectionForm,
-                              parsedData: { ...sectionForm.parsedData, paragraph1: e.target.value },
-                            })
-                          }
-                          className="w-full px-3 py-2 bg-slate-900 border border-slate-800 text-white rounded-sm text-xs"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] text-slate-400">Supporting Paragraph 2</label>
-                        <textarea
-                          rows={3}
-                          value={sectionForm.parsedData?.paragraph2 || ''}
-                          onChange={(e) =>
-                            setSectionForm({
-                              ...sectionForm,
-                              parsedData: { ...sectionForm.parsedData, paragraph2: e.target.value },
-                            })
-                          }
-                          className="w-full px-3 py-2 bg-slate-900 border border-slate-800 text-white rounded-sm text-xs"
-                        />
-                      </div>
+                {/* Master-Detail Split Grid */}
+                <div className="grid lg:grid-cols-12 gap-6 pt-2">
+                  {/* Left Column: Categorized Section Directory */}
+                  <div className="lg:col-span-4 space-y-2">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 px-1 pb-1">
+                      <span>DIRECTORY ({filteredSections.length})</span>
+                      <span className="text-[10px] text-slate-500 uppercase">Select to edit</span>
+                    </div>
+
+                    <div className="max-h-[740px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                      {filteredSections.length === 0 ? (
+                        <div className="p-6 bg-slate-950 border border-slate-800 rounded-sm text-center text-xs text-slate-500">
+                          No sections match the current search or category filter.
+                        </div>
+                      ) : (
+                        filteredSections.map((sec) => {
+                          const isSelected = activeSectionKey === sec.key;
+                          const hasContent = !!(sections[sec.key]?.title || sections[sec.key]?.content);
+
+                          const tagColor =
+                            sec.category === 'header'
+                              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                              : sec.category === 'footer'
+                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                              : sec.category === 'page'
+                              ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                              : 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+
+                          return (
+                            <button
+                              key={sec.key}
+                              type="button"
+                              onClick={() => {
+                                setActiveSectionKey(sec.key);
+                                setAdvancedJsonOpen(false);
+                              }}
+                              className={`w-full text-left p-3.5 rounded-sm border transition-all flex flex-col gap-1.5 group ${
+                                isSelected
+                                  ? 'bg-slate-900 border-lime-500 shadow-lg shadow-lime-500/10'
+                                  : 'bg-slate-950/80 border-slate-800/80 hover:bg-slate-900 hover:border-slate-700'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between gap-2">
+                                <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-sm border ${tagColor}`}>
+                                  {sec.tag}
+                                </span>
+                                <span className="text-[10px] font-mono text-slate-400 group-hover:text-slate-300">
+                                  {sec.route}
+                                </span>
+                              </div>
+
+                              <div className="space-y-0.5">
+                                <p className={`text-xs font-black transition-colors ${
+                                  isSelected ? 'text-lime-400' : 'text-white group-hover:text-lime-300'
+                                }`}>
+                                  {sec.label}
+                                </p>
+                                <p className="text-[11px] text-slate-400 line-clamp-1 leading-relaxed">
+                                  {sec.description}
+                                </p>
+                              </div>
+
+                              <div className="flex items-center justify-between text-[10px] pt-1 text-slate-400 border-t border-slate-900">
+                                <span className="font-mono text-slate-400">key: {sec.key}</span>
+                                {hasContent ? (
+                                  <span className="text-lime-400 font-bold flex items-center gap-1">
+                                    <Check className="w-3 h-3" /> Synced
+                                  </span>
+                                ) : (
+                                  <span className="text-slate-400">Default</span>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })
+                      )}
                     </div>
                   </div>
-                )}
 
-                {activeSectionKey === 'hero' && sectionForm.parsedData?.slides && (
-                  <div className="p-4 bg-slate-950 border border-slate-800 rounded-sm space-y-4">
-                    <h4 className="text-xs font-black uppercase tracking-wider text-lime-400">
-                      Hero Banner Slides (3 Active Video/Image Slides)
-                    </h4>
-                    <div className="space-y-4">
-                      {sectionForm.parsedData.slides.map((slide: any, idx: number) => (
-                        <div key={idx} className="p-3 bg-slate-900 border border-slate-800 rounded-sm space-y-2">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                            Slide {idx + 1}
+                  {/* Right Column: Full Rich Form Editor */}
+                  <div className="lg:col-span-8 bg-slate-950 border border-slate-800 rounded-sm p-6 space-y-6">
+                    {/* Active Section Banner */}
+                    <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="space-y-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-2 py-0.5 bg-lime-500 text-slate-950 font-black text-[9px] uppercase tracking-wider rounded-sm">
+                            Editing {currentSectionMeta.tag}
                           </span>
-                          <div className="grid grid-cols-2 gap-2">
-                            <input
-                              type="text"
-                              value={slide.title || ''}
-                              onChange={(e) => {
-                                const newSlides = [...sectionForm.parsedData.slides];
-                                newSlides[idx] = { ...slide, title: e.target.value };
-                                setSectionForm({
-                                  ...sectionForm,
-                                  parsedData: { ...sectionForm.parsedData, slides: newSlides },
-                                });
-                              }}
-                              className="px-2 py-1.5 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs"
-                              placeholder="Slide Title (e.g. Azariah.)"
-                            />
-                            <input
-                              type="text"
-                              value={slide.subtitle || ''}
-                              onChange={(e) => {
-                                const newSlides = [...sectionForm.parsedData.slides];
-                                newSlides[idx] = { ...slide, subtitle: e.target.value };
-                                setSectionForm({
-                                  ...sectionForm,
-                                  parsedData: { ...sectionForm.parsedData, slides: newSlides },
-                                });
-                              }}
-                              className="px-2 py-1.5 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs"
-                              placeholder="Slide Subtitle"
-                            />
-                          </div>
-                          <textarea
-                            rows={2}
-                            value={slide.description || ''}
-                            onChange={(e) => {
-                              const newSlides = [...sectionForm.parsedData.slides];
-                              newSlides[idx] = { ...slide, description: e.target.value };
-                              setSectionForm({
-                                ...sectionForm,
-                                  parsedData: { ...sectionForm.parsedData, slides: newSlides },
-                              });
-                            }}
-                            className="w-full px-2 py-1.5 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs"
-                            placeholder="Slide Description Narrative"
+                          <span className="text-xs font-mono text-slate-400">
+                            Key: <strong className="text-white">{currentSectionMeta.key}</strong>
+                          </span>
+                          <span className="text-xs font-mono text-slate-400">
+                            Route: <strong className="text-lime-400">{currentSectionMeta.route}</strong>
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-black text-white uppercase tracking-tight">
+                          {currentSectionMeta.label}
+                        </h3>
+                        <p className="text-xs text-slate-400">
+                          {currentSectionMeta.description}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handlePreviewRoute(currentSectionMeta.route)}
+                          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-700"
+                        >
+                          <Eye className="w-3.5 h-3.5 text-lime-400" />
+                          <span>View on Page</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Section Edit Form */}
+                    <form onSubmit={handleSaveSection} className="space-y-6">
+                      {/* Eyebrow Badge & Main Title */}
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                            <span>Badge / Eyebrow Tagline</span>
+                            <span className="text-[10px] text-slate-500 font-mono">badge</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={sectionForm.badge}
+                            onChange={(e) => setSectionForm({ ...sectionForm, badge: e.target.value })}
+                            className="w-full px-3 py-2 bg-slate-900 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none"
+                            placeholder="e.g. STRATEGIC INTELLIGENCE, CORE PHILOSOPHY, etc."
                           />
                         </div>
-                      ))}
+
+                        <div className="space-y-1">
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                            <span>Main Title / Headline</span>
+                            <span className="text-[10px] text-slate-500 font-mono">title</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={sectionForm.title}
+                            onChange={(e) => setSectionForm({ ...sectionForm, title: e.target.value })}
+                            className="w-full px-3 py-2 bg-slate-900 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none font-bold"
+                            placeholder="Main Section or Page Headline"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Subtitle / Framing sentence */}
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                          <span>Subtitle / Supporting Statement</span>
+                          <span className="text-[10px] text-slate-500 font-mono">subtitle</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={sectionForm.subtitle}
+                          onChange={(e) => setSectionForm({ ...sectionForm, subtitle: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-900 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none"
+                          placeholder="Supporting statement or framing thesis..."
+                        />
+                      </div>
+
+                      {/* Main Narrative Content Textarea */}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            Narrative Content / Body Copy
+                          </label>
+                          <span className="text-[10px] font-mono text-slate-400">
+                            {wordCount} words | {charCount} chars
+                          </span>
+                        </div>
+                        <textarea
+                          rows={6}
+                          value={sectionForm.content}
+                          onChange={(e) => setSectionForm({ ...sectionForm, content: e.target.value })}
+                          className="w-full px-3 py-2.5 bg-slate-900 border border-slate-800 text-white rounded-sm text-xs leading-relaxed focus:border-lime-500 focus:outline-none resize-y"
+                          placeholder="Full narrative text for this section or page..."
+                        />
+                        <p className="text-[10px] text-slate-500">
+                          Text will format automatically across responsive viewports with typography matching the brand design system.
+                        </p>
+                      </div>
+
+                      {/* Call-to-Action Buttons */}
+                      <div className="grid md:grid-cols-2 gap-4 p-4 bg-slate-900/60 border border-slate-800/80 rounded-sm">
+                        <div className="space-y-1">
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            CTA Button Text
+                          </label>
+                          <input
+                            type="text"
+                            value={sectionForm.ctaText}
+                            onChange={(e) => setSectionForm({ ...sectionForm, ctaText: e.target.value })}
+                            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none"
+                            placeholder="e.g. Explore Capabilities, Contact Team..."
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            CTA Button Link / Anchor Route
+                          </label>
+                          <input
+                            type="text"
+                            value={sectionForm.ctaLink}
+                            onChange={(e) => setSectionForm({ ...sectionForm, ctaLink: e.target.value })}
+                            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none font-mono"
+                            placeholder="e.g. #contact, #services-page, https://..."
+                          />
+                        </div>
+                      </div>
+
+                      {/* Featured Media / Banner Image URL & Asset Selector */}
+                      <div className="space-y-3 p-4 bg-slate-900/60 border border-slate-800/80 rounded-sm">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                            <ImageIcon className="w-3.5 h-3.5 text-lime-400" />
+                            <span>Section Media Banner / Embed URL</span>
+                          </label>
+                          <span className="text-[10px] text-slate-500 font-mono">mediaUrl</span>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <input
+                            type="text"
+                            value={sectionForm.mediaUrl}
+                            onChange={(e) => setSectionForm({ ...sectionForm, mediaUrl: e.target.value })}
+                            className="flex-1 px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none font-mono"
+                            placeholder="https://... or /uploads/... (or YouTube embed URL)"
+                          />
+                          <label className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 shrink-0">
+                            <Upload className="w-3.5 h-3.5 text-lime-400" />
+                            <span>Upload Image</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleSectionMediaUpload}
+                              className="hidden"
+                              disabled={isUploading}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              loadMedia();
+                              setGalleryModalOpen(true);
+                            }}
+                            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shrink-0"
+                          >
+                            <Folder className="w-3.5 h-3.5 text-lime-400" />
+                            <span>From Gallery</span>
+                          </button>
+                          {sectionForm.mediaUrl && (
+                            <button
+                              type="button"
+                              onClick={() => setSectionForm({ ...sectionForm, mediaUrl: '' })}
+                              className="px-3 py-2 bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-900/50 rounded-sm text-xs font-bold transition-colors shrink-0"
+                              title="Clear media URL"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Media Preview Box */}
+                        {sectionForm.mediaUrl && (
+                          <div className="p-3 bg-slate-950 rounded-sm border border-slate-800 flex items-center gap-4">
+                            <div className="w-24 h-16 bg-slate-900 rounded-sm overflow-hidden flex items-center justify-center border border-slate-800 shrink-0">
+                              {sectionForm.mediaUrl.includes('youtube') || sectionForm.mediaUrl.includes('embed') ? (
+                                <Tv className="w-6 h-6 text-lime-400" />
+                              ) : (
+                                <img
+                                  src={sectionForm.mediaUrl}
+                                  alt="Preview"
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLElement).style.display = 'none';
+                                  }}
+                                />
+                              )}
+                            </div>
+                            <div className="text-xs space-y-0.5 overflow-hidden">
+                              <p className="font-bold text-white truncate">{sectionForm.mediaUrl}</p>
+                              <p className="text-[10px] text-slate-500 font-mono">Active media URL for this section</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Specialized Sub-Editors */}
+                      {/* 1. Philosophy Sub-Editor */}
+                      {activeSectionKey === 'philosophy' && (
+                        <div className="p-5 bg-slate-900/90 border border-slate-800 rounded-sm space-y-4">
+                          <h4 className="text-xs font-black uppercase tracking-wider text-lime-400 flex items-center gap-2">
+                            <Compass className="w-4 h-4" /> Philosophy Supporting Paragraphs
+                          </h4>
+                          <div className="space-y-3">
+                            <div className="space-y-1">
+                              <label className="text-[11px] font-bold text-slate-400 uppercase">Supporting Paragraph 1</label>
+                              <textarea
+                                rows={3}
+                                value={sectionForm.parsedData?.paragraph1 || ''}
+                                onChange={(e) =>
+                                  setSectionForm({
+                                    ...sectionForm,
+                                    parsedData: { ...sectionForm.parsedData, paragraph1: e.target.value },
+                                  })
+                                }
+                                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs leading-relaxed focus:border-lime-500 focus:outline-none"
+                                placeholder="First supporting philosophy paragraph..."
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[11px] font-bold text-slate-400 uppercase">Supporting Paragraph 2</label>
+                              <textarea
+                                rows={3}
+                                value={sectionForm.parsedData?.paragraph2 || ''}
+                                onChange={(e) =>
+                                  setSectionForm({
+                                    ...sectionForm,
+                                    parsedData: { ...sectionForm.parsedData, paragraph2: e.target.value },
+                                  })
+                                }
+                                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs leading-relaxed focus:border-lime-500 focus:outline-none"
+                                placeholder="Second supporting philosophy paragraph..."
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 2. Hero Slides Sub-Editor */}
+                      {activeSectionKey === 'hero' && sectionForm.parsedData?.slides && (
+                        <div className="p-5 bg-slate-900/90 border border-slate-800 rounded-sm space-y-4">
+                          <h4 className="text-xs font-black uppercase tracking-wider text-lime-400 flex items-center gap-2">
+                            <Film className="w-4 h-4" /> Hero Banner Presentation Slides (3 Dynamic Slides)
+                          </h4>
+                          <div className="space-y-4">
+                            {sectionForm.parsedData.slides.map((slide: any, idx: number) => (
+                              <div key={idx} className="p-4 bg-slate-950 border border-slate-800 rounded-sm space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[10px] font-black uppercase tracking-widest text-lime-400 px-2 py-0.5 bg-lime-500/10 border border-lime-500/20 rounded-sm">
+                                    Slide {idx + 1}
+                                  </span>
+                                  <span className="text-[10px] font-mono text-slate-500">Slide #{idx + 1}</span>
+                                </div>
+                                <div className="grid sm:grid-cols-2 gap-3">
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] uppercase font-bold text-slate-400">Slide Title</label>
+                                    <input
+                                      type="text"
+                                      value={slide.title || ''}
+                                      onChange={(e) => {
+                                        const newSlides = [...sectionForm.parsedData.slides];
+                                        newSlides[idx] = { ...slide, title: e.target.value };
+                                        setSectionForm({
+                                          ...sectionForm,
+                                          parsedData: { ...sectionForm.parsedData, slides: newSlides },
+                                        });
+                                      }}
+                                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-white rounded-sm text-xs"
+                                      placeholder="e.g. Azariah."
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] uppercase font-bold text-slate-400">Slide Subtitle</label>
+                                    <input
+                                      type="text"
+                                      value={slide.subtitle || ''}
+                                      onChange={(e) => {
+                                        const newSlides = [...sectionForm.parsedData.slides];
+                                        newSlides[idx] = { ...slide, subtitle: e.target.value };
+                                        setSectionForm({
+                                          ...sectionForm,
+                                          parsedData: { ...sectionForm.parsedData, slides: newSlides },
+                                        });
+                                      }}
+                                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-white rounded-sm text-xs"
+                                      placeholder="e.g. Media Impact."
+                                    />
+                                  </div>
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[10px] uppercase font-bold text-slate-400">Slide Description Narrative</label>
+                                  <textarea
+                                    rows={2}
+                                    value={slide.description || ''}
+                                    onChange={(e) => {
+                                      const newSlides = [...sectionForm.parsedData.slides];
+                                      newSlides[idx] = { ...slide, description: e.target.value };
+                                      setSectionForm({
+                                        ...sectionForm,
+                                        parsedData: { ...sectionForm.parsedData, slides: newSlides },
+                                      });
+                                    }}
+                                    className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-white rounded-sm text-xs leading-relaxed"
+                                    placeholder="Slide narrative..."
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 3. Header Sub-Editor */}
+                      {activeSectionKey === 'header' && (
+                        <div className="p-5 bg-slate-900/90 border border-slate-800 rounded-sm space-y-4">
+                          <h4 className="text-xs font-black uppercase tracking-wider text-lime-400 flex items-center gap-2">
+                            <Layout className="w-4 h-4" /> Header Announcement & Navigation Banner
+                          </h4>
+                          <div className="space-y-1">
+                            <label className="text-[11px] font-bold text-slate-400 uppercase">Top Announcement Banner Notice</label>
+                            <input
+                              type="text"
+                              value={sectionForm.parsedData?.notice || ''}
+                              onChange={(e) =>
+                                setSectionForm({
+                                  ...sectionForm,
+                                  parsedData: { ...sectionForm.parsedData, notice: e.target.value },
+                                })
+                              }
+                              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs"
+                              placeholder="e.g. Global Operations & Strategic Media Advisory Active"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 4. Footer Sub-Editor */}
+                      {activeSectionKey === 'footer' && (
+                        <div className="p-5 bg-slate-900/90 border border-slate-800 rounded-sm space-y-4">
+                          <h4 className="text-xs font-black uppercase tracking-wider text-lime-400 flex items-center gap-2">
+                            <Globe className="w-4 h-4" /> Corporate Legal Notice & Copyright
+                          </h4>
+                          <div className="space-y-1">
+                            <label className="text-[11px] font-bold text-slate-400 uppercase">Copyright Statement</label>
+                            <input
+                              type="text"
+                              value={sectionForm.parsedData?.copyright || ''}
+                              onChange={(e) =>
+                                setSectionForm({
+                                  ...sectionForm,
+                                  parsedData: { ...sectionForm.parsedData, copyright: e.target.value },
+                                })
+                              }
+                              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs"
+                              placeholder="© 2026 Azariah Management Group LLC. All rights reserved."
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Advanced JSON Structured Data Editor (Collapsible) */}
+                      <div className="border border-slate-800/80 rounded-sm overflow-hidden bg-slate-900/40">
+                        <button
+                          type="button"
+                          onClick={() => setAdvancedJsonOpen(!advancedJsonOpen)}
+                          className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-900/80 transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Code className="w-4 h-4 text-lime-400" />
+                            <span className="text-xs font-black uppercase tracking-wider text-white">
+                              Advanced Structured Properties (JSON)
+                            </span>
+                            <span className="text-[10px] text-slate-500 font-mono">
+                              {advancedJsonOpen ? 'Hide Editor' : 'Click to View / Edit Extra Attributes'}
+                            </span>
+                          </div>
+                          <span className="text-xs text-lime-400 font-mono">
+                            {advancedJsonOpen ? '− Collapse' : '+ Expand'}
+                          </span>
+                        </button>
+
+                        {advancedJsonOpen && (
+                          <div className="p-4 border-t border-slate-800 space-y-3 bg-slate-950">
+                            <div className="flex items-center justify-between">
+                              <p className="text-[11px] text-slate-400">
+                                Directly view or edit custom parameters, slide arrays, or structured section metadata.
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  try {
+                                    const parsed = JSON.parse(rawJsonText);
+                                    setRawJsonText(JSON.stringify(parsed, null, 2));
+                                    setJsonError(null);
+                                    showToast('JSON beautified successfully!');
+                                  } catch (err: any) {
+                                    setJsonError(`JSON Syntax Error: ${err.message}`);
+                                  }
+                                }}
+                                className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-sm text-[10px] font-bold uppercase transition-colors"
+                              >
+                                Format JSON
+                              </button>
+                            </div>
+
+                            <textarea
+                              rows={8}
+                              value={rawJsonText}
+                              onChange={(e) => {
+                                setRawJsonText(e.target.value);
+                                try {
+                                  JSON.parse(e.target.value);
+                                  setJsonError(null);
+                                } catch (err: any) {
+                                  setJsonError(err.message);
+                                }
+                              }}
+                              className="w-full px-3 py-2 bg-slate-900 border border-slate-800 text-lime-300 font-mono text-xs rounded-sm focus:border-lime-500 focus:outline-none"
+                            />
+
+                            {jsonError && (
+                              <p className="text-[11px] text-red-400 font-mono flex items-center gap-1.5">
+                                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                <span>Invalid JSON: {jsonError}</span>
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Sticky Save & Action Buttons Bar */}
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800">
+                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                          <CheckCircle2 className="w-4 h-4 text-lime-400" />
+                          <span>All content changes published live across the website</span>
+                        </div>
+
+                        <div className="flex items-center gap-3 w-full sm:w-auto">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const sec = sections[activeSectionKey];
+                              if (sec) {
+                                setSectionForm({
+                                  badge: sec.badge || '',
+                                  title: sec.title || '',
+                                  subtitle: sec.subtitle || '',
+                                  content: sec.content || '',
+                                  ctaText: sec.ctaText || '',
+                                  ctaLink: sec.ctaLink || '',
+                                  mediaUrl: sec.mediaUrl || '',
+                                  parsedData: sec.parsedData || {},
+                                });
+                                showToast('Reset form to previously saved content.');
+                              }
+                            }}
+                            className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-sm text-xs font-bold transition-colors"
+                          >
+                            Reset
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handlePreviewRoute(currentSectionMeta.route)}
+                            className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-700"
+                          >
+                            <Eye className="w-4 h-4 text-lime-400" /> Preview Live
+                          </button>
+
+                          <button
+                            type="submit"
+                            disabled={isSaving}
+                            className="px-8 py-2.5 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-widest rounded-sm flex items-center gap-2 transition-all shadow-lg shadow-lime-500/20 active:translate-y-0.5 flex-1 sm:flex-none justify-center"
+                          >
+                            {isSaving ? (
+                              <>
+                                <RefreshCw className="w-4 h-4 animate-spin" /> Saving...
+                              </>
+                            ) : (
+                              <>
+                                <Save className="w-4 h-4" /> Save {currentSectionMeta.tag} Changes
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                {/* Gallery Picker Modal */}
+                {galleryModalOpen && (
+                  <div className="fixed inset-0 z-[210] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+                    <div className="bg-slate-900 border border-slate-800 rounded-sm w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+                      <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Folder className="w-5 h-5 text-lime-400" />
+                          <h3 className="text-sm font-black uppercase tracking-wider text-white">
+                            Select Asset from Media Gallery
+                          </h3>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setGalleryModalOpen(false)}
+                          className="p-1 text-slate-400 hover:text-white"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      <div className="p-4 overflow-y-auto flex-1">
+                        {mediaList.length === 0 ? (
+                          <div className="p-12 text-center text-slate-500 text-xs">
+                            No assets in media library yet. Use the Upload button to add images.
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                            {mediaList.map((media) => (
+                              <button
+                                key={media.id}
+                                type="button"
+                                onClick={() => {
+                                  setSectionForm((prev) => ({ ...prev, mediaUrl: media.url }));
+                                  setGalleryModalOpen(false);
+                                  showToast(`Asset '${media.originalName}' attached to ${currentSectionMeta.label}!`);
+                                }}
+                                className="p-2 bg-slate-950 border border-slate-800 hover:border-lime-500 rounded-sm flex flex-col gap-2 text-left group transition-all"
+                              >
+                                <div className="h-24 bg-slate-900 rounded-sm overflow-hidden flex items-center justify-center">
+                                  <img
+                                    src={media.url}
+                                    alt={media.originalName}
+                                    className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform"
+                                  />
+                                </div>
+                                <p className="text-[11px] font-bold text-slate-300 truncate w-full" title={media.originalName}>
+                                  {media.originalName}
+                                </p>
+                                <span className="text-[9px] text-lime-400 font-mono font-bold uppercase">
+                                  Click to Select
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="p-4 border-t border-slate-800 bg-slate-950 flex justify-between items-center">
+                        <label className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold cursor-pointer transition-colors flex items-center gap-2">
+                          <Upload className="w-3.5 h-3.5 text-lime-400" />
+                          <span>Upload New File</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={async (e) => {
+                              await handleSectionMediaUpload(e);
+                              setGalleryModalOpen(false);
+                            }}
+                            className="hidden"
+                          />
+                        </label>
+
+                        <button
+                          type="button"
+                          onClick={() => setGalleryModalOpen(false)}
+                          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
-
-                <div className="flex justify-end pt-4 border-t border-slate-800">
-                  <button
-                    type="submit"
-                    disabled={isSaving}
-                    className="px-8 py-3 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-widest rounded-sm flex items-center gap-2 transition-all shadow-lg shadow-lime-500/20"
-                  >
-                    <Save className="w-4 h-4" /> {isSaving ? 'Saving...' : `Save ${activeSectionKey.toUpperCase()} Changes`}
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
+              </div>
+            );
+          })()}
 
           {/* TAB 3: MEDIA GALLERY */}
           {activeTab === 'media' && (
@@ -1260,10 +2169,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
             <div className="bg-slate-900 border border-slate-800 rounded-sm p-6 md:p-8 space-y-8">
               <div className="border-b border-slate-800 pb-4">
                 <h2 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
-                  <Database className="w-6 h-6 text-lime-400" /> Database & Security Architecture
+                  <ShieldCheck className="w-6 h-6 text-lime-400" /> Security & Access Architecture
                 </h2>
                 <p className="text-xs text-slate-400 mt-1">
-                  Manage administrator credentials and inspect database connectivity.
+                  Manage administrator credentials, device trust, and access control.
                 </p>
               </div>
 
@@ -1340,7 +2249,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
                   </div>
                   <button
                     type="button"
-                    onClick={loadDevices}
+                    onClick={async () => {
+                      await loadDevices();
+                      showToast('Authorized devices reloaded.');
+                    }}
                     disabled={loadingDevices}
                     className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-sm text-[11px] font-bold flex items-center gap-1.5 self-start sm:self-auto transition-colors"
                   >
@@ -1434,21 +2346,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
                 </h3>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
                   <div className="p-4 bg-slate-950 border border-slate-800 rounded-sm space-y-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Database Engine</span>
-                    <p className="font-bold text-white">MySQL 9.1 / MariaDB</p>
-                    <p className="text-slate-400 text-[11px]">Database: azariah_db</p>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Security Architecture</span>
+                    <p className="font-bold text-white">Two-Factor Authentication & Device Trust</p>
+                    <p className="text-slate-400 text-[11px]">7-Day Authorization Protocol</p>
                   </div>
 
                   <div className="p-4 bg-slate-950 border border-slate-800 rounded-sm space-y-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">ORM & Migration Tool</span>
-                    <p className="font-bold text-white">Prisma 7 with MariaDB Driver</p>
-                    <p className="text-slate-400 text-[11px]">Automatic Schema Synchronization</p>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Content Synchronization</span>
+                    <p className="font-bold text-white">Instant Multi-Section Publishing</p>
+                    <p className="text-slate-400 text-[11px]">Real-Time View Revalidation</p>
                   </div>
 
                   <div className="p-4 bg-slate-950 border border-slate-800 rounded-sm space-y-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Backend Server</span>
-                    <p className="font-bold text-white">Node.js Express + TSX Watch</p>
-                    <p className="text-slate-400 text-[11px]">Port: 3000 (Vite SSR/SPA Middleware)</p>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Infrastructure</span>
+                    <p className="font-bold text-white">High-Performance Enterprise Cluster</p>
+                    <p className="text-slate-400 text-[11px]">Encrypted Transmission Protocol</p>
                   </div>
                 </div>
               </div>

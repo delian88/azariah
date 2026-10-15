@@ -8,9 +8,20 @@ import {
   Brain, X, ChevronLeft, Info, Clock, BarChart3, Youtube
 } from 'lucide-react';
 
+import { useContent } from '../context/ContentContext';
+
 const IMAGE_FALLBACK = "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2071";
 
 const StudioAMGPage: React.FC = () => {
+  const { getSection } = useContent();
+  const section = getSection('studio_page');
+  const badge = section?.badge || "The Creative Hub";
+  const title = section?.title || "Studio AMG.";
+  const content = section?.content || section?.subtitle || "Where high-level strategy meets world-class cinematic storytelling to drive measurable impact.";
+  const ctaText = section?.ctaText || "Book Discovery Call";
+  const ctaLink = section?.ctaLink || "#contact";
+  const mediaUrl = section?.mediaUrl || "https://www.youtube.com/embed/liPxM5UGeec?autoplay=1&mute=1&loop=1&playlist=liPxM5UGeec";
+
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -143,20 +154,20 @@ const StudioAMGPage: React.FC = () => {
         <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 reveal active">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-800 text-xs font-black uppercase tracking-widest rounded-full border border-blue-100 animate-pulse">
-              <Camera className="w-4 h-4" /> The Creative Hub
+              <Camera className="w-4 h-4" /> {badge}
             </div>
             <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none text-shine">
-              Studio AMG.
+              {title}
             </h1>
             <p className="text-xl md:text-2xl text-slate-600 leading-relaxed font-medium border-l-4 border-lime-500 pl-6">
-              Where high-level strategy meets world-class cinematic storytelling to drive measurable impact.
+              {content}
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
               <button 
                 onClick={scrollToContact}
                 className="px-10 py-5 bg-slate-900 text-white font-black rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all shadow-xl uppercase tracking-widest text-[10px] hover:-translate-y-1"
               >
-                Book Discovery Call
+                {ctaText}
               </button>
               <a 
                 href="https://www.youtube.com/@STUDIOAMG-NETWORK" 
@@ -172,7 +183,7 @@ const StudioAMGPage: React.FC = () => {
              <div className="aspect-video bg-slate-900 rounded-sm shadow-2xl overflow-hidden group border-8 border-white">
                 <iframe 
                   className="w-full h-full"
-                  src="https://www.youtube.com/embed/liPxM5UGeec?autoplay=1&mute=1&loop=1&playlist=liPxM5UGeec" 
+                  src={mediaUrl} 
                   title="Studio AMG Featured" 
                   frameBorder="0" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 

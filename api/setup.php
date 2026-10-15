@@ -163,6 +163,7 @@ try {
 
     // 7. Seed Default Section Contents if missing
     $defaultSections = [
+        // --- 1. LANDING PAGE SECTIONS ---
         [
             'hero',
             'AZARIAH MANAGEMENT GROUP',
@@ -207,13 +208,46 @@ try {
             'AZARIAH MANAGEMENT GROUP.',
             'The Quadruple Helix Framework',
             'Strategy should be purposeful, innovation should be responsible, and growth should create lasting value.',
-            '',
-            '',
+            'Learn More About Our Philosophy',
+            '#about-page',
             '',
             json_encode([
                 'paragraph1' => 'We partner with visionaries to transform ideas into scalable impact. At Azariah Management Group, we bridge the gap between business intelligence and human-centered design.',
                 'paragraph2' => 'Our core is rooted in integrity. We ensure every solution strengthens systems, empowers talent, and builds sustainable global futures for our clients.'
             ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+        ],
+        [
+            'brand_spotlight',
+            'Brand Spotlight',
+            'Strategic Storytelling.',
+            'Cinematic Impact & Narrative Vision',
+            'Experience how Azariah Management Group crafts compelling brand narratives that inspire trust, shape public perception, and amplify global influence.',
+            'Watch Complete Reel',
+            'https://www.youtube.com/watch?v=liPxM5UGeec',
+            'https://www.youtube.com/embed/liPxM5UGeec?autoplay=1&mute=1&loop=1&playlist=liPxM5UGeec&controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0',
+            null
+        ],
+        [
+            'partners_section',
+            'Trusted Alliances',
+            'Trusted Partners & Clients',
+            'Collaborating with industry pioneers, philanthropic foundations, and disruptive technology ventures',
+            'Azariah Management Group maintains strategic alliances with global institutions, government bodies, and enterprise innovators across North America, Europe, and Africa.',
+            'View All Global Partners',
+            '#partners-page',
+            '',
+            null
+        ],
+        [
+            'services',
+            'Our Core Capabilities',
+            'What We Do',
+            'Delivering excellence across critical growth pillars',
+            'This integrated model helps your organization grow with clarity, capacity, and purpose through a multi-faceted approach encompassing business advisory, media production, and digital systems.',
+            'Explore Our Full Service Suite',
+            '#services-page',
+            '',
+            null
         ],
         [
             'about',
@@ -230,13 +264,13 @@ try {
             ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         ],
         [
-            'services',
-            'Our Core Capabilities',
-            'What We Do',
-            'Delivering excellence across critical growth pillars',
-            'This integrated model helps your organization grow with clarity, capacity, and purpose through a multi-faceted approach.',
-            'Explore Our Full Service Suite',
-            '#services-page',
+            'programs_section',
+            'Signature Ventures',
+            'Innovation & Storytelling',
+            'High-impact platforms and proprietary accelerator initiatives',
+            'We don\'t just consult; we build. Explore our ecosystem of high-impact platforms, community blueprints, and developmental fellowships designed for scalable social and economic outcomes.',
+            'Book Discovery Call',
+            '#contact',
             '',
             null
         ],
@@ -245,9 +279,42 @@ try {
             'Technology Division',
             'Ethical AI & Scalable Digital Intelligence.',
             'Bridging Enterprise Innovation and Human Values',
-            'We empower organizations with tailored AI readiness strategies, data workflow automations, and digital literacy frameworks to ensure sustainable technology adoption.',
+            'We empower organizations with tailored AI readiness strategies, automated intelligent workflows, and ethical digital governance to unlock exponential productivity while safeguarding human dignity.',
             'Discover AI Solutions',
             '#contact',
+            '',
+            null
+        ],
+        [
+            'creaitube_section',
+            'Creator Economy & Digital Media',
+            'CreAItube Monetization Ecosystem',
+            'Transform Your Vision Into Sustainable Digital Equity',
+            'A creator-first digital media and podcast distribution hub where independent voices, storytellers, and thought leaders monetize their audience with industry-leading RPM rates.',
+            'Create Your CreAItor Account',
+            '#creaitube-page',
+            '',
+            null
+        ],
+        [
+            'podore_section',
+            'A Global Digital Ecosystem',
+            'Create Your PodOre Account.',
+            'Join World AI Force & Shape Tomorrow',
+            'PodOre is a collaborative community platform where innovators, technologists, and entrepreneurs converge to collaborate on generative AI applications and venture scaling.',
+            'Launch PodOre Portal',
+            'https://worldaiforce.org/',
+            '',
+            null
+        ],
+        [
+            'careers_section',
+            'Career & Growth',
+            'Pathways to Excellence',
+            'Where Exceptional Talent Meets Transformative Opportunities',
+            'Join the Azariah Management mission. We build ecosystems where talent meets opportunity, leadership is cultivated through mentorship, and strategic capacity drives global change.',
+            'Explore Career Pathways',
+            '#mentorship-page',
             '',
             null
         ],
@@ -256,28 +323,225 @@ try {
             'Get In Touch',
             'Strategic Inquiry',
             'Direct transmission to info@azariahmg.com',
-            'Reach out directly to schedule a confidential strategic consultation or explore partnership opportunities.',
-            'Submit Inquiry',
+            'Reach out directly to schedule a confidential strategic consultation, explore enterprise partnerships, or commission tailored advisory engagements.',
+            'Submit Strategic Inquiry',
+            '#contact',
+            '',
+            null
+        ],
+
+        // --- 2. HEADER & FOOTER CONFIGURATIONS ---
+        [
+            'header',
+            'AZARIAH MANAGEMENT GROUP',
+            'Global Strategic Intelligence',
+            'Header & Navigation Menu',
+            'Global navigation configuration for Azariah Management Group website.',
+            'Work With Us',
+            '#contact',
+            '',
+            json_encode([
+                'topNotice' => 'Official Enterprise Portal • Strategic Intelligence & Global Media Impact',
+                'navCtaText' => 'Work With Us',
+                'navCtaLink' => '#contact'
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+        ],
+        [
+            'footer',
+            'AMG GLOBAL CORP',
+            'Azariah Management Group',
+            'Global Strategic Intelligence & Media Enterprise',
+            'AZARIAH MANAGEMENT GROUP: Delivering transformative strategy, ethical AI systems, and high-impact media production for modern institutions and forward-looking enterprises worldwide.',
+            'Schedule Consultation',
+            '#contact',
+            '',
+            json_encode([
+                'copyright' => '© ' . date('Y') . ' AZARIAH MANAGEMENT GROUP. BUILT FOR SCALE.',
+                'tagline' => 'Strategic Intelligence • Ethical Innovation • Media Impact',
+                'badge' => 'Verified Enterprise Architecture'
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+        ],
+
+        // --- 3. DEDICATED STANDALONE PAGES ---
+        [
+            'services_page',
+            'Comprehensive Practice Areas',
+            'Strategic Services & Enterprise Solutions',
+            'Integrated Advisory, Technology Deployment, and Cinematic Storytelling',
+            'Our multidisciplinary advisory model provides full lifecycle support for international business expansion, philanthropic community program architecture, and intelligent workflow automation.',
+            'Request Capability Statement',
             '#contact',
             '',
             null
         ],
         [
-            'footer',
-            'AMG GLOBAL',
-            'Azariah Management Group',
-            'Global Strategic Intelligence & Media Enterprise',
-            'AZARIAH MANAGEMENT GROUP: Advanced strategic consulting, engineering, and digital transformation for a borderless world.',
+            'about_page',
+            'Corporate Governance & Heritage',
+            'About Azariah Management Group',
+            'Catalyzing Sustainable Global Transformation',
+            'Azariah Management Group is built upon the Quadruple Helix innovation model, harmonizing private enterprise, academia, government policy, and grassroots communities to solve complex multi-jurisdictional challenges.',
+            'Connect With Our Leadership',
+            '#contact',
             '',
+            null
+        ],
+        [
+            'programs_page',
+            'Signature Frameworks',
+            'Programs & Global Initiatives',
+            'Action-Oriented Platforms Delivering Quantifiable Outcomes',
+            'From the Community Impact Blueprint™ to cross-border accelerator programs, AMG designs institutional frameworks that convert social responsibility goals into high-visibility measurable realities.',
+            'Download Impact Framework',
+            '#contact',
             '',
+            null
+        ],
+        [
+            'mentorship_page',
+            'Leadership Development',
+            'Executive Mentorship Program',
+            'Empowering Next-Generation Visionaries & Global Change-Makers',
+            'A rigorous 1-on-1 and cohort-based mentorship initiative connecting emerging leaders with proven executives across strategic consulting, media production, and digital technologies.',
+            'Submit Mentorship Application',
+            '#contact',
+            '',
+            null
+        ],
+        [
+            'studio_page',
+            'Cinematic Production Division',
+            'Studio AMG Media & Entertainment',
+            'Award-Winning Visual Storytelling, Podcasts & Documentary Journalism',
+            'Studio AMG is the creative powerhouse of Azariah Management Group, developing compelling visual narratives, corporate brand anthems, and multi-platform digital broadcasts that move audiences to action.',
+            'Commission Production',
+            '#contact',
+            '',
+            null
+        ],
+        [
+            'news_page',
+            'Intellectual Capital',
+            'News & Strategic Insights',
+            'Briefings, Thought Leadership & Press Releases',
+            'Stay informed with analysis from AMG partners on international market dynamics, regulatory compliance, generative AI governance, and creator economy trends.',
+            'Subscribe to Briefings',
+            '#contact',
+            '',
+            null
+        ],
+        [
+            'products_page',
+            'Digital Ecosystems',
+            'Digital Products & Frameworks',
+            'Proprietary Software Systems, Toolkits & Blueprints',
+            'Explore our suite of enterprise software platforms, strategic toolkits, and structured operational blueprints engineered for immediate deployment.',
+            'Request Product Demo',
+            '#contact',
+            '',
+            null
+        ],
+        [
+            'portfolio_page',
+            'Client Case Studies',
+            'Strategic Engagement Portfolio',
+            'Proven Track Record Across Enterprise & Social Sectors',
+            'Review our documented client outcomes, cross-border venture expansions, and large-scale media campaigns executed with uncompromising precision.',
+            'Discuss Your Project Scope',
+            '#contact',
+            '',
+            null
+        ],
+        [
+            'partners_page',
+            'Institutional Network',
+            'Strategic Partners & Global Alliances',
+            'Collaborating with Industry Pioneers & Academic Institutions',
+            'Our alliance ecosystem spans premier financial institutions, technology leaders, media syndicates, and international trade organizations.',
+            'Explore Alliance Opportunities',
+            '#contact',
+            '',
+            null
+        ],
+        [
+            'catalog_page',
+            'Executive Solutions Suite',
+            'AMG Solutions & Services Catalog',
+            'A Comprehensive Guide to Consulting Modules and Technology Packages',
+            'Detailed specifications, deliverables, and implementation timelines for AMG strategic services, media production packages, and corporate advisory retainers.',
+            'Download Full Catalog PDF',
+            '#contact',
+            '',
+            null
+        ],
+        [
+            'wallfeel_page',
+            'Luxury Interior Systems',
+            'Wallfeel Architectural Decor',
+            'Bespoke Acoustic Wall Panels, Luxury Textures & Interior Art',
+            'Wallfeel combines acoustic engineering with haute interior aesthetics, transforming corporate boardrooms, creative studios, and luxury residences into sensory masterpieces.',
+            'Explore Wallfeel Gallery',
+            '#wallfeel-catalog-page',
+            '',
+            null
+        ],
+        [
+            'wallfeel_catalog_page',
+            'Artisan Finishes',
+            'Wallfeel Collection Catalog',
+            'Curated Acoustic Sculptures & Custom Architectural Installations',
+            'Browse our premier collection of sound-absorbing acoustic art, sustainable wooden textures, and bespoke wall installations tailored for commercial and residential environments.',
+            'Request Material Samples',
+            '#contact',
+            '',
+            null
+        ],
+        [
+            'creaitube_page',
+            'Media Platform',
+            'CreAItube Creator Hub',
+            'The Next-Generation Digital Media & Video Production Studio',
+            'Empowering podcasters, filmmakers, and digital storytellers with decentralized monetization, AI-assisted video editing, and global audience distribution.',
+            'Access CreAItube Studio',
+            '#contact',
+            '',
+            null
+        ],
+        [
+            'terms_page',
+            'Legal Standards & Compliance',
+            'Terms & Conditions of Service',
+            'Corporate Governance and Client Engagement Framework',
+            'Official legal terms, service-level agreements, intellectual property covenants, and engagement standards governing all Azariah Management Group business interactions.',
+            'Contact Legal Counsel',
+            'mailto:info@azariahmg.com',
+            '',
+            null
+        ],
+        [
+            'privacy_page',
+            'Data Protection & Security',
+            'Global Privacy Policy',
+            'Commitment to Data Privacy, Security, and Ethical Governance',
+            'How Azariah Management Group collects, safeguards, and processes institutional and individual information in strict compliance with GDPR, CCPA, and global data privacy regulations.',
+            'Privacy Office Inquiries',
+            'mailto:info@azariahmg.com',
             '',
             null
         ]
     ];
 
     $sectionStmt = $pdo->prepare("
-        INSERT IGNORE INTO section_contents (`sectionKey`, `badge`, `title`, `subtitle`, `content`, `ctaText`, `ctaLink`, `mediaUrl`, `data`, `updatedAt`)
+        INSERT INTO section_contents (`sectionKey`, `badge`, `title`, `subtitle`, `content`, `ctaText`, `ctaLink`, `mediaUrl`, `data`, `updatedAt`)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        ON DUPLICATE KEY UPDATE
+            `badge` = COALESCE(NULLIF(VALUES(`badge`), ''), `badge`),
+            `title` = COALESCE(NULLIF(VALUES(`title`), ''), `title`),
+            `subtitle` = COALESCE(NULLIF(VALUES(`subtitle`), ''), `subtitle`),
+            `content` = COALESCE(NULLIF(VALUES(`content`), ''), `content`),
+            `ctaText` = COALESCE(NULLIF(VALUES(`ctaText`), ''), `ctaText`),
+            `ctaLink` = COALESCE(NULLIF(VALUES(`ctaLink`), ''), `ctaLink`),
+            `mediaUrl` = COALESCE(NULLIF(VALUES(`mediaUrl`), ''), `mediaUrl`),
+            `data` = COALESCE(VALUES(`data`), `data`)
     ");
     foreach ($defaultSections as $sec) {
         $sectionStmt->execute($sec);
