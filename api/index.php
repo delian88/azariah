@@ -85,7 +85,13 @@ if ($path === 'inquiry' || $path === 'contact') {
     exit(0);
 }
 
-// 6. Root API status check
+// 6. Database Setup / Schema migration route (/setup)
+if ($path === 'setup') {
+    require __DIR__ . '/setup.php';
+    exit(0);
+}
+
+// 7. Root API status check
 if ($path === '' || $path === 'status') {
     sendJson([
         'success' => true,

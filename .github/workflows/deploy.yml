@@ -1,0 +1,87 @@
+name: Deploy Azariah Management Group to cPanel
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: cpanel-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy to cPanel (azariahmg.com)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 🚚 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install Node Dependencies
+        run: npm install
+
+      - name: 🏗️ Build Vite Production Bundle
+        run: npm run build
+
+      - name: 📂 Assemble Deployment Artifacts
+        run: |
+          mkdir -p deploy-package
+          
+          # 1. Copy Frontend Build & SPA Routers
+          cp -r dist deploy-package/
+          cp index.php deploy-package/
+          cp .htaccess deploy-package/
+          cp mailer.php deploy-package/
+
+          # 2. Copy PHP Backend API
+          cp -r api deploy-package/
+
+          # 3. Copy Vendor Dependencies (PHPMailer)
+          if [ -d "vendor" ]; then
+            cp -r vendor deploy-package/
+          fi
+
+          # 4. Copy Public Assets
+          if [ -d "public" ]; then
+            cp -r public deploy-package/
+          fi
+
+          # 5. Ensure Uploads Directory Structure Exists
+          mkdir -p deploy-package/uploads
+          if [ -d "uploads" ]; then
+            cp -r uploads/* deploy-package/uploads/ 2>/dev/null || true
+          fi
+
+          echo "Deployment package successfully assembled:"
+          ls -la deploy-package
+
+      - name: 🚀 Sync Files to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.CPANEL_FTP_SERVER != '' && secrets.CPANEL_FTP_SERVER || 'premium332.web-hosting.com' }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME != '' && secrets.CPANEL_FTP_USERNAME || 'worlvjwl' }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD != '' && secrets.CPANEL_FTP_PASSWORD || 'UCUQXx1oDDrY' }}
+          port: 21
+          protocol: ftp
+          local-dir: ./deploy-package/
+          server-dir: azariahmg.com/
+          dangerous-clean-slate: false
+
+      - name: 🩺 Post-Deployment Health Check
+        run: |
+          echo "Verifying live deployment on http://azariahmg.com/ ..."
+          curl -I -s -L --max-time 15 "http://azariahmg.com/" || echo "Warning: Root domain ping timed out or redirected."
+          
+          echo "Verifying API status endpoint..."
+          curl -s -L --max-time 15 "http://azariahmg.com/api/status" || echo "Warning: API endpoint ping timed out."
