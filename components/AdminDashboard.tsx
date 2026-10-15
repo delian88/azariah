@@ -318,8 +318,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
   } = useContent();
 
   // Auth State
-  const [username, setUsername] = useState('info@azariahmg.com');
-  const [password, setPassword] = useState('Admin@webmaster$1');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
 
@@ -857,7 +857,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     className="w-full px-4 py-3 bg-slate-950 border border-slate-800 text-white rounded-sm text-sm focus:border-lime-500 focus:outline-none transition-colors"
-                    placeholder="admin"
+                    placeholder="Enter username or email"
                   />
                 </div>
 
@@ -873,10 +873,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     className="w-full px-4 py-3 bg-slate-950 border border-slate-800 text-white rounded-sm text-sm focus:border-lime-500 focus:outline-none transition-colors"
                     placeholder="••••••••"
                   />
-                </div>
-
-                <div className="p-3 bg-slate-950/60 border border-slate-800/80 rounded-sm text-[11px] text-slate-400">
-                  <span className="font-bold text-lime-400">Admin Credentials:</span> Email: <code className="text-white">info@azariahmg.com</code> / Password: <code className="text-white">Admin@webmaster$1</code>
                 </div>
 
                 <button
