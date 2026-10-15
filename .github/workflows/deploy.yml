@@ -48,6 +48,7 @@ jobs:
           cp index.php deploy-package/
           cp .htaccess deploy-package/
           cp mailer.php deploy-package/
+          if [ -f "schema.sql" ]; then cp schema.sql deploy-package/; fi
 
           # 2. Copy PHP Backend API
           cp -r api deploy-package/
