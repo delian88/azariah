@@ -92,12 +92,30 @@ function getDbConnection() {
         if ($parsed) {
             $dbHost = $parsed['host'] ?? $dbHost;
             $dbPort = $parsed['port'] ?? $dbPort;
-            $dbUser = $parsed['user'] ?? $dbUser;
-            $dbPass = isset($parsed['pass']) ? $parsed['pass'] : $dbPass;
+            if (isset($parsed['user'])) {
+                $dbUser = urldecode($parsed['user']);
+            }
+            if (isset($parsed['pass'])) {
+                $dbPass = urldecode($parsed['pass']);
+            }
             if (isset($parsed['path'])) {
                 $dbName = ltrim($parsed['path'], '/');
             }
         }
+    }
+
+    // Explicit DB_PASS / DB_USER / DB_NAME take final precedence
+    if (!empty($_ENV['DB_USER'])) {
+        $dbUser = $_ENV['DB_USER'];
+    }
+    if (!empty($_ENV['DB_PASS'])) {
+        $dbPass = $_ENV['DB_PASS'];
+    }
+    if (!empty($_ENV['DB_NAME'])) {
+        $dbName = $_ENV['DB_NAME'];
+    }
+    if (!empty($_ENV['DB_HOST'])) {
+        $dbHost = $_ENV['DB_HOST'];
     }
 
     try {
