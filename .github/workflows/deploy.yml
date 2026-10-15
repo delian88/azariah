@@ -29,10 +29,15 @@ jobs:
           cache: 'npm'
 
       - name: 📦 Install Node Dependencies
-        run: npm install
+        run: |
+          chmod -R +x node_modules/.bin 2>/dev/null || true
+          npm install
+          chmod -R +x node_modules/.bin 2>/dev/null || true
 
       - name: 🏗️ Build Vite Production Bundle
-        run: npm run build
+        run: |
+          chmod -R +x node_modules/.bin 2>/dev/null || true
+          npx --no-install vite build
 
       - name: 📂 Assemble Deployment Artifacts
         run: |
