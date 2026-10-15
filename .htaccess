@@ -1,3 +1,5 @@
+DirectoryIndex index.php index.html
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
@@ -8,16 +10,20 @@
   # 1. Route API requests to PHP API router
   RewriteRule ^api(/.*)?$ api/index.php [QSA,L]
 
-  # 2. Route root assets to dist/assets/
+  # 2. Route index.html requests to index.php
+  RewriteRule ^index\.html$ index.php [L]
+
+  # 3. Route root assets to dist/assets/
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^assets/(.*)$ dist/assets/$1 [L]
 
-  # 3. Allow existing files and directories to be served directly
+  # 4. Allow existing files and directories to be served directly (excluding index.html)
+  RewriteCond %{REQUEST_URI} !^/index\.html$
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # 4. Route all other requests to index.php (which serves dist/index.html)
+  # 5. Route all other requests to index.php (which serves dist/index.html)
   RewriteRule ^ index.php [L]
 </IfModule>
 
