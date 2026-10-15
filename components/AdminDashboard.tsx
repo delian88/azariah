@@ -1528,9 +1528,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   type="button"
                   onClick={handleSaveBranding}
                   disabled={isSaving}
-                  className="px-6 py-2.5 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-widest rounded-sm flex items-center gap-2 transition-all"
+                  className="px-4 sm:px-5 py-2 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm flex items-center gap-1.5 transition-all shadow-md shadow-lime-500/20 shrink-0"
                 >
-                  <Save className="w-4 h-4" /> {isSaving ? 'Saving...' : 'Save Changes'}
+                  <Save className="w-3.5 h-3.5" /> {isSaving ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
 
@@ -1717,9 +1717,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   type="button"
                   onClick={handleSaveBranding}
                   disabled={isSaving}
-                  className="px-8 py-3 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-widest rounded-sm flex items-center gap-2 transition-all shadow-lg shadow-lime-500/20"
+                  className="px-4 sm:px-5 py-2 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm flex items-center gap-1.5 transition-all shadow-md shadow-lime-500/20 shrink-0"
                 >
-                  <Save className="w-4 h-4" /> {isSaving ? 'Saving...' : 'Save Brand Settings'}
+                  <Save className="w-3.5 h-3.5" /> {isSaving ? 'Saving...' : 'Save Brand Settings'}
                 </button>
               </div>
             </div>
@@ -1786,7 +1786,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                       type="button"
                       onClick={handleSaveSection}
                       disabled={isSaving}
-                      className="px-6 py-2 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-widest rounded-sm flex items-center gap-2 transition-all shadow-lg shadow-lime-500/20 active:translate-y-0.5"
+                      className="px-4 sm:px-5 py-2 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm flex items-center gap-1.5 transition-all shadow-md shadow-lime-500/20 active:translate-y-0.5 shrink-0"
                     >
                       {isSaving ? (
                         <>
@@ -1964,7 +1964,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   </div>
 
                   {/* Right Column: Full Rich Form Editor */}
-                  <div className={`lg:col-span-8 bg-slate-950 border border-slate-800 rounded-sm p-4 sm:p-6 space-y-6 ${mobileSectionView === 'editor' ? 'block' : 'hidden lg:block'}`}>
+                  <div className={`lg:col-span-8 bg-slate-950 border border-slate-800 rounded-sm p-4 sm:p-6 space-y-6 overflow-hidden w-full max-w-full ${mobileSectionView === 'editor' ? 'block' : 'hidden lg:block'}`}>
                     {/* Active Section Banner */}
                     <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="space-y-1">
@@ -2410,13 +2410,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                       </div>
 
                       {/* Sticky Save & Action Buttons Bar */}
-                      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800">
-                        <div className="flex items-center gap-2 text-xs text-slate-400">
-                          <CheckCircle2 className="w-4 h-4 text-lime-400" />
-                          <span>All content changes published live across the website</span>
+                      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pt-4 border-t border-slate-800 w-full max-w-full">
+                        <div className="flex items-center gap-2 text-xs text-slate-400 min-w-0">
+                          <CheckCircle2 className="w-4 h-4 text-lime-400 shrink-0" />
+                          <span className="truncate">All content changes published live across the website</span>
                         </div>
 
-                        <div className="flex items-center gap-3 w-full sm:w-auto">
+                        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
                           <button
                             type="button"
                             onClick={() => {
@@ -2435,7 +2435,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                                 showToast('Reset form to previously saved content.');
                               }
                             }}
-                            className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-sm text-xs font-bold transition-colors"
+                            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-sm text-xs font-bold transition-colors"
                           >
                             Reset
                           </button>
@@ -2443,23 +2443,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                           <button
                             type="button"
                             onClick={() => handlePreviewRoute(currentSectionMeta.route)}
-                            className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-700"
+                            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-700"
                           >
-                            <Eye className="w-4 h-4 text-lime-400" /> Preview Live
+                            <Eye className="w-3.5 h-3.5 text-lime-400" /> Preview Live
                           </button>
 
                           <button
                             type="submit"
                             disabled={isSaving}
-                            className="px-8 py-2.5 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-widest rounded-sm flex items-center gap-2 transition-all shadow-lg shadow-lime-500/20 active:translate-y-0.5 flex-1 sm:flex-none justify-center"
+                            className="px-4 sm:px-5 py-2 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm flex items-center gap-1.5 transition-all shadow-md shadow-lime-500/20 active:translate-y-0.5 shrink-0 max-w-full justify-center"
                           >
                             {isSaving ? (
                               <>
-                                <RefreshCw className="w-4 h-4 animate-spin" /> Saving...
+                                <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Saving...
                               </>
                             ) : (
                               <>
-                                <Save className="w-4 h-4" /> Save {currentSectionMeta.tag} Changes
+                                <Save className="w-3.5 h-3.5" /> Save {currentSectionMeta.tag} Changes
                               </>
                             )}
                           </button>
