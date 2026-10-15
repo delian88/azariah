@@ -59,11 +59,31 @@ function getDbConnection() {
         return $pdo;
     }
 
-    $dbHost = $_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? getenv('DB_HOST') ?: '127.0.0.1';
-    $dbPort = $_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? getenv('DB_PORT') ?: '3306';
-    $dbName = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? getenv('DB_NAME') ?: 'azariah_db';
-    $dbUser = $_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? getenv('DB_USER') ?: 'root';
-    $dbPass = $_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? (getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
+    $isLocal = false;
+    $httpHost = $_SERVER['HTTP_HOST'] ?? '';
+    if (php_sapi_name() === 'cli' || strpos($httpHost, 'localhost') !== false || strpos($httpHost, '127.0.0.1') !== false) {
+        $isLocal = true;
+    }
+
+    if ($isLocal) {
+        $defaultHost = '127.0.0.1';
+        $defaultPort = '3306';
+        $defaultName = 'azariah_db';
+        $defaultUser = 'root';
+        $defaultPass = '';
+    } else {
+        $defaultHost = 'localhost';
+        $defaultPort = '3306';
+        $defaultName = 'worlvjwl_azariahmg';
+        $defaultUser = 'worlvjwl_azariahmg-user';
+        $defaultPass = 'azariahmg-user$1';
+    }
+
+    $dbHost = $_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? getenv('DB_HOST') ?: $defaultHost;
+    $dbPort = $_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? getenv('DB_PORT') ?: $defaultPort;
+    $dbName = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? getenv('DB_NAME') ?: $defaultName;
+    $dbUser = $_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? getenv('DB_USER') ?: $defaultUser;
+    $dbPass = $_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? (getenv('DB_PASS') !== false ? getenv('DB_PASS') : $defaultPass);
 
     // Check if DATABASE_URL is set (from Prisma .env)
     $databaseUrl = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? getenv('DATABASE_URL');
