@@ -36,7 +36,12 @@ import {
   X,
   FileCode,
   Tv,
-  Film
+  Film,
+  Menu,
+  ChevronRight,
+  ChevronDown,
+  ChevronLeft,
+  Home
 } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
 import Logo from './Logo';
@@ -340,6 +345,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
   // Active Tab
   const [activeTab, setActiveTab] = useState<'branding' | 'sections' | 'media' | 'system'>('branding');
   const [activeSectionKey, setActiveSectionKey] = useState<string>('hero');
+
+  // Mobile Navigation & Responsive Breadcrumb State
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [mobileTabPickerOpen, setMobileTabPickerOpen] = useState(false);
+  const [mobileSectionPickerOpen, setMobileSectionPickerOpen] = useState(false);
+  const [mobileSectionView, setMobileSectionView] = useState<'editor' | 'directory'>('editor');
+
+  const currentSectionMeta = ALL_SECTIONS_CONFIG.find((s) => s.key === activeSectionKey) || {
+    key: activeSectionKey,
+    category: 'landing' as const,
+    label: activeSectionKey.toUpperCase(),
+    tag: 'CUSTOM',
+    description: 'Custom content section',
+    route: '#home',
+  };
 
   // CMS Section Navigation & Search State
   const [sectionCategoryFilter, setSectionCategoryFilter] = useState<'all' | 'landing' | 'page' | 'header' | 'footer'>('all');
@@ -900,10 +920,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
 
   // Logged-in Admin Dashboard
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col w-full max-w-full overflow-x-hidden">
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed top-6 right-6 z-[200] max-w-sm animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="fixed top-6 right-6 z-[250] max-w-sm animate-in fade-in slide-in-from-top-4 duration-300">
           <div
             className={`p-4 rounded-sm shadow-2xl flex items-center gap-3 border ${
               toast.type === 'success'
@@ -922,38 +942,56 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
       )}
 
       {/* Top Bar */}
-      <header className="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md px-6 py-4">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Logo variant="dark" className="h-6" />
-            <div className="h-6 w-px bg-slate-800 hidden sm:block"></div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] px-2 py-0.5 bg-lime-500 text-slate-950 rounded-sm">
-                Live Admin
-              </span>
-              <span className="text-xs font-bold text-slate-300 hidden md:inline">
-                Enterprise System Active
-              </span>
+      <header className="bg-slate-900/95 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md px-3.5 sm:px-6 py-2.5 sm:py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
+          {/* Left: Mobile Drawer Trigger + Brand Logo */}
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <button
+              type="button"
+              onClick={() => setMobileDrawerOpen(true)}
+              className="lg:hidden p-2 -ml-1 text-slate-300 hover:text-lime-400 hover:bg-slate-800/80 rounded-sm transition-colors border border-slate-800 shrink-0"
+              aria-label="Open navigation drawer"
+              title="Open Navigation Menu"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <Logo variant="dark" className="h-5 sm:h-6 shrink-0" />
+              <div className="h-5 w-px bg-slate-800 hidden sm:block"></div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.15em] px-1.5 sm:px-2 py-0.5 bg-lime-500 text-slate-950 rounded-sm">
+                  Live Admin
+                </span>
+                <span className="text-xs font-bold text-slate-300 hidden md:inline">
+                  Enterprise Active
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Right: Quick Action Controls */}
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <button
               onClick={() => {
                 onBackToHome();
                 showToast('Switched to live website view. Session remains active.', 'info');
               }}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold flex items-center gap-2 transition-colors border border-slate-700"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-700"
+              title="View Live Website"
             >
-              <ExternalLink className="w-3.5 h-3.5 text-lime-400" /> View Website
+              <ExternalLink className="w-3.5 h-3.5 text-lime-400" />
+              <span className="hidden sm:inline">View Website</span>
+              <span className="sm:hidden text-[11px]">Site</span>
             </button>
             <button
               onClick={async () => {
                 await refreshContent();
                 showToast('Content synchronized successfully.');
               }}
-              className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-sm text-xs transition-colors border border-slate-700"
-              title="Refresh Content"
+              className="p-1.5 sm:p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-sm text-xs transition-colors border border-slate-700"
+              title="Refresh and Synchronize Content"
+              aria-label="Sync Content"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
@@ -962,18 +1000,442 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 logout();
                 showToast('Logged out successfully. Session closed.', 'info');
               }}
-              className="px-4 py-2 bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/50 rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 bg-red-950/40 hover:bg-red-900/60 text-red-400 hover:text-red-300 border border-red-800/50 rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors"
+              title="Logout of Admin Console"
             >
-              <LogOut className="w-3.5 h-3.5" /> Logout
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
+      {/* Mobile Navigation Breadcrumb Bar (Visible on Mobile & Tablets) */}
+      <div className="lg:hidden sticky top-[45px] sm:top-[57px] z-40 bg-slate-900/95 border-b border-slate-800/90 backdrop-blur-md px-3 sm:px-4 py-2 shadow-md">
+        <div className="flex items-center justify-between gap-1.5 text-xs">
+          {/* Breadcrumb Path */}
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 min-w-0 flex-1">
+            {/* Step 1: Admin Home */}
+            <button
+              type="button"
+              onClick={() => setMobileDrawerOpen(true)}
+              className="flex items-center gap-1 text-slate-400 hover:text-lime-400 font-bold shrink-0 transition-colors"
+              title="Open Navigation Menu"
+            >
+              <Home className="w-3.5 h-3.5 text-lime-400 shrink-0" />
+              <span className="text-[11px]">Admin</span>
+            </button>
+
+            <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
+
+            {/* Step 2: Active Tab / Module */}
+            <div className="relative shrink-0">
+              <button
+                type="button"
+                onClick={() => setMobileTabPickerOpen(!mobileTabPickerOpen)}
+                className="flex items-center gap-1 px-2 py-0.5 rounded bg-slate-800 text-white font-bold hover:bg-slate-700 border border-slate-700/60 transition-colors text-[11px]"
+                title="Switch Module"
+              >
+                <span>
+                  {activeTab === 'branding' && 'Logo & Brand'}
+                  {activeTab === 'sections' && 'Sections Text'}
+                  {activeTab === 'media' && 'Media Gallery'}
+                  {activeTab === 'system' && 'Security'}
+                </span>
+                <ChevronDown className="w-3 h-3 text-lime-400" />
+              </button>
+
+              {/* Module Dropdown */}
+              {mobileTabPickerOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-30"
+                    onClick={() => setMobileTabPickerOpen(false)}
+                  />
+                  <div className="absolute left-0 mt-1.5 w-52 bg-slate-900 border border-slate-700 rounded-sm shadow-2xl py-1 z-40 animate-in fade-in slide-in-from-top-1">
+                    <p className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-slate-500 border-b border-slate-800">
+                      Jump to Module
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('branding');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to Logo & Brand Identity.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'branding' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <ImageIcon className="w-3.5 h-3.5" /> Logo & Brand Identity
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('sections');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to Sections Text & CMS.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'sections' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <FileText className="w-3.5 h-3.5" /> Sections Text & CMS
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('media');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to Media Gallery.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'media' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <Upload className="w-3.5 h-3.5" /> Media & Storage Gallery
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('system');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to System Security & Devices.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'system' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5" /> System & Security
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Step 3 (if in Sections): Active Section */}
+            {activeTab === 'sections' && (
+              <>
+                <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
+                <button
+                  type="button"
+                  onClick={() => setMobileSectionPickerOpen(true)}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded bg-lime-500/15 border border-lime-500/30 text-lime-300 font-bold truncate max-w-[130px] xs:max-w-[170px] transition-colors text-[11px]"
+                  title="Switch Section"
+                >
+                  <span className="truncate">{currentSectionMeta.label}</span>
+                  <ChevronDown className="w-3 h-3 text-lime-400 shrink-0" />
+                </button>
+              </>
+            )}
+          </nav>
+
+          {/* Quick Section Arrows (if in Sections) */}
+          {activeTab === 'sections' && (
+            <div className="flex items-center gap-1 shrink-0 ml-1">
+              <button
+                type="button"
+                onClick={() => {
+                  const currentIndex = ALL_SECTIONS_CONFIG.findIndex((s) => s.key === activeSectionKey);
+                  const prevIndex = currentIndex > 0 ? currentIndex - 1 : ALL_SECTIONS_CONFIG.length - 1;
+                  setActiveSectionKey(ALL_SECTIONS_CONFIG[prevIndex].key);
+                  setMobileSectionView('editor');
+                }}
+                className="p-1 rounded bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors border border-slate-700/60"
+                title="Previous section"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const currentIndex = ALL_SECTIONS_CONFIG.findIndex((s) => s.key === activeSectionKey);
+                  const nextIndex = currentIndex < ALL_SECTIONS_CONFIG.length - 1 ? currentIndex + 1 : 0;
+                  setActiveSectionKey(ALL_SECTIONS_CONFIG[nextIndex].key);
+                  setMobileSectionView('editor');
+                }}
+                className="p-1 rounded bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors border border-slate-700/60"
+                title="Next section"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Slide-Out Navigation Drawer */}
+      {mobileDrawerOpen && (
+        <div className="lg:hidden fixed inset-0 z-[200]">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setMobileDrawerOpen(false)}
+          />
+
+          {/* Drawer Panel */}
+          <div className="relative w-80 max-w-[85vw] h-full bg-slate-900 border-r border-slate-800 shadow-2xl flex flex-col justify-between p-5 overflow-y-auto animate-in slide-in-from-left duration-200">
+            <div className="space-y-6">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <Logo variant="dark" className="h-6" />
+                  <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 bg-lime-500 text-slate-950 rounded-sm">
+                    Admin
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMobileDrawerOpen(false)}
+                  className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Navigation Modules */}
+              <div className="space-y-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 px-2 pb-1">
+                  Control Center
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('branding');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to Logo & Brand Identity configuration.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'branding'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <ImageIcon className="w-4 h-4" /> Logo & Brand
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('sections');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to Dynamic Sections Content editor.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'sections'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <FileText className="w-4 h-4" /> Sections Text
+                  </span>
+                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-sm ${activeTab === 'sections' ? 'bg-slate-950/30 text-slate-950 font-bold' : 'bg-slate-800 text-slate-400'}`}>
+                    29 Items
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('media');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to Media & Asset Gallery.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'media'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <Upload className="w-4 h-4" /> Media Gallery
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('system');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to System Security & Devices.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'system'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <ShieldCheck className="w-4 h-4" /> System & Security
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </button>
+              </div>
+
+              {/* Status Card in Drawer */}
+              <div className="bg-slate-950 border border-slate-800 rounded-sm p-3.5 text-[11px] space-y-2 text-slate-400">
+                <div className="flex items-center gap-2 text-slate-200 font-bold uppercase tracking-wider text-[10px]">
+                  <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span>
+                  System Status
+                </div>
+                <p>Environment: <strong className="text-white">Live Production</strong></p>
+                <p>Services: <strong className="text-lime-400">Synchronized & Active</strong></p>
+                <p>Admin: <strong className="text-slate-200">{adminUser?.username || 'Administrator'}</strong></p>
+              </div>
+            </div>
+
+            {/* Drawer Bottom Actions */}
+            <div className="pt-6 border-t border-slate-800 space-y-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileDrawerOpen(false);
+                  onBackToHome();
+                  showToast('Switched to live website view.', 'info');
+                }}
+                className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold flex items-center justify-center gap-2 transition-colors border border-slate-700"
+              >
+                <ExternalLink className="w-3.5 h-3.5 text-lime-400" /> View Website
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  setMobileDrawerOpen(false);
+                  await refreshContent();
+                  showToast('Content synchronized successfully.');
+                }}
+                className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-sm text-xs font-bold flex items-center justify-center gap-2 transition-colors border border-slate-700"
+              >
+                <RefreshCw className="w-3.5 h-3.5" /> Sync Content
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileDrawerOpen(false);
+                  logout();
+                  showToast('Logged out successfully.', 'info');
+                }}
+                className="w-full py-2.5 bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/50 rounded-sm text-xs font-bold flex items-center justify-center gap-2 transition-colors"
+              >
+                <LogOut className="w-3.5 h-3.5" /> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Section Picker Modal */}
+      {mobileSectionPickerOpen && (
+        <div className="fixed inset-0 z-[220] bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+          <div className="bg-slate-900 border border-slate-800 rounded-t-xl sm:rounded-sm w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            {/* Modal Header */}
+            <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-lime-400" />
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-white">
+                    Select Section to Edit
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    29 Website Sections & Dedicated Pages
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMobileSectionPickerOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Quick Search inside picker */}
+            <div className="p-3 border-b border-slate-800/80 bg-slate-950/60">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={sectionSearch}
+                  onChange={(e) => setSectionSearch(e.target.value)}
+                  placeholder="Filter 29 sections (e.g. hero, about, services, footer)..."
+                  className="w-full pl-9 pr-8 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none placeholder:text-slate-500"
+                />
+                {sectionSearch && (
+                  <button
+                    type="button"
+                    onClick={() => setSectionSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Section List */}
+            <div className="p-3 overflow-y-auto flex-1 space-y-1.5 custom-scrollbar">
+              {ALL_SECTIONS_CONFIG
+                .filter((s) => {
+                  if (!sectionSearch.trim()) return true;
+                  const q = sectionSearch.toLowerCase();
+                  return s.label.toLowerCase().includes(q) || s.key.toLowerCase().includes(q) || s.description.toLowerCase().includes(q);
+                })
+                .map((sec) => {
+                  const isSelected = activeSectionKey === sec.key;
+                  return (
+                    <button
+                      key={sec.key}
+                      type="button"
+                      onClick={() => {
+                        setActiveSectionKey(sec.key);
+                        setMobileSectionPickerOpen(false);
+                        setMobileSectionView('editor');
+                        showToast(`Switched to '${sec.label}'.`, 'info');
+                      }}
+                      className={`w-full text-left p-2.5 rounded-sm border transition-all flex items-center justify-between ${
+                        isSelected
+                          ? 'bg-lime-500/15 border-lime-500/50 text-white font-bold'
+                          : 'bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
+                      }`}
+                    >
+                      <div className="space-y-0.5 truncate pr-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 bg-slate-800 text-lime-400 rounded-sm">
+                            {sec.tag}
+                          </span>
+                          <span className="text-xs truncate font-bold text-white">
+                            {sec.label}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-400 truncate">
+                          {sec.description}
+                        </p>
+                      </div>
+                      {isSelected ? (
+                        <Check className="w-4 h-4 text-lime-400 shrink-0" />
+                      ) : (
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                      )}
+                    </button>
+                  );
+                })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto w-full px-6 py-8 flex-1 grid lg:grid-cols-5 gap-8">
-        {/* Navigation Sidebar */}
-        <aside className="lg:col-span-1 space-y-4">
+      <div className="max-w-7xl mx-auto w-full px-3.5 sm:px-6 py-4 sm:py-8 flex-1 grid lg:grid-cols-5 gap-6 sm:gap-8 overflow-hidden">
+        {/* Navigation Sidebar (Desktop Only) */}
+        <aside className="hidden lg:block lg:col-span-1 space-y-4">
           <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 space-y-2">
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 px-3 pb-2 border-b border-slate-800">
               Control Center
@@ -1052,7 +1514,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
         <main className="lg:col-span-4 space-y-6">
           {/* TAB 1: LOGO & BRANDING */}
           {activeTab === 'branding' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-sm p-6 md:p-8 space-y-8">
+            <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
               <div className="border-b border-slate-800 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                 <div>
                   <h2 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
@@ -1289,7 +1751,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
             const charCount = (sectionForm.content || '').length;
 
             return (
-              <div className="bg-slate-900 border border-slate-800 rounded-sm p-6 md:p-8 space-y-6">
+              <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6">
                 {/* CMS Master Header */}
                 <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-800 pb-5">
                   <div className="space-y-1">
@@ -1392,10 +1854,38 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   </div>
                 </div>
 
+                {/* Mobile View Switcher (Editor vs Directory) */}
+                <div className="lg:hidden flex items-center p-1 bg-slate-950 border border-slate-800 rounded-sm">
+                  <button
+                    type="button"
+                    onClick={() => setMobileSectionView('editor')}
+                    className={`flex-1 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all flex items-center justify-center gap-1.5 ${
+                      mobileSectionView === 'editor'
+                        ? 'bg-lime-500 text-slate-950 shadow-md font-black'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Edit: {currentSectionMeta.tag}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMobileSectionView('directory')}
+                    className={`flex-1 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all flex items-center justify-center gap-1.5 ${
+                      mobileSectionView === 'directory'
+                        ? 'bg-lime-500 text-slate-950 shadow-md font-black'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Folder className="w-3.5 h-3.5" />
+                    <span>Directory ({filteredSections.length})</span>
+                  </button>
+                </div>
+
                 {/* Master-Detail Split Grid */}
                 <div className="grid lg:grid-cols-12 gap-6 pt-2">
                   {/* Left Column: Categorized Section Directory */}
-                  <div className="lg:col-span-4 space-y-2">
+                  <div className={`space-y-2 lg:col-span-4 ${mobileSectionView === 'directory' ? 'block' : 'hidden lg:block'}`}>
                     <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 px-1 pb-1">
                       <span>DIRECTORY ({filteredSections.length})</span>
                       <span className="text-[10px] text-slate-500 uppercase">Select to edit</span>
@@ -1427,6 +1917,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                               onClick={() => {
                                 setActiveSectionKey(sec.key);
                                 setAdvancedJsonOpen(false);
+                                setMobileSectionView('editor');
+                                showToast(`Loaded '${sec.label}' into editor.`, 'info');
                               }}
                               className={`w-full text-left p-3.5 rounded-sm border transition-all flex flex-col gap-1.5 group ${
                                 isSelected
@@ -1472,7 +1964,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   </div>
 
                   {/* Right Column: Full Rich Form Editor */}
-                  <div className="lg:col-span-8 bg-slate-950 border border-slate-800 rounded-sm p-6 space-y-6">
+                  <div className={`lg:col-span-8 bg-slate-950 border border-slate-800 rounded-sm p-4 sm:p-6 space-y-6 ${mobileSectionView === 'editor' ? 'block' : 'hidden lg:block'}`}>
                     {/* Active Section Banner */}
                     <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="space-y-1">
@@ -2066,7 +2558,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
 
           {/* TAB 3: MEDIA GALLERY */}
           {activeTab === 'media' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-sm p-6 md:p-8 space-y-6">
+            <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6">
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-slate-800 pb-4">
                 <div>
                   <h2 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
@@ -2162,7 +2654,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
 
           {/* TAB 4: SYSTEM & SECURITY */}
           {activeTab === 'system' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-sm p-6 md:p-8 space-y-8">
+            <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
               <div className="border-b border-slate-800 pb-4">
                 <h2 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
                   <ShieldCheck className="w-6 h-6 text-lime-400" /> Security & Access Architecture
