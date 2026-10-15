@@ -91,7 +91,22 @@ if ($path === 'setup') {
     exit(0);
 }
 
-// 7. Root API status check
+// 7. Security / OTP Status Diagnostic (/security-status, /otp-status)
+if ($path === 'security-status' || $path === 'otp-status') {
+    $pdo = getDbConnection();
+    $stmt = $pdo->query("SELECT id, userId, otpCode, deviceToken, expiresAt, used, createdAt FROM admin_otps ORDER BY id DESC LIMIT 5");
+    $otps = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    sendJson([
+        'success' => true,
+        'latest_otps' => $otps,
+        'smtp_configured_user' => $_ENV['SMTP_USER'] ?? getenv('SMTP_USER') ?: 'podoremetropolis@gmail.com',
+        'smtp_configured_host' => $_ENV['SMTP_HOST'] ?? getenv('SMTP_HOST') ?: 'smtp.gmail.com',
+        'timestamp' => date('c'),
+    ]);
+}
+
+// 8. Root API status check
 if ($path === '' || $path === 'status') {
     sendJson([
         'success' => true,

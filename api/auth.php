@@ -209,7 +209,8 @@ if ($action === 'login' && $method === 'POST') {
         'deviceToken' => $deviceToken,
         'deviceName' => $deviceName,
         'reason' => $reason,
-        'mailSent' => $mailResult['success']
+        'mailSent' => $mailResult['success'],
+        'mailTransport' => $mailResult['transport'] ?? 'unknown'
     ];
 
     if (!$mailResult['success']) {
@@ -397,7 +398,8 @@ if ($action === 'resend-otp' && $method === 'POST') {
     $response = [
         'success' => true,
         'message' => 'A new 6-digit verification code has been dispatched to ' . maskEmail($user['email']),
-        'mailSent' => $mailResult['success']
+        'mailSent' => $mailResult['success'],
+        'mailTransport' => $mailResult['transport'] ?? 'unknown'
     ];
     if (!$mailResult['success']) {
         $response['mailError'] = $mailResult['error'] ?? 'SMTP delivery failed';
