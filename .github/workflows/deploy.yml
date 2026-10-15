@@ -74,9 +74,9 @@ jobs:
       - name: 🚀 Sync Files to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.CPANEL_FTP_SERVER != '' && secrets.CPANEL_FTP_SERVER || 'premium332.web-hosting.com' }}
-          username: ${{ secrets.CPANEL_FTP_USERNAME != '' && secrets.CPANEL_FTP_USERNAME || 'worlvjwl' }}
-          password: ${{ secrets.CPANEL_FTP_PASSWORD != '' && secrets.CPANEL_FTP_PASSWORD || 'UCUQXx1oDDrY' }}
+          server: ${{ secrets.CPANEL_FTP_SERVER }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
           port: 21
           protocol: ftp
           local-dir: ./deploy-package/
