@@ -718,12 +718,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
 
         <button
           onClick={onBackToHome}
-          className="absolute top-8 left-8 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-white transition-colors"
+          className="absolute top-4 sm:top-8 left-4 sm:left-8 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Return to Website
         </button>
 
-        <div className="w-full max-w-md bg-slate-900/90 border border-slate-800 p-8 md:p-10 rounded-sm shadow-2xl relative z-10 space-y-6 backdrop-blur-xl">
+        <div className="w-full max-w-md bg-slate-900/90 border border-slate-800 p-6 sm:p-8 md:p-10 rounded-sm shadow-2xl relative z-10 space-y-6 backdrop-blur-xl overflow-hidden">
           {otpStep ? (
             /* ========================================== */
             /* 2FA OTP VERIFICATION SCREEN               */
@@ -1435,7 +1435,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
       {/* Main Container */}
       <div className="max-w-7xl mx-auto w-full px-3.5 sm:px-6 py-4 sm:py-8 flex-1 grid lg:grid-cols-5 gap-6 sm:gap-8 overflow-hidden">
         {/* Navigation Sidebar (Desktop Only) */}
-        <aside className="hidden lg:block lg:col-span-1 space-y-4">
+        <aside className="hidden lg:block lg:col-span-1 space-y-4 min-w-0">
           <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 space-y-2">
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 px-3 pb-2 border-b border-slate-800">
               Control Center
@@ -1511,10 +1511,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
         </aside>
 
         {/* Content Area */}
-        <main className="lg:col-span-4 space-y-6">
+        <main className="lg:col-span-4 space-y-6 min-w-0 max-w-full">
           {/* TAB 1: LOGO & BRANDING */}
           {activeTab === 'branding' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
+            <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8 overflow-hidden w-full max-w-full">
               <div className="border-b border-slate-800 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                 <div>
                   <h2 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
@@ -1751,10 +1751,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
             const charCount = (sectionForm.content || '').length;
 
             return (
-              <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6">
+              <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6 overflow-hidden w-full max-w-full">
                 {/* CMS Master Header */}
-                <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-800 pb-5">
-                  <div className="space-y-1">
+                <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-800 pb-5 w-full max-w-full min-w-0">
+                  <div className="space-y-1 min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="px-2.5 py-0.5 bg-lime-500/15 border border-lime-500/30 text-lime-400 text-[10px] font-black uppercase tracking-widest rounded-sm">
                         Content Management System
@@ -1771,11 +1771,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2.5">
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
                     <button
                       type="button"
                       onClick={() => handlePreviewRoute(currentSectionMeta.route)}
-                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors"
+                      className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0"
                       title={`Preview '${currentSectionMeta.label}' on website`}
                     >
                       <Eye className="w-3.5 h-3.5 text-lime-400" />
@@ -1883,9 +1883,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 </div>
 
                 {/* Master-Detail Split Grid */}
-                <div className="grid lg:grid-cols-12 gap-6 pt-2">
+                <div className="grid lg:grid-cols-12 gap-6 pt-2 min-w-0">
                   {/* Left Column: Categorized Section Directory */}
-                  <div className={`space-y-2 lg:col-span-4 ${mobileSectionView === 'directory' ? 'block' : 'hidden lg:block'}`}>
+                  <div className={`space-y-2 lg:col-span-4 min-w-0 ${mobileSectionView === 'directory' ? 'block' : 'hidden lg:block'}`}>
                     <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 px-1 pb-1">
                       <span>DIRECTORY ({filteredSections.length})</span>
                       <span className="text-[10px] text-slate-500 uppercase">Select to edit</span>
@@ -1964,10 +1964,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   </div>
 
                   {/* Right Column: Full Rich Form Editor */}
-                  <div className={`lg:col-span-8 bg-slate-950 border border-slate-800 rounded-sm p-4 sm:p-6 space-y-6 overflow-hidden w-full max-w-full ${mobileSectionView === 'editor' ? 'block' : 'hidden lg:block'}`}>
+                  <div className={`lg:col-span-8 bg-slate-950 border border-slate-800 rounded-sm p-4 sm:p-6 space-y-6 overflow-hidden w-full max-w-full min-w-0 ${mobileSectionView === 'editor' ? 'block' : 'hidden lg:block'}`}>
                     {/* Active Section Banner */}
-                    <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div className="space-y-1">
+                    <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full max-w-full min-w-0">
+                      <div className="space-y-1 min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="px-2 py-0.5 bg-lime-500 text-slate-950 font-black text-[9px] uppercase tracking-wider rounded-sm">
                             Editing {currentSectionMeta.tag}
@@ -2108,46 +2108,48 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                           <span className="text-[10px] text-slate-500 font-mono">mediaUrl</span>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full max-w-full">
                           <input
                             type="text"
                             value={sectionForm.mediaUrl}
                             onChange={(e) => setSectionForm({ ...sectionForm, mediaUrl: e.target.value })}
-                            className="flex-1 px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none font-mono"
+                            className="flex-1 min-w-[180px] px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none font-mono"
                             placeholder="https://... or /uploads/... (or YouTube embed URL)"
                           />
-                          <label className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 shrink-0">
-                            <Upload className="w-3.5 h-3.5 text-lime-400" />
-                            <span>Upload Image</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleSectionMediaUpload}
-                              className="hidden"
-                              disabled={isUploading}
-                            />
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              loadMedia();
-                              setGalleryModalOpen(true);
-                            }}
-                            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shrink-0"
-                          >
-                            <Folder className="w-3.5 h-3.5 text-lime-400" />
-                            <span>From Gallery</span>
-                          </button>
-                          {sectionForm.mediaUrl && (
+                          <div className="flex flex-wrap items-center gap-2 shrink-0">
+                            <label className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 shrink-0">
+                              <Upload className="w-3.5 h-3.5 text-lime-400" />
+                              <span>Upload Image</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleSectionMediaUpload}
+                                className="hidden"
+                                disabled={isUploading}
+                              />
+                            </label>
                             <button
                               type="button"
-                              onClick={() => setSectionForm({ ...sectionForm, mediaUrl: '' })}
-                              className="px-3 py-2 bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-900/50 rounded-sm text-xs font-bold transition-colors shrink-0"
-                              title="Clear media URL"
+                              onClick={() => {
+                                loadMedia();
+                                setGalleryModalOpen(true);
+                              }}
+                              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shrink-0"
                             >
-                              <X className="w-3.5 h-3.5" />
+                              <Folder className="w-3.5 h-3.5 text-lime-400" />
+                              <span>From Gallery</span>
                             </button>
-                          )}
+                            {sectionForm.mediaUrl && (
+                              <button
+                                type="button"
+                                onClick={() => setSectionForm({ ...sectionForm, mediaUrl: '' })}
+                                className="px-2.5 py-2 bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-900/50 rounded-sm text-xs font-bold transition-colors shrink-0"
+                                title="Clear media URL"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
                         </div>
 
                         {/* Media Preview Box */}
@@ -2410,13 +2412,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                       </div>
 
                       {/* Sticky Save & Action Buttons Bar */}
-                      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pt-4 border-t border-slate-800 w-full max-w-full">
-                        <div className="flex items-center gap-2 text-xs text-slate-400 min-w-0">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4 border-t border-slate-800 w-full max-w-full">
+                        <div className="flex items-center gap-2 text-xs text-slate-400 min-w-0 shrink">
                           <CheckCircle2 className="w-4 h-4 text-lime-400 shrink-0" />
-                          <span className="truncate">All content changes published live across the website</span>
+                          <span className="truncate text-[11px] sm:text-xs">Published live across website</span>
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+                        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end shrink-0">
                           <button
                             type="button"
                             onClick={() => {
@@ -2435,7 +2437,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                                 showToast('Reset form to previously saved content.');
                               }
                             }}
-                            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-sm text-xs font-bold transition-colors"
+                            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-sm text-xs font-bold transition-colors shrink-0"
                           >
                             Reset
                           </button>
@@ -2443,7 +2445,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                           <button
                             type="button"
                             onClick={() => handlePreviewRoute(currentSectionMeta.route)}
-                            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-700"
+                            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-700 shrink-0"
                           >
                             <Eye className="w-3.5 h-3.5 text-lime-400" /> Preview Live
                           </button>
@@ -2459,7 +2461,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                               </>
                             ) : (
                               <>
-                                <Save className="w-3.5 h-3.5" /> Save {currentSectionMeta.tag} Changes
+                                <Save className="w-3.5 h-3.5" /> Save Changes
                               </>
                             )}
                           </button>
@@ -2526,8 +2528,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         )}
                       </div>
 
-                      <div className="p-4 border-t border-slate-800 bg-slate-950 flex justify-between items-center">
-                        <label className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold cursor-pointer transition-colors flex items-center gap-2">
+                      <div className="p-4 border-t border-slate-800 bg-slate-950 flex flex-wrap justify-between items-center gap-2 w-full max-w-full">
+                        <label className="px-3.5 sm:px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-bold cursor-pointer transition-colors flex items-center gap-2 shrink-0">
                           <Upload className="w-3.5 h-3.5 text-lime-400" />
                           <span>Upload New File</span>
                           <input
@@ -2544,7 +2546,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         <button
                           type="button"
                           onClick={() => setGalleryModalOpen(false)}
-                          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold"
+                          className="px-3.5 sm:px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-sm text-xs font-bold shrink-0"
                         >
                           Cancel
                         </button>
@@ -2558,7 +2560,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
 
           {/* TAB 3: MEDIA GALLERY */}
           {activeTab === 'media' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6">
+            <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6 overflow-hidden w-full max-w-full">
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-slate-800 pb-4">
                 <div>
                   <h2 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
@@ -2654,7 +2656,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
 
           {/* TAB 4: SYSTEM & SECURITY */}
           {activeTab === 'system' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
+            <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8 overflow-hidden w-full max-w-full">
               <div className="border-b border-slate-800 pb-4">
                 <h2 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
                   <ShieldCheck className="w-6 h-6 text-lime-400" /> Security & Access Architecture
@@ -2665,7 +2667,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
               </div>
 
               {/* Change Password Form */}
-              <div className="p-6 bg-slate-950 border border-slate-800 rounded-sm space-y-4 max-w-lg">
+              <div className="p-4 sm:p-6 bg-slate-950 border border-slate-800 rounded-sm space-y-4 max-w-lg overflow-hidden w-full">
                 <h3 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
                   <KeyRound className="w-4 h-4 text-lime-400" /> Update Administrator Password
                 </h3>
@@ -2717,7 +2719,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
 
                   <button
                     type="submit"
-                    className="px-6 py-2.5 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-widest rounded-sm transition-all"
+                    className="px-4 sm:px-5 py-2 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm transition-all shadow-md shadow-lime-500/20 max-w-full truncate self-start"
                   >
                     Update Password
                   </button>
@@ -2725,7 +2727,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
               </div>
 
               {/* Authorized Devices & 7-Day Trust Window */}
-              <div className="p-6 bg-slate-950 border border-slate-800 rounded-sm space-y-4">
+              <div className="p-4 sm:p-6 bg-slate-950 border border-slate-800 rounded-sm space-y-4 overflow-hidden w-full max-w-full">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-4">
                   <div>
                     <h3 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
