@@ -106,6 +106,9 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ");
 
+    // 7. Create developer, project, milestone, timetracker, and payslip tables
+    ensureDevModuleTables($pdo);
+
     // 5. Seed / Update Admin User with credentials
     $targetEmail = 'info@azariahmg.com';
     $passwordHash = password_hash('Admin@webmaster$1', PASSWORD_BCRYPT);

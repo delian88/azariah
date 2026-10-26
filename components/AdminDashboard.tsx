@@ -41,10 +41,16 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronLeft,
-  Home
+  Home,
+  Users,
+  DollarSign
 } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
 import Logo from './Logo';
+import AdminDevelopersTab from './admin/AdminDevelopersTab';
+import AdminProjectsTab from './admin/AdminProjectsTab';
+import AdminTimeTrackingTab from './admin/AdminTimeTrackingTab';
+import AdminPayrollTab from './admin/AdminPayrollTab';
 
 export interface SectionMeta {
   key: string;
@@ -343,7 +349,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
   const [loadingDevices, setLoadingDevices] = useState(false);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'branding' | 'sections' | 'media' | 'system'>('branding');
+  const [activeTab, setActiveTab] = useState<'branding' | 'sections' | 'media' | 'projects' | 'developers' | 'timetracking' | 'payroll' | 'system'>('branding');
   const [activeSectionKey, setActiveSectionKey] = useState<string>('hero');
 
   // Mobile Navigation & Responsive Breadcrumb State
@@ -1040,6 +1046,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   {activeTab === 'branding' && 'Logo & Brand'}
                   {activeTab === 'sections' && 'Sections Text'}
                   {activeTab === 'media' && 'Media Gallery'}
+                  {activeTab === 'projects' && 'Projects'}
+                  {activeTab === 'developers' && 'Developers'}
+                  {activeTab === 'timetracking' && 'Time Tracking'}
+                  {activeTab === 'payroll' && 'Payroll'}
                   {activeTab === 'system' && 'Security'}
                 </span>
                 <ChevronDown className="w-3 h-3 text-lime-400" />
@@ -1094,6 +1104,58 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                       }`}
                     >
                       <Upload className="w-3.5 h-3.5" /> Media & Storage Gallery
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('projects');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to Projects & Milestones.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'projects' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <Folder className="w-3.5 h-3.5" /> Projects & Milestones
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('developers');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to Developers & Team.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'developers' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <Users className="w-3.5 h-3.5" /> Developers & Credentials
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('timetracking');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to Time Tracking & Hours.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'timetracking' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <Clock className="w-3.5 h-3.5" /> Time Logs & Attendance
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('payroll');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to Payroll & Payslips.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'payroll' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <DollarSign className="w-3.5 h-3.5" /> Payroll & Payslips
                     </button>
                     <button
                       type="button"
@@ -1255,6 +1317,82 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 >
                   <span className="flex items-center gap-3">
                     <Upload className="w-4 h-4" /> Media Gallery
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('projects');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to Projects & Milestones.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'projects'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <Folder className="w-4 h-4" /> Projects & Milestones
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('developers');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to Developers & Team.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'developers'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <Users className="w-4 h-4" /> Developers & Credentials
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('timetracking');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to Time Tracking & Hours.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'timetracking'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <Clock className="w-4 h-4" /> Time Logs & Attendance
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('payroll');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to Payroll & Payslips.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'payroll'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <DollarSign className="w-4 h-4" /> Payroll & Payslips
                   </span>
                   <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
@@ -1481,6 +1619,62 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
               }`}
             >
               <Upload className="w-4 h-4" /> Media Gallery
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab('projects');
+                showToast('Switched to Projects & Milestones.', 'info');
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                activeTab === 'projects'
+                  ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Folder className="w-4 h-4" /> Projects & Milestones
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab('developers');
+                showToast('Switched to Developers & Team.', 'info');
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                activeTab === 'developers'
+                  ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Users className="w-4 h-4" /> Developers & Credentials
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab('timetracking');
+                showToast('Switched to Time Tracking & Hours.', 'info');
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                activeTab === 'timetracking'
+                  ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Clock className="w-4 h-4" /> Time Logs & Attendance
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab('payroll');
+                showToast('Switched to Payroll & Payslips.', 'info');
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                activeTab === 'payroll'
+                  ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <DollarSign className="w-4 h-4" /> Payroll & Payslips
             </button>
 
             <button
@@ -2654,7 +2848,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
             </div>
           )}
 
-          {/* TAB 4: SYSTEM & SECURITY */}
+          {/* TAB: PROJECTS & MILESTONES */}
+          {activeTab === 'projects' && (
+            <AdminProjectsTab showToast={showToast} />
+          )}
+
+          {/* TAB: DEVELOPERS & CREDENTIALS */}
+          {activeTab === 'developers' && (
+            <AdminDevelopersTab showToast={showToast} />
+          )}
+
+          {/* TAB: TIME TRACKING & ATTENDANCE */}
+          {activeTab === 'timetracking' && (
+            <AdminTimeTrackingTab showToast={showToast} />
+          )}
+
+          {/* TAB: PAYROLL & PAYSLIPS */}
+          {activeTab === 'payroll' && (
+            <AdminPayrollTab showToast={showToast} />
+          )}
+
+          {/* TAB: SYSTEM & SECURITY */}
           {activeTab === 'system' && (
             <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8 overflow-hidden w-full max-w-full">
               <div className="border-b border-slate-800 pb-4">

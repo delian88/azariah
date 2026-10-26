@@ -79,13 +79,49 @@ if ($path === 'admin/upload' || $path === 'upload' || $path === 'admin/media' ||
     exit(0);
 }
 
-// 5. Inquiry & Contact Routes (/inquiry, /contact)
+// 5. Developers & Engineering Team Routes (/developers, /developer, /admin/developers)
+if ($path === 'developers' || $path === 'admin/developers' || str_starts_with($path, 'developers/') || str_starts_with($path, 'admin/developers/')) {
+    if (preg_match('#(?:admin/)?developers/([a-zA-Z0-9_-]+)#', $path, $matches)) {
+        $_GET['action'] = $matches[1];
+    }
+    require __DIR__ . '/developers.php';
+    exit(0);
+}
+
+// 6. Projects & Milestones Routes (/projects, /admin/projects)
+if ($path === 'projects' || $path === 'admin/projects' || str_starts_with($path, 'projects/') || str_starts_with($path, 'admin/projects/')) {
+    if (preg_match('#(?:admin/)?projects/([a-zA-Z0-9_-]+)#', $path, $matches)) {
+        $_GET['action'] = $matches[1];
+    }
+    require __DIR__ . '/projects.php';
+    exit(0);
+}
+
+// 7. Time Tracker & Attendance Routes (/timetracker, /admin/timetracker)
+if ($path === 'timetracker' || $path === 'admin/timetracker' || str_starts_with($path, 'timetracker/') || str_starts_with($path, 'admin/timetracker/')) {
+    if (preg_match('#(?:admin/)?timetracker/([a-zA-Z0-9_-]+)#', $path, $matches)) {
+        $_GET['action'] = $matches[1];
+    }
+    require __DIR__ . '/timetracker.php';
+    exit(0);
+}
+
+// 8. Payslips & Payroll Disbursement Routes (/payslips, /admin/payslips)
+if ($path === 'payslips' || $path === 'admin/payslips' || str_starts_with($path, 'payslips/') || str_starts_with($path, 'admin/payslips/')) {
+    if (preg_match('#(?:admin/)?payslips/([a-zA-Z0-9_-]+)#', $path, $matches)) {
+        $_GET['action'] = $matches[1];
+    }
+    require __DIR__ . '/payslips.php';
+    exit(0);
+}
+
+// 9. Inquiry & Contact Routes (/inquiry, /contact)
 if ($path === 'inquiry' || $path === 'contact') {
     require dirname(__DIR__) . '/mailer.php';
     exit(0);
 }
 
-// 6. Database Setup / Schema migration route (/setup)
+// 10. Database Setup / Schema migration route (/setup)
 if ($path === 'setup') {
     require __DIR__ . '/setup.php';
     exit(0);

@@ -222,3 +222,139 @@ function requireAuthUser() {
 
     return $user;
 }
+
+// Require Admin Privilege
+function requireAdminUser() {
+    $user = requireAuthUser();
+    if (isset($user['role']) && $user['role'] === 'developer') {
+        sendJson(['success' => false, 'error' => 'Forbidden: Administrator privileges required'], 403);
+    }
+    return $user;
+}
+
+// Require Developer Privilege
+function requireDeveloperUser() {
+    $user = requireAuthUser();
+    if (!isset($user['role']) || $user['role'] !== 'developer') {
+        sendJson(['success' => false, 'error' => 'Forbidden: Developer privileges required'], 403);
+    }
+    return $user;
+}
+
+// Automatically ensure developer and project tables exist in the database
+function ensureDevModuleTables($pdo) {
+    static $tablesChecked = false;
+    if ($tablesChecked) return;
+
+    try {
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS `developers` (
+              `id` INT NOT NULL AUTO_INCREMENT,
+              `name` VARCHAR(191) NOT NULL,
+              `email` VARCHAR(191) NOT NULL,
+              `passwordHash` VARCHAR(191) NOT NULL,
+              `roleTitle` VARCHAR(191) NOT NULL DEFAULT 'Developer',
+              `hourlyRate` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+              `currency` VARCHAR(10) NOT NULL DEFAULT 'USD',
+              `phone` VARCHAR(64) NULL,
+              `status` ENUM('active', 'inactive', 'pending') NOT NULL DEFAULT 'active',
+              `emailConfirmed` TINYINT(1) NOT NULL DEFAULT 0,
+              `confirmationToken` VARCHAR(128) NULL,
+              `lastLoginAt` DATETIME NULL,
+              `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+              `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `developers_email_key` (`email`),
+              INDEX `idx_developers_status` (`status`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            CREATE TABLE IF NOT EXISTS `projects` (
+              `id` INT NOT NULL AUTO_INCREMENT,
+              `name` VARCHAR(191) NOT NULL,
+              `slug` VARCHAR(191) NOT NULL,
+              `description` LONGTEXT NULL,
+              `budget` DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+              `currency` VARCHAR(10) NOT NULL DEFAULT 'USD',
+              `status` ENUM('planning', 'in_progress', 'in_review', 'launched', 'on_hold') NOT NULL DEFAULT 'planning',
+              `launchDate` DATE NULL,
+              `repoUrl` VARCHAR(255) NULL,
+              `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+              `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `projects_slug_key` (`slug`),
+              INDEX `idx_projects_status` (`status`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            CREATE TABLE IF NOT EXISTS `project_milestones` (
+              `id` INT NOT NULL AUTO_INCREMENT,
+              `projectId` INT NOT NULL,
+              `title` VARCHAR(255) NOT NULL,
+              `description` TEXT NULL,
+              `dueDate` DATE NULL,
+              `status` ENUM('pending', 'in_progress', 'completed') NOT NULL DEFAULT 'pending',
+              `orderIndex` INT NOT NULL DEFAULT 0,
+              `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+              `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+              PRIMARY KEY (`id`),
+              INDEX `idx_milestones_project` (`projectId`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            CREATE TABLE IF NOT EXISTS `project_developers` (
+              `id` INT NOT NULL AUTO_INCREMENT,
+              `projectId` INT NOT NULL,
+              `developerId` INT NOT NULL,
+              `roleInProject` VARCHAR(191) NULL DEFAULT 'Lead Developer',
+              `assignedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `idx_project_developer` (`projectId`, `developerId`),
+              INDEX `idx_dev_assignments` (`developerId`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            CREATE TABLE IF NOT EXISTS `developer_time_logs` (
+              `id` INT NOT NULL AUTO_INCREMENT,
+              `developerId` INT NOT NULL,
+              `projectId` INT NULL,
+              `clockIn` DATETIME NOT NULL,
+              `clockOut` DATETIME NULL,
+              `totalMinutes` INT NOT NULL DEFAULT 0,
+              `taskSummary` TEXT NULL,
+              `ipAddress` VARCHAR(64) NULL,
+              `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+              `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+              PRIMARY KEY (`id`),
+              INDEX `idx_timelogs_dev` (`developerId`),
+              INDEX `idx_timelogs_proj` (`projectId`),
+              INDEX `idx_timelogs_clockin` (`clockIn`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            CREATE TABLE IF NOT EXISTS `payslips` (
+              `id` INT NOT NULL AUTO_INCREMENT,
+              `developerId` INT NOT NULL,
+              `referenceNo` VARCHAR(64) NOT NULL,
+              `periodStart` DATE NOT NULL,
+              `periodEnd` DATE NOT NULL,
+              `hoursBilled` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+              `hourlyRate` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+              `bonus` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+              `deductions` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+              `totalAmount` DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+              `currency` VARCHAR(10) NOT NULL DEFAULT 'USD',
+              `paymentMethod` VARCHAR(128) NOT NULL DEFAULT 'Bank Transfer',
+              `notes` TEXT NULL,
+              `status` ENUM('issued', 'confirmed') NOT NULL DEFAULT 'issued',
+              `confirmedAt` DATETIME NULL,
+              `issuedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+              `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `payslips_ref_key` (`referenceNo`),
+              INDEX `idx_payslips_dev` (`developerId`),
+              INDEX `idx_payslips_status` (`status`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        ");
+        $tablesChecked = true;
+    } catch (Exception $e) {
+        // Table creation error logged gracefully
+        @file_put_contents(dirname(__DIR__) . '/db_migration_err.log', date('c') . " " . $e->getMessage() . "\n", FILE_APPEND);
+    }
+}

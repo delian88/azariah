@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter, Facebook, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter, Facebook, ShieldCheck, Code } from 'lucide-react';
 import Logo from './Logo';
 import { useContent } from '../context/ContentContext';
 
@@ -106,6 +106,14 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           >
             <ShieldCheck className="w-3 h-3 text-lime-400" />
             {isAdmin ? "Admin Console" : "Admin Portal"}
+          </a>
+          <a 
+            href="#dev-portal" 
+            onClick={(e) => handleLinkClick(e, 'developer')} 
+            className="flex items-center gap-1.5 text-sky-400 hover:text-white transition-colors px-2 py-1 bg-slate-900 border border-slate-800 rounded-sm hover:border-sky-500"
+          >
+            <Code className="w-3 h-3 text-sky-400" />
+            Developer Portal
           </a>
         </div>
       </div>

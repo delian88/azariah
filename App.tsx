@@ -31,6 +31,7 @@ import Partners from './components/Partners';
 import PodOreSection from './components/PodOreSection';
 import BrandSpotlight from './components/BrandSpotlight';
 import AdminDashboard from './components/AdminDashboard';
+import DeveloperPortal from './components/DeveloperPortal';
 import { ContentProvider, useContent } from './context/ContentContext';
 import { ShieldCheck } from 'lucide-react';
 
@@ -51,7 +52,8 @@ export type ViewState =
   | 'catalog' 
   | 'wallfeel' 
   | 'wallfeel-catalog'
-  | 'admin';
+  | 'admin'
+  | 'developer';
 
 const MainApp: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -80,6 +82,7 @@ const MainApp: React.FC = () => {
       else if (hash === '#wallfeel-catalog-page') nextView = 'wallfeel-catalog';
       else if (hash === '#creaitube-page') nextView = 'creaitube';
       else if (hash === '#admin' || hash === '#admin-page') nextView = 'admin';
+      else if (hash === '#developer' || hash === '#developer-portal' || hash === '#dev-portal') nextView = 'developer';
       else nextView = 'home';
 
       setView(nextView);
@@ -133,6 +136,7 @@ const MainApp: React.FC = () => {
       'wallfeel-catalog': "Wallfeel Product Catalog | AMG",
       creaitube: "CreAItube | AI-Driven Creative Hub | AMG",
       admin: "Admin Console | Azariah Management Group",
+      developer: "Developer Portal & Attendance | Azariah Management Group",
     };
 
     if (titleMap[view]) {
@@ -191,6 +195,7 @@ const MainApp: React.FC = () => {
       'wallfeel-catalog': '#wallfeel-catalog-page',
       creaitube: '#creaitube-page',
       admin: '#admin',
+      developer: '#dev-portal',
     };
     window.location.hash = hashMapping[newView];
     setView(newView);
@@ -221,6 +226,11 @@ const MainApp: React.FC = () => {
         }}
       />
     );
+  }
+
+  // Developer Portal View (Full Screen)
+  if (view === 'developer') {
+    return <DeveloperPortal onBackToHome={() => navigateTo('home')} />;
   }
 
   return (

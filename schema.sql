@@ -508,7 +508,138 @@ ON DUPLICATE KEY UPDATE
   `content` = COALESCE(NULLIF(VALUES(`content`), ''), `content`),
   `ctaText` = COALESCE(NULLIF(VALUES(`ctaText`), ''), `ctaText`),
   `ctaLink` = COALESCE(NULLIF(VALUES(`ctaLink`), ''), `ctaLink`),
-  `mediaUrl` = COALESCE(NULLIF(VALUES(`mediaUrl`), ''), `mediaUrl`),
-  `data` = COALESCE(VALUES(`data`), `data`);
+-- ------------------------------------------------------------------------------
+-- 7. Table: developers
+-- Profiles, authentication, and credentials for assigned engineers.
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `developers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(191) NOT NULL,
+  `email` VARCHAR(191) NOT NULL,
+  `passwordHash` VARCHAR(191) NOT NULL,
+  `roleTitle` VARCHAR(191) NOT NULL DEFAULT 'Developer',
+  `hourlyRate` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  `currency` VARCHAR(10) NOT NULL DEFAULT 'USD',
+  `phone` VARCHAR(64) NULL,
+  `status` ENUM('active', 'inactive', 'pending') NOT NULL DEFAULT 'active',
+  `emailConfirmed` TINYINT(1) NOT NULL DEFAULT 0,
+  `confirmationToken` VARCHAR(128) NULL,
+  `lastLoginAt` DATETIME NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `developers_email_key` (`email`),
+  INDEX `idx_developers_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------------------------
+-- 8. Table: projects
+-- Corporate projects with milestones, budget, status, and launch target.
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `projects` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(191) NOT NULL,
+  `slug` VARCHAR(191) NOT NULL,
+  `description` LONGTEXT NULL,
+  `budget` DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+  `currency` VARCHAR(10) NOT NULL DEFAULT 'USD',
+  `status` ENUM('planning', 'in_progress', 'in_review', 'launched', 'on_hold') NOT NULL DEFAULT 'planning',
+  `launchDate` DATE NULL,
+  `repoUrl` VARCHAR(255) NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `projects_slug_key` (`slug`),
+  INDEX `idx_projects_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------------------------
+-- 9. Table: project_milestones
+-- Key deliverables, deadlines, and completion flags for projects.
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `project_milestones` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `projectId` INT NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `description` TEXT NULL,
+  `dueDate` DATE NULL,
+  `status` ENUM('pending', 'in_progress', 'completed') NOT NULL DEFAULT 'pending',
+  `orderIndex` INT NOT NULL DEFAULT 0,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  INDEX `idx_milestones_project` (`projectId`),
+  CONSTRAINT `fk_milestones_project` FOREIGN KEY (`projectId`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------------------------
+-- 10. Table: project_developers
+-- Mapping assignments between developers and projects.
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `project_developers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `projectId` INT NOT NULL,
+  `developerId` INT NOT NULL,
+  `roleInProject` VARCHAR(191) NULL DEFAULT 'Lead Developer',
+  `assignedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_project_developer` (`projectId`, `developerId`),
+  INDEX `idx_dev_assignments` (`developerId`),
+  CONSTRAINT `fk_proj_dev_project` FOREIGN KEY (`projectId`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_proj_dev_developer` FOREIGN KEY (`developerId`) REFERENCES `developers` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------------------------
+-- 11. Table: developer_time_logs
+-- Clock-in / clock-out records, elapsed time, and task summaries.
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `developer_time_logs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `developerId` INT NOT NULL,
+  `projectId` INT NULL,
+  `clockIn` DATETIME NOT NULL,
+  `clockOut` DATETIME NULL,
+  `totalMinutes` INT NOT NULL DEFAULT 0,
+  `taskSummary` TEXT NULL,
+  `ipAddress` VARCHAR(64) NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  INDEX `idx_timelogs_dev` (`developerId`),
+  INDEX `idx_timelogs_proj` (`projectId`),
+  INDEX `idx_timelogs_clockin` (`clockIn`),
+  CONSTRAINT `fk_timelogs_developer` FOREIGN KEY (`developerId`) REFERENCES `developers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_timelogs_project` FOREIGN KEY (`projectId`) REFERENCES `projects` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------------------------
+-- 12. Table: payslips
+-- Payment records, hours billed, disbursements, and confirmation receipts.
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `payslips` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `developerId` INT NOT NULL,
+  `referenceNo` VARCHAR(64) NOT NULL,
+  `periodStart` DATE NOT NULL,
+  `periodEnd` DATE NOT NULL,
+  `hoursBilled` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  `hourlyRate` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  `bonus` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  `deductions` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  `totalAmount` DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+  `currency` VARCHAR(10) NOT NULL DEFAULT 'USD',
+  `paymentMethod` VARCHAR(128) NOT NULL DEFAULT 'Bank Transfer',
+  `notes` TEXT NULL,
+  `status` ENUM('issued', 'confirmed') NOT NULL DEFAULT 'issued',
+  `confirmedAt` DATETIME NULL,
+  `issuedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `payslips_ref_key` (`referenceNo`),
+  INDEX `idx_payslips_dev` (`developerId`),
+  INDEX `idx_payslips_status` (`status`),
+  CONSTRAINT `fk_payslips_developer` FOREIGN KEY (`developerId`) REFERENCES `developers` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
