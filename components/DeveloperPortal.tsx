@@ -32,7 +32,11 @@ import {
   getDeveloperToken,
   setDeveloperToken,
   clearDeveloperSession,
-  getSavedDeveloperUser
+  getSavedDeveloperUser,
+  parseServerDate,
+  formatLocalTime,
+  formatLocalDate,
+  getClientTimezone
 } from '../services/developerService';
 import Logo from './Logo';
 
@@ -138,10 +142,10 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
     }
   }, [token, refreshAllData]);
 
-  // Live Timer Effect while clocked in
+  // Live Timer Effect while clocked in (Real-time stopwatch starting at 00:00:00)
   useEffect(() => {
     if (timeStatus?.isClockedIn && timeStatus.activeSession?.clockIn) {
-      const startTime = new Date(timeStatus.activeSession.clockIn).getTime();
+      const startTime = parseServerDate(timeStatus.activeSession.clockIn).getTime();
       const updateTimer = () => {
         const now = Date.now();
         const diffSeconds = Math.max(0, Math.floor((now - startTime) / 1000));
@@ -207,12 +211,40 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
   const handleClockIn = async () => {
     setClockLoading(true);
     const pId = selectedProjectId ? Number(selectedProjectId) : null;
-    const res = await developerService.devClockIn(pId, clockInNotes);
+    const clientTimestamp = new Date().toISOString();
+    const clientTimezone = getClientTimezone();
+
+    // Immediately start live timer from 0 seconds so UI begins at 00:00:00 in real time
+    setLiveElapsedSeconds(0);
+
+    const res = await developerService.devClockIn(pId, clockInNotes, clientTimestamp, clientTimezone);
     setClockLoading(false);
 
     if (res.success) {
-      showToast('You are now clocked in. Track your time on this session.');
+      showToast('You are now clocked in. Session timer started at 00:00:00.');
       setClockInNotes('');
+      // Set active session in state immediately with client timestamp fallback
+      const activeClockIn = res.session?.clockIn || clientTimestamp;
+      setTimeStatus((prev) => ({
+        isClockedIn: true,
+        activeSession: {
+          id: res.session?.id || Date.now(),
+          clockIn: activeClockIn,
+          projectId: pId,
+          projectName: projects.find((p) => p.id === pId)?.name || 'General Development',
+          elapsedMinutes: 0,
+          taskSummary: clockInNotes
+        },
+        metrics: prev?.metrics || {
+          todayHours: 0,
+          todayMinutes: 0,
+          weeklyHours: 0,
+          weeklyMinutes: 0,
+          monthlyHours: 0,
+          monthlyMinutes: 0,
+          lifetimeHours: 0
+        }
+      }));
       refreshAllData();
     } else {
       showToast(res.error || 'Clock in failed', 'error');
@@ -221,16 +253,38 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
 
   const handleClockOut = async () => {
     setClockLoading(true);
-    const res = await developerService.devClockOut(clockOutSummary);
+    const clientTimestamp = new Date().toISOString();
+    const res = await developerService.devClockOut(clockOutSummary, clientTimestamp, false);
     setClockLoading(false);
     setClockOutModalOpen(false);
     setClockOutSummary('');
 
     if (res.success) {
       showToast(res.message || 'Clock out successful');
+      setLiveElapsedSeconds(0);
+      setTimeStatus((prev) => (prev ? { ...prev, isClockedIn: false, activeSession: null } : null));
       refreshAllData();
     } else {
       showToast(res.error || 'Clock out failed', 'error');
+    }
+  };
+
+  const handleDiscardSession = async () => {
+    if (!window.confirm('Are you sure you want to discard this active session? The counter will reset to 00:00:00 and no time will be recorded.')) {
+      return;
+    }
+    setClockLoading(true);
+    const res = await developerService.devClockOut('', undefined, true);
+    setClockLoading(false);
+    setClockOutModalOpen(false);
+
+    if (res.success) {
+      showToast('Active session discarded. Counter reset.');
+      setLiveElapsedSeconds(0);
+      setTimeStatus((prev) => (prev ? { ...prev, isClockedIn: false, activeSession: null } : null));
+      refreshAllData();
+    } else {
+      showToast(res.error || 'Failed to discard session', 'error');
     }
   };
 
@@ -437,14 +491,19 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
                   <div className="text-4xl sm:text-6xl font-black text-emerald-400 font-mono tracking-tight">
                     {formatTimer(liveElapsedSeconds)}
                   </div>
-                  <div className="text-xs text-slate-400 mt-2 flex items-center gap-2">
+                  <div className="text-xs text-slate-400 mt-2 flex items-center flex-wrap gap-2">
                     <Briefcase className="w-3.5 h-3.5 text-sky-400" />
                     <span>Project: </span>
                     <strong className="text-white">
                       {timeStatus.activeSession?.projectName || 'General Development'}
                     </strong>
                     <span className="text-slate-600">•</span>
-                    <span>Clocked in at {new Date(timeStatus.activeSession?.clockIn).toLocaleTimeString()}</span>
+                    <span>
+                      Clocked in at <strong className="text-slate-200">{formatLocalTime(timeStatus.activeSession?.clockIn)}</strong>
+                    </span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-slate-800 text-sky-400 border border-slate-700">
+                      {getClientTimezone()}
+                    </span>
                   </div>
                 </div>
               ) : (
@@ -484,13 +543,23 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
                   </button>
                 </>
               ) : (
-                <button
-                  onClick={() => setClockOutModalOpen(true)}
-                  disabled={clockLoading}
-                  className="py-3.5 px-8 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold rounded-xl shadow-lg shadow-rose-600/30 transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2"
-                >
-                  <Square className="w-4 h-4 fill-white" /> Clock Out
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setClockOutModalOpen(true)}
+                    disabled={clockLoading}
+                    className="py-3.5 px-6 sm:px-8 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold rounded-xl shadow-lg shadow-rose-600/30 transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2"
+                  >
+                    <Square className="w-4 h-4 fill-white" /> Clock Out
+                  </button>
+                  <button
+                    onClick={handleDiscardSession}
+                    disabled={clockLoading}
+                    className="py-3.5 px-4 bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-red-400 border border-slate-700/80 rounded-xl text-xs font-semibold transition-colors"
+                    title="Discard active session and reset counter to 0"
+                  >
+                    Reset
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -601,18 +670,16 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
                     timeLogs.map((log) => (
                       <tr key={log.id} className="hover:bg-slate-800/30 transition-colors">
                         <td className="py-4 px-5 text-white font-semibold whitespace-nowrap">
-                          {new Date(log.clockIn).toLocaleDateString()}
+                          {formatLocalDate(log.clockIn)}
                         </td>
                         <td className="py-4 px-5 text-sky-400 font-medium">
                           {log.projectName || 'General Development'}
                         </td>
                         <td className="py-4 px-5 text-slate-300 whitespace-nowrap">
-                          {new Date(log.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {formatLocalTime(log.clockIn, false)}
                         </td>
                         <td className="py-4 px-5 text-slate-300 whitespace-nowrap">
-                          {log.clockOut
-                            ? new Date(log.clockOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                            : '—'}
+                          {log.clockOut ? formatLocalTime(log.clockOut, false) : '—'}
                         </td>
                         <td className="py-4 px-5 font-bold text-white whitespace-nowrap">
                           {log.isActive ? (
@@ -916,7 +983,7 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
                 <div className="text-right">
                   <div className="text-xs text-slate-400 print:text-slate-600 uppercase">Voucher Ref</div>
                   <div className="text-base font-bold font-mono text-white print:text-black">{selectedPayslip.referenceNo}</div>
-                  <div className="text-[11px] text-slate-500 print:text-slate-600 mt-1">Issued: {new Date(selectedPayslip.issuedAt).toLocaleDateString()}</div>
+                  <div className="text-[11px] text-slate-500 print:text-slate-600 mt-1">Issued: {formatLocalDate(selectedPayslip.issuedAt)}</div>
                 </div>
               </div>
 
@@ -998,7 +1065,7 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
                     {selectedPayslip.status === 'confirmed' ? (
                       <>
                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                        <span>Confirmed Receipt by Developer on {selectedPayslip.confirmedAt ? new Date(selectedPayslip.confirmedAt).toLocaleDateString() : 'Active'}</span>
+                        <span>Confirmed Receipt by Developer on {selectedPayslip.confirmedAt ? formatLocalDate(selectedPayslip.confirmedAt) : 'Active'}</span>
                       </>
                     ) : (
                       <span className="text-amber-400">Pending Developer Receipt Confirmation</span>

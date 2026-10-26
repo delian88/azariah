@@ -5,6 +5,9 @@ if (defined('AMG_API_DB_LOADED')) {
 }
 define('AMG_API_DB_LOADED', true);
 
+// Enforce standard UTC timezone across all PHP operations
+date_default_timezone_set('UTC');
+
 // Set standard JSON and CORS headers
 function setCorsHeaders() {
     if (php_sapi_name() === 'cli') {
@@ -125,6 +128,8 @@ function getDbConnection() {
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
         ]);
+        // Enforce UTC timezone for all MySQL session queries and functions
+        $pdo->exec("SET time_zone = '+00:00'");
         return $pdo;
     } catch (PDOException $e) {
         sendJson([
@@ -319,6 +324,7 @@ function ensureDevModuleTables($pdo) {
               `totalMinutes` INT NOT NULL DEFAULT 0,
               `taskSummary` TEXT NULL,
               `ipAddress` VARCHAR(64) NULL,
+              `clientTimezone` VARCHAR(64) NULL,
               `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
               `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
               PRIMARY KEY (`id`),
@@ -352,6 +358,14 @@ function ensureDevModuleTables($pdo) {
               INDEX `idx_payslips_status` (`status`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ");
+
+        // Safely migrate existing developer_time_logs table to have clientTimezone column
+        try {
+            $pdo->exec("ALTER TABLE `developer_time_logs` ADD COLUMN `clientTimezone` VARCHAR(64) NULL AFTER `ipAddress`");
+        } catch (Exception $colEx) {
+            // Column already exists
+        }
+
         $tablesChecked = true;
     } catch (Exception $e) {
         // Table creation error logged gracefully

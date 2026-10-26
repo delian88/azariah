@@ -16,7 +16,10 @@ import {
   developerService,
   TimeLog,
   Developer,
-  Project
+  Project,
+  formatLocalTime,
+  formatLocalDate,
+  getClientTimezone
 } from '../../services/developerService';
 
 interface AdminTimeTrackingTabProps {
@@ -131,8 +134,13 @@ export const AdminTimeTrackingTab: React.FC<AdminTimeTrackingTabProps> = ({ show
                 <div className="text-[11px] text-sky-400 font-medium">
                   {a.projectName || 'General Development'}
                 </div>
-                <div className="text-[10px] text-slate-500">
-                  Clocked in at {new Date(a.clockIn).toLocaleTimeString()}
+                <div className="text-[10px] text-slate-500 flex items-center justify-between">
+                  <span>Clocked in at {formatLocalTime(a.clockIn)}</span>
+                  {a.clientTimezone && (
+                    <span className="text-[9px] text-sky-400/80 font-mono">
+                      {a.clientTimezone}
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
@@ -252,7 +260,7 @@ export const AdminTimeTrackingTab: React.FC<AdminTimeTrackingTabProps> = ({ show
                 logs.map((log) => (
                   <tr key={log.id} className="hover:bg-slate-800/30 transition-colors">
                     <td className="py-4 px-5 text-white font-semibold whitespace-nowrap">
-                      {new Date(log.clockIn).toLocaleDateString()}
+                      {formatLocalDate(log.clockIn)}
                     </td>
                     <td className="py-4 px-5">
                       <div className="font-bold text-white">{log.developerName}</div>
@@ -260,10 +268,13 @@ export const AdminTimeTrackingTab: React.FC<AdminTimeTrackingTabProps> = ({ show
                     </td>
                     <td className="py-4 px-5 text-sky-400 font-semibold">{log.projectName || 'General Development'}</td>
                     <td className="py-4 px-5 text-slate-300 whitespace-nowrap">
-                      {new Date(log.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      <div>{formatLocalTime(log.clockIn, false)}</div>
+                      {log.clientTimezone && (
+                        <div className="text-[9px] text-slate-500 font-mono">{log.clientTimezone}</div>
+                      )}
                     </td>
                     <td className="py-4 px-5 text-slate-300 whitespace-nowrap">
-                      {log.clockOut ? new Date(log.clockOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—'}
+                      {log.clockOut ? formatLocalTime(log.clockOut, false) : '—'}
                     </td>
                     <td className="py-4 px-5 font-bold text-white whitespace-nowrap">
                       {log.isActive ? (

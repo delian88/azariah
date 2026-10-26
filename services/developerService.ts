@@ -72,6 +72,7 @@ export interface TimeLog {
   totalMinutes: number;
   totalHours: number;
   taskSummary?: string;
+  clientTimezone?: string;
   isActive?: boolean;
 }
 
@@ -84,6 +85,7 @@ export interface TimeStatus {
     projectName?: string;
     elapsedMinutes: number;
     taskSummary?: string;
+    clientTimezone?: string;
   } | null;
   metrics: {
     todayHours: number;
@@ -187,12 +189,22 @@ export const developerService = {
     }
   },
 
-  async devClockIn(projectId?: number | null, notes?: string): Promise<{ success: boolean; message?: string; session?: any; error?: string }> {
+  async devClockIn(
+    projectId?: number | null,
+    notes?: string,
+    clientTimestamp?: string,
+    clientTimezone?: string
+  ): Promise<{ success: boolean; message?: string; session?: any; error?: string }> {
     try {
       const res = await fetch(getApiUrl('api/timetracker/clock-in'), {
         method: 'POST',
         headers: getDevHeaders(),
-        body: JSON.stringify({ projectId, notes })
+        body: JSON.stringify({
+          projectId,
+          notes,
+          clientTimestamp: clientTimestamp || new Date().toISOString(),
+          clientTimezone: clientTimezone || (Intl?.DateTimeFormat?.()?.resolvedOptions?.()?.timeZone || 'UTC')
+        })
       });
       return await res.json();
     } catch (e: any) {
@@ -200,12 +212,20 @@ export const developerService = {
     }
   },
 
-  async devClockOut(taskSummary?: string): Promise<{ success: boolean; message?: string; summary?: any; error?: string }> {
+  async devClockOut(
+    taskSummary?: string,
+    clientTimestamp?: string,
+    discard = false
+  ): Promise<{ success: boolean; message?: string; summary?: any; error?: string }> {
     try {
       const res = await fetch(getApiUrl('api/timetracker/clock-out'), {
         method: 'POST',
         headers: getDevHeaders(),
-        body: JSON.stringify({ taskSummary })
+        body: JSON.stringify({
+          taskSummary,
+          clientTimestamp: clientTimestamp || new Date().toISOString(),
+          discard
+        })
       });
       return await res.json();
     } catch (e: any) {
@@ -552,3 +572,69 @@ export const developerService = {
     }
   }
 };
+
+/**
+ * Safely parses any date string from the server.
+ * If the string does not have a timezone indicator ('Z' or offset),
+ * it is treated as UTC (since the server stores and returns UTC).
+ */
+export const parseServerDate = (dateStr: string | null | undefined): Date => {
+  if (!dateStr) return new Date();
+  const trimmed = dateStr.trim();
+  if (trimmed.endsWith('Z') || /[+-]\d{2}:\d{2}$/.test(trimmed)) {
+    return new Date(trimmed);
+  }
+  // Convert "YYYY-MM-DD HH:MM:SS" -> "YYYY-MM-DDTHH:MM:SSZ"
+  const isoFormatted = trimmed.replace(' ', 'T') + 'Z';
+  const parsed = new Date(isoFormatted);
+  if (!isNaN(parsed.getTime())) {
+    return parsed;
+  }
+  return new Date(trimmed);
+};
+
+/**
+ * Format date to the developer's local time (e.g. "03:39:05 PM")
+ */
+export const formatLocalTime = (dateStr: string | null | undefined, includeSeconds = true): string => {
+  if (!dateStr) return '—';
+  try {
+    const d = parseServerDate(dateStr);
+    return d.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      ...(includeSeconds ? { second: '2-digit' } : {})
+    });
+  } catch {
+    return dateStr;
+  }
+};
+
+/**
+ * Format date to the developer's local date string (e.g. "Oct 26, 2026")
+ */
+export const formatLocalDate = (dateStr: string | null | undefined): string => {
+  if (!dateStr) return '—';
+  try {
+    const d = parseServerDate(dateStr);
+    return d.toLocaleDateString([], {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  } catch {
+    return dateStr;
+  }
+};
+
+/**
+ * Retrieve current user's local timezone name (e.g. "Africa/Lagos", "America/New_York")
+ */
+export const getClientTimezone = (): string => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  } catch {
+    return 'UTC';
+  }
+};
+

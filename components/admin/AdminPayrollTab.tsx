@@ -17,7 +17,8 @@ import {
 import {
   developerService,
   Payslip,
-  Developer
+  Developer,
+  formatLocalDate
 } from '../../services/developerService';
 
 interface AdminPayrollTabProps {
@@ -642,7 +643,7 @@ export const AdminPayrollTab: React.FC<AdminPayrollTabProps> = ({ showToast }) =
                   <div className="text-xs text-slate-400 print:text-slate-600 uppercase">Voucher Ref</div>
                   <div className="text-base font-bold font-mono text-white print:text-black">{selectedPayslip.referenceNo}</div>
                   <div className="text-[11px] text-slate-500 print:text-slate-600 mt-1">
-                    Issued: {new Date(selectedPayslip.issuedAt).toLocaleDateString()}
+                    Issued: {formatLocalDate(selectedPayslip.issuedAt)}
                   </div>
                 </div>
               </div>
@@ -722,7 +723,7 @@ export const AdminPayrollTab: React.FC<AdminPayrollTabProps> = ({ showToast }) =
                     {selectedPayslip.status === 'confirmed' ? (
                       <>
                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                        <span>Confirmed Received by Developer on {selectedPayslip.confirmedAt ? new Date(selectedPayslip.confirmedAt).toLocaleDateString() : 'Active'}</span>
+                        <span>Confirmed Received by Developer on {selectedPayslip.confirmedAt ? formatLocalDate(selectedPayslip.confirmedAt) : 'Active'}</span>
                       </>
                     ) : (
                       <span className="text-amber-400">Pending Developer Receipt Confirmation</span>
