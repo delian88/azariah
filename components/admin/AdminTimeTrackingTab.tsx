@@ -10,8 +10,10 @@ import {
   RefreshCw,
   ExternalLink,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Printer
 } from 'lucide-react';
+import { printAdminTimeTrackingReport } from '../../services/reportPrinter';
 import {
   developerService,
   TimeLog,
@@ -100,13 +102,33 @@ export const AdminTimeTrackingTab: React.FC<AdminTimeTrackingTabProps> = ({ show
           </p>
         </div>
 
-        <button
-          onClick={fetchLogs}
-          disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors self-start sm:self-auto"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh Logs
-        </button>
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+          <button
+            onClick={() => {
+              const selectedDev = developers.find((d) => d.id === selectedDevId);
+              const selectedProj = projects.find((p) => p.id === selectedProjectId);
+              printAdminTimeTrackingReport({
+                logs,
+                metrics,
+                selectedDevName: selectedDev ? selectedDev.name : undefined,
+                selectedProjectName: selectedProj ? selectedProj.name : undefined,
+                startDate,
+                endDate
+              });
+            }}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors shadow-sm"
+            title="Print Attendance & Shift Records Report (Clean Data)"
+          >
+            <Printer className="w-3.5 h-3.5 text-sky-400" /> Print Audit Report
+          </button>
+          <button
+            onClick={fetchLogs}
+            disabled={loading}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh Logs
+          </button>
+        </div>
       </div>
 
       {/* LIVE "WORKING RIGHT NOW" BANNER */}

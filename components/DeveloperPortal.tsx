@@ -38,6 +38,12 @@ import {
   formatLocalDate,
   getClientTimezone
 } from '../services/developerService';
+import {
+  printTimeLogsReport,
+  printProjectsReport,
+  printPayslipsReport,
+  printSinglePayslipVoucher
+} from '../services/reportPrinter';
 import Logo from './Logo';
 
 interface DeveloperPortalProps {
@@ -310,10 +316,27 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
   };
 
   // ---------------------------------------------------------------------------
-  // PRINT PAYSLIP / STATEMENT
+  // PRINT PURE DATA REPORT FOR CURRENT TAB
   // ---------------------------------------------------------------------------
-  const triggerPrint = () => {
-    window.print();
+  const handlePrintCurrentTab = (targetTab?: 'tracker' | 'projects' | 'payslips') => {
+    const tabToPrint = targetTab || activeTab;
+    if (tabToPrint === 'tracker') {
+      printTimeLogsReport({
+        developer,
+        timeLogs,
+        metrics: timeStatus?.metrics
+      });
+    } else if (tabToPrint === 'projects') {
+      printProjectsReport({
+        developer,
+        projects
+      });
+    } else if (tabToPrint === 'payslips') {
+      printPayslipsReport({
+        developer,
+        payslips
+      });
+    }
   };
 
   // ===========================================================================
@@ -632,18 +655,27 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
         ===================================================================== */}
         {activeTab === 'tracker' && (
           <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-            <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+            <div className="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider">Clock In / Out History</h3>
                 <p className="text-xs text-slate-400">Complete record of your logged sessions and work summaries</p>
               </div>
-              <button
-                onClick={refreshAllData}
-                disabled={loadingData}
-                className="text-xs text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1.5"
-              >
-                Sync Now
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => handlePrintCurrentTab('tracker')}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors shadow-sm"
+                  title="Print Time Logs Report (Clean Data)"
+                >
+                  <Printer className="w-3.5 h-3.5 text-sky-400" /> Print Report
+                </button>
+                <button
+                  onClick={refreshAllData}
+                  disabled={loadingData}
+                  className="text-xs text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 transition-colors"
+                >
+                  Sync Now
+                </button>
+              </div>
             </div>
 
             <div className="overflow-x-auto">
@@ -716,6 +748,19 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
         ===================================================================== */}
         {activeTab === 'projects' && (
           <div className="space-y-6">
+            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+              <div>
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Assigned Corporate Projects</h3>
+                <p className="text-xs text-slate-400">Roadmap, deliverables, milestones, and development status</p>
+              </div>
+              <button
+                onClick={() => handlePrintCurrentTab('projects')}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors shadow-sm self-start sm:self-auto"
+                title="Print Projects & Milestones Report (Clean Data)"
+              >
+                <Printer className="w-3.5 h-3.5 text-sky-400" /> Print Report
+              </button>
+            </div>
             {projects.length === 0 ? (
               <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-12 text-center text-slate-500">
                 You have not been assigned to any corporate projects yet. Your administrator will link you shortly.
@@ -817,16 +862,17 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
         {activeTab === 'payslips' && (
           <div className="space-y-6">
             <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-              <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+              <div className="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <h3 className="text-sm font-bold text-white uppercase tracking-wider">Payroll & Payment Vouchers</h3>
                   <p className="text-xs text-slate-400">Review disbursements, confirm receipt, and print official statements</p>
                 </div>
                 <button
-                  onClick={triggerPrint}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors"
+                  onClick={() => handlePrintCurrentTab('payslips')}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors shadow-sm self-start sm:self-auto"
+                  title="Print Disbursements Statement (Clean Data)"
                 >
-                  <Printer className="w-3.5 h-3.5" /> Print Statement
+                  <Printer className="w-3.5 h-3.5 text-emerald-400" /> Print Statement
                 </button>
               </div>
 
@@ -954,8 +1000,9 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Payment Voucher Detail</span>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={triggerPrint}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold uppercase tracking-wider transition-colors"
+                  onClick={() => selectedPayslip && printSinglePayslipVoucher({ developer, payslip: selectedPayslip })}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
+                  title="Print Official Voucher Document (Clean Data)"
                 >
                   <Printer className="w-4 h-4" /> Print Voucher
                 </button>

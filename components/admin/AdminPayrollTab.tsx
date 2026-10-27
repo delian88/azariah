@@ -20,6 +20,10 @@ import {
   Developer,
   formatLocalDate
 } from '../../services/developerService';
+import {
+  printAdminPayrollReport,
+  printSinglePayslipVoucher
+} from '../../services/reportPrinter';
 
 interface AdminPayrollTabProps {
   showToast: (msg: string, type?: 'success' | 'error' | 'info') => void;
@@ -230,6 +234,13 @@ export const AdminPayrollTab: React.FC<AdminPayrollTabProps> = ({ showToast }) =
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => printAdminPayrollReport({ payslips, stats: { totalIssued: summary.totalPayslips, totalAmount: summary.totalAmount, confirmedCount: summary.confirmedCount, pendingCount: summary.pendingCount } })}
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors shadow-sm"
+            title="Print Master Statement (Clean Data)"
+          >
+            <Printer className="w-3.5 h-3.5 text-emerald-400" /> Print Statement
+          </button>
           <button
             onClick={fetchAll}
             disabled={loading}
@@ -615,8 +626,9 @@ export const AdminPayrollTab: React.FC<AdminPayrollTabProps> = ({ showToast }) =
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Disbursement Voucher</span>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={triggerPrint}
+                  onClick={() => selectedPayslip && printSinglePayslipVoucher({ developer: null, payslip: selectedPayslip })}
                   className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider transition-colors"
+                  title="Print Official Voucher (Clean Data)"
                 >
                   <Printer className="w-4 h-4" /> Print Voucher
                 </button>
