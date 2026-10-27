@@ -350,7 +350,17 @@ if ($method === 'POST') {
     $wordCount = str_word_count(strip_tags($content));
     $readTime = !empty($input['readTimeMinutes']) ? (int)$input['readTimeMinutes'] : max(1, (int)ceil($wordCount / 200));
 
-    $publishedAt = ($status === 'published') ? (!empty($input['publishedAt']) ? $input['publishedAt'] : gmdate('Y-m-d H:i:s')) : null;
+    $publishedAt = null;
+    if ($status === 'published') {
+        if (!empty($input['publishedAt'])) {
+            $publishedAt = str_replace('T', ' ', trim($input['publishedAt']));
+            if (strlen($publishedAt) === 16) {
+                $publishedAt .= ':00';
+            }
+        } else {
+            $publishedAt = date('Y-m-d H:i:s');
+        }
+    }
 
     $stmt = $pdo->prepare("
         INSERT INTO blog_posts
@@ -441,10 +451,13 @@ if ($method === 'PUT') {
 
     $publishedAt = $existing['publishedAt'] ?? null;
     if ($status === 'published' && empty($publishedAt)) {
-        $publishedAt = gmdate('Y-m-d H:i:s');
+        $publishedAt = date('Y-m-d H:i:s');
     }
     if (!empty($input['publishedAt'])) {
-        $publishedAt = $input['publishedAt'];
+        $publishedAt = str_replace('T', ' ', trim($input['publishedAt']));
+        if (strlen($publishedAt) === 16) {
+            $publishedAt .= ':00';
+        }
     }
 
     $stmt = $pdo->prepare("

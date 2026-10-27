@@ -49,6 +49,29 @@ const HARDCODED_SAMPLE_SLUGS = [
   'next-decade-strategic-ai-diaspora-capital'
 ];
 
+/** Formats a Date object to local YYYY-MM-DDTHH:mm expected by datetime-local input */
+const getLocalDatetimeString = (date = new Date()): string => {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+/** Formats an incoming DB or ISO date string to local YYYY-MM-DDTHH:mm */
+const formatForDatetimeInput = (dateStr?: string | null): string => {
+  if (!dateStr) return getLocalDatetimeString();
+  try {
+    const d = new Date(dateStr.includes('T') || dateStr.endsWith('Z') ? dateStr : dateStr.replace(' ', 'T'));
+    if (!isNaN(d.getTime())) {
+      return getLocalDatetimeString(d);
+    }
+  } catch {}
+  return dateStr.replace(' ', 'T').slice(0, 16);
+};
+
 export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiveArticle }) => {
   const [articles, setArticles] = useState<BlogPost[]>([]);
   const [metrics, setMetrics] = useState<BlogMetrics>({
@@ -83,7 +106,7 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
   const [authorRole, setAuthorRole] = useState('');
   const [status, setStatus] = useState<'published' | 'draft' | 'archived'>('published');
   const [isFeatured, setIsFeatured] = useState(false);
-  const [publishedAt, setPublishedAt] = useState('');
+  const [publishedAt, setPublishedAt] = useState<string>(() => getLocalDatetimeString());
 
   // Preview Modal
   const [previewArticle, setPreviewArticle] = useState<BlogPost | null>(null);
@@ -164,7 +187,7 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
     setAuthorRole('');
     setStatus('published');
     setIsFeatured(false);
-    setPublishedAt(new Date().toISOString().slice(0, 16));
+    setPublishedAt(getLocalDatetimeString());
     setIsEditing(true);
   };
 
@@ -183,7 +206,7 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
     setAuthorRole(art.authorRole || '');
     setStatus(art.status);
     setIsFeatured(Boolean(art.isFeatured));
-    setPublishedAt(art.publishedAt ? art.publishedAt.slice(0, 16) : '');
+    setPublishedAt(art.publishedAt ? formatForDatetimeInput(art.publishedAt) : getLocalDatetimeString());
     setIsEditing(true);
   };
 
@@ -467,9 +490,19 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-400 uppercase mb-1">
-                  Publish Date & Time
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-[11px] font-bold text-slate-400 uppercase">
+                    Publish Date & Time
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setPublishedAt(getLocalDatetimeString())}
+                    className="text-[10px] font-bold text-sky-400 hover:text-sky-300 transition-colors uppercase tracking-wider flex items-center gap-1"
+                    title="Update to current local time"
+                  >
+                    <Clock className="w-3 h-3" /> Set to Current Time
+                  </button>
+                </div>
                 <input
                   type="datetime-local"
                   value={publishedAt}
