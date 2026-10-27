@@ -7,7 +7,6 @@ import {
   X, 
   Share2, 
   Globe, 
-  Sparkles, 
   Mail, 
   MessageCircle, 
   Copy, 
@@ -616,12 +615,9 @@ const NewsPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 bg-slate-50 p-6 border border-slate-100 rounded-sm max-w-sm">
-                     <Sparkles className="w-8 h-8 text-lime-500 shrink-0" />
-                     <div>
-                       <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Azariah Management Group</p>
-                       <p className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Strategic intelligence powered by AMG Executive Editorial</p>
-                     </div>
+                  <div className="bg-slate-50 p-6 border border-slate-100 rounded-sm max-w-sm">
+                     <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Azariah Management Group</p>
+                     <p className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter mt-1">Strategic intelligence powered by AMG Executive Editorial</p>
                   </div>
                </div>
             </div>
