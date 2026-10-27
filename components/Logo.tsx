@@ -12,7 +12,7 @@ const Logo: React.FC<LogoProps> = ({ className = "h-8", variant = 'light' }) => 
 
   const logoUrl = settings?.logo_url;
   const brandText = settings?.logo_text || "AZARIAH";
-  const brandSubtext = settings?.logo_subtext || "MANAGEMENT";
+  const brandSubtext = settings?.logo_subtext || "MANAGEMENT GROUP";
 
   // Split brandText into two colored parts if starts with AZARIAH
   let firstPart = brandText;
@@ -118,12 +118,6 @@ const Logo: React.FC<LogoProps> = ({ className = "h-8", variant = 'light' }) => 
           style={{ color: managementColor }}
         >
           {brandSubtext}
-        </div>
-        <div 
-          className="text-sm md:text-base font-black tracking-widest uppercase"
-          style={{ color: isDark ? colorGreen : colorBlue }}
-        >
-          GROUP
         </div>
       </div>
     </div>
