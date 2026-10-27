@@ -53,6 +53,7 @@ import AdminProjectsTab from './admin/AdminProjectsTab';
 import AdminTimeTrackingTab from './admin/AdminTimeTrackingTab';
 import AdminPayrollTab from './admin/AdminPayrollTab';
 import AdminBlogTab from './admin/AdminBlogTab';
+import AdminTeamTab from './admin/AdminTeamTab';
 
 export interface SectionMeta {
   key: string;
@@ -351,7 +352,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
   const [loadingDevices, setLoadingDevices] = useState(false);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'branding' | 'sections' | 'media' | 'blog' | 'projects' | 'developers' | 'timetracking' | 'payroll' | 'system'>('branding');
+  const [activeTab, setActiveTab] = useState<'branding' | 'sections' | 'media' | 'blog' | 'projects' | 'developers' | 'timetracking' | 'payroll' | 'team' | 'system'>('branding');
   const [activeSectionKey, setActiveSectionKey] = useState<string>('hero');
 
   // Mobile Navigation & Responsive Breadcrumb State
@@ -1070,6 +1071,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   {activeTab === 'developers' && 'Developers'}
                   {activeTab === 'timetracking' && 'Time Tracking'}
                   {activeTab === 'payroll' && 'Payroll'}
+                  {activeTab === 'team' && 'Management Team'}
                   {activeTab === 'system' && 'Security'}
                 </span>
                 <ChevronDown className="w-3 h-3 text-lime-400" />
@@ -1189,6 +1191,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                       }`}
                     >
                       <DollarSign className="w-3.5 h-3.5" /> Payroll & Payslips
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('team');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to Management Team & Permissions.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'team' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-lime-400" /> Management Team & Roles
                     </button>
                     <button
                       type="button"
@@ -1445,6 +1460,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 >
                   <span className="flex items-center gap-3">
                     <DollarSign className="w-4 h-4" /> Payroll & Payslips
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('team');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to Management Team & Permissions.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'team'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <ShieldCheck className="w-4 h-4 text-lime-400" /> Management Team & Roles
                   </span>
                   <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
@@ -1741,6 +1775,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
               }`}
             >
               <DollarSign className="w-4 h-4" /> Payroll & Payslips
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab('team');
+                showToast('Switched to Management Team & Permissions.', 'info');
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                activeTab === 'team'
+                  ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <ShieldCheck className="w-4 h-4 text-lime-400" /> Management Team & Roles
             </button>
 
             <button
@@ -2942,6 +2990,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
           {/* TAB: PAYROLL & PAYSLIPS */}
           {activeTab === 'payroll' && (
             <AdminPayrollTab showToast={showToast} />
+          )}
+
+          {/* TAB: MANAGEMENT TEAM & PERMISSIONS */}
+          {activeTab === 'team' && (
+            <AdminTeamTab showToast={showToast} currentAdminId={adminUser?.id} />
           )}
 
           {/* TAB: SYSTEM & SECURITY */}

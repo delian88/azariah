@@ -34,6 +34,14 @@ export interface AdminUser {
   username: string;
   email: string;
   name?: string | null;
+  role?: string;
+  roleTitle?: string;
+  workflowRole?: 'approver' | 'reviewer' | 'contributor' | 'observer' | string;
+  department?: string;
+  phone?: string;
+  permissions?: string[];
+  status?: string;
+  lastLoginAt?: string | null;
 }
 
 export interface LoginResult {

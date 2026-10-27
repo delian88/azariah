@@ -23,11 +23,21 @@ CREATE TABLE IF NOT EXISTS `admin_users` (
   `email` VARCHAR(191) NOT NULL,
   `passwordHash` VARCHAR(191) NOT NULL,
   `name` VARCHAR(191) NULL DEFAULT 'Administrator',
+  `role` VARCHAR(64) NOT NULL DEFAULT 'admin',
+  `roleTitle` VARCHAR(191) NOT NULL DEFAULT 'Managing Executive',
+  `workflowRole` VARCHAR(64) NOT NULL DEFAULT 'approver',
+  `department` VARCHAR(128) NULL DEFAULT 'Executive Management',
+  `phone` VARCHAR(64) NULL,
+  `permissions` LONGTEXT NULL,
+  `status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+  `lastLoginAt` DATETIME NULL,
   `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`),
   UNIQUE KEY `admin_users_username_key` (`username`),
-  UNIQUE KEY `admin_users_email_key` (`email`)
+  UNIQUE KEY `admin_users_email_key` (`email`),
+  INDEX `idx_admin_workflow` (`workflowRole`),
+  INDEX `idx_admin_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------------------------

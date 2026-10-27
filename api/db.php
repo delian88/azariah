@@ -415,3 +415,67 @@ function ensureBlogTables($pdo) {
         @file_put_contents(dirname(__DIR__) . '/db_migration_err.log', date('c') . " [Blog Migration Error] " . $e->getMessage() . "\n", FILE_APPEND);
     }
 }
+
+function ensureManagementTeamTables($pdo) {
+    static $teamTablesChecked = false;
+    if ($teamTablesChecked) return;
+
+    try {
+        // Fetch existing columns in admin_users
+        $colsStmt = $pdo->query("SHOW COLUMNS FROM `admin_users`");
+        $existingCols = [];
+        while ($col = $colsStmt->fetch(PDO::FETCH_ASSOC)) {
+            $existingCols[strtolower($col['Field'])] = true;
+        }
+
+        if (!isset($existingCols['role'])) {
+            try { $pdo->exec("ALTER TABLE `admin_users` ADD COLUMN `role` VARCHAR(64) NOT NULL DEFAULT 'admin' AFTER `name`"); } catch (Exception $e) {}
+        }
+        if (!isset($existingCols['roletitle'])) {
+            try { $pdo->exec("ALTER TABLE `admin_users` ADD COLUMN `roleTitle` VARCHAR(191) NOT NULL DEFAULT 'Managing Executive' AFTER `role`"); } catch (Exception $e) {}
+        }
+        if (!isset($existingCols['workflowrole'])) {
+            try { $pdo->exec("ALTER TABLE `admin_users` ADD COLUMN `workflowRole` VARCHAR(64) NOT NULL DEFAULT 'approver' AFTER `roleTitle`"); } catch (Exception $e) {}
+        }
+        if (!isset($existingCols['department'])) {
+            try { $pdo->exec("ALTER TABLE `admin_users` ADD COLUMN `department` VARCHAR(128) NULL DEFAULT 'Executive Management' AFTER `workflowRole`"); } catch (Exception $e) {}
+        }
+        if (!isset($existingCols['phone'])) {
+            try { $pdo->exec("ALTER TABLE `admin_users` ADD COLUMN `phone` VARCHAR(64) NULL AFTER `department`"); } catch (Exception $e) {}
+        }
+        if (!isset($existingCols['permissions'])) {
+            try { $pdo->exec("ALTER TABLE `admin_users` ADD COLUMN `permissions` LONGTEXT NULL AFTER `phone`"); } catch (Exception $e) {}
+        }
+        if (!isset($existingCols['status'])) {
+            try { $pdo->exec("ALTER TABLE `admin_users` ADD COLUMN `status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active' AFTER `permissions`"); } catch (Exception $e) {}
+        }
+        if (!isset($existingCols['lastloginat'])) {
+            try { $pdo->exec("ALTER TABLE `admin_users` ADD COLUMN `lastLoginAt` DATETIME NULL AFTER `status`"); } catch (Exception $e) {}
+        }
+
+        // Set default super admin permissions and executive title for root admin (id = 1 or username = 'admin' or email = 'info@azariahmg.com')
+        $fullPerms = json_encode([
+            'manage_team',
+            'manage_content',
+            'manage_blog',
+            'manage_projects',
+            'manage_developers',
+            'manage_payroll',
+            'manage_timetracking',
+            'manage_security'
+        ]);
+        $pdo->prepare("
+            UPDATE `admin_users` 
+            SET `role` = 'super_admin',
+                `roleTitle` = COALESCE(NULLIF(`roleTitle`, ''), 'Managing Partner'),
+                `workflowRole` = 'approver',
+                `department` = COALESCE(NULLIF(`department`, ''), 'Executive Leadership'),
+                `permissions` = COALESCE(`permissions`, :perms)
+            WHERE `id` = 1 OR `username` = 'admin' OR `email` = 'info@azariahmg.com'
+        ")->execute([':perms' => $fullPerms]);
+
+        $teamTablesChecked = true;
+    } catch (Exception $e) {
+        @file_put_contents(dirname(__DIR__) . '/db_migration_err.log', date('c') . " [Team Migration Error] " . $e->getMessage() . "\n", FILE_APPEND);
+    }
+}

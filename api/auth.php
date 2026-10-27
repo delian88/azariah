@@ -23,6 +23,7 @@ if (!$action) {
 }
 
 $pdo = getDbConnection();
+ensureManagementTeamTables($pdo);
 
 // Helpers
 function getClientIp() {
@@ -85,7 +86,7 @@ if ($action === 'login' && $method === 'POST') {
 
     $sanitized = str_replace(',', '.', $username);
     $stmt = $pdo->prepare("
-        SELECT id, username, email, passwordHash, name 
+        SELECT id, username, email, passwordHash, name, role, roleTitle, workflowRole, department, phone, permissions, status 
         FROM admin_users 
         WHERE username = :u1 OR email = :u2 OR username = :u3 OR email = :u4 
         LIMIT 1
@@ -102,7 +103,12 @@ if ($action === 'login' && $method === 'POST') {
         sendJson(['success' => false, 'error' => 'Invalid username or password'], 401);
     }
 
+    if (isset($user['status']) && $user['status'] === 'inactive') {
+        sendJson(['success' => false, 'error' => 'This management account is inactive. Please contact an executive partner.'], 403);
+    }
+
     $userId = (int)$user['id'];
+    $pdo->prepare("UPDATE admin_users SET lastLoginAt = NOW() WHERE id = ?")->execute([$userId]);
     $ip = getClientIp();
     $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
     if (!$deviceName) {
@@ -136,7 +142,10 @@ if ($action === 'login' && $method === 'POST') {
             'id' => $userId,
             'username' => $user['username'],
             'email' => $user['email'],
-            'name' => $user['name']
+            'name' => $user['name'],
+            'role' => $user['role'] ?? 'admin',
+            'roleTitle' => $user['roleTitle'] ?? 'Managing Executive',
+            'workflowRole' => $user['workflowRole'] ?? 'approver'
         ]);
 
         // Send HTML Login Alert Notification
@@ -148,6 +157,10 @@ if ($action === 'login' && $method === 'POST') {
             'Recognized Device (7-Day Bypass)'
         );
 
+        $parsedPermissions = !empty($user['permissions']) 
+            ? json_decode($user['permissions'], true) 
+            : ['manage_team', 'manage_content', 'manage_blog', 'manage_projects', 'manage_developers', 'manage_payroll', 'manage_timetracking', 'manage_security'];
+
         sendJson([
             'success' => true,
             'requiresOtp' => false,
@@ -158,7 +171,14 @@ if ($action === 'login' && $method === 'POST') {
                 'id' => $userId,
                 'username' => $user['username'],
                 'email' => $user['email'],
-                'name' => $user['name']
+                'name' => $user['name'],
+                'role' => $user['role'] ?? 'admin',
+                'roleTitle' => $user['roleTitle'] ?? 'Managing Executive',
+                'workflowRole' => $user['workflowRole'] ?? 'approver',
+                'department' => $user['department'] ?? 'Executive Management',
+                'phone' => $user['phone'] ?? '',
+                'permissions' => $parsedPermissions,
+                'status' => $user['status'] ?? 'active'
             ]
         ]);
     }
@@ -238,7 +258,7 @@ if ($action === 'verify-otp' && $method === 'POST') {
     }
 
     $sanitized = str_replace(',', '.', $username);
-    $userStmt = $pdo->prepare("SELECT id, username, email, name FROM admin_users WHERE username = :u1 OR email = :u2 OR username = :u3 OR email = :u4 LIMIT 1");
+    $userStmt = $pdo->prepare("SELECT id, username, email, name, role, roleTitle, workflowRole, department, phone, permissions, status FROM admin_users WHERE username = :u1 OR email = :u2 OR username = :u3 OR email = :u4 LIMIT 1");
     $userStmt->execute([
         ':u1' => $username,
         ':u2' => $username,
@@ -251,7 +271,12 @@ if ($action === 'verify-otp' && $method === 'POST') {
         sendJson(['success' => false, 'error' => 'User not found'], 404);
     }
 
+    if (isset($user['status']) && $user['status'] === 'inactive') {
+        sendJson(['success' => false, 'error' => 'This management account is inactive. Please contact an executive partner.'], 403);
+    }
+
     $userId = (int)$user['id'];
+    $pdo->prepare("UPDATE admin_users SET lastLoginAt = NOW() WHERE id = ?")->execute([$userId]);
 
     // Check OTP record
     $otpStmt = $pdo->prepare("
@@ -305,7 +330,10 @@ if ($action === 'verify-otp' && $method === 'POST') {
         'id' => $userId,
         'username' => $user['username'],
         'email' => $user['email'],
-        'name' => $user['name']
+        'name' => $user['name'],
+        'role' => $user['role'] ?? 'admin',
+        'roleTitle' => $user['roleTitle'] ?? 'Managing Executive',
+        'workflowRole' => $user['workflowRole'] ?? 'approver'
     ]);
 
     // Send HTML Login Alert Notification
@@ -317,6 +345,10 @@ if ($action === 'verify-otp' && $method === 'POST') {
         '2FA Verification Code (New 7-Day Trust Granted)'
     );
 
+    $parsedPermissions = !empty($user['permissions']) 
+        ? json_decode($user['permissions'], true) 
+        : ['manage_team', 'manage_content', 'manage_blog', 'manage_projects', 'manage_developers', 'manage_payroll', 'manage_timetracking', 'manage_security'];
+
     sendJson([
         'success' => true,
         'message' => 'Device verified successfully. Trusted for 7 days.',
@@ -327,7 +359,14 @@ if ($action === 'verify-otp' && $method === 'POST') {
             'id' => $userId,
             'username' => $user['username'],
             'email' => $user['email'],
-            'name' => $user['name']
+            'name' => $user['name'],
+            'role' => $user['role'] ?? 'admin',
+            'roleTitle' => $user['roleTitle'] ?? 'Managing Executive',
+            'workflowRole' => $user['workflowRole'] ?? 'approver',
+            'department' => $user['department'] ?? 'Executive Management',
+            'phone' => $user['phone'] ?? '',
+            'permissions' => $parsedPermissions,
+            'status' => $user['status'] ?? 'active'
         ]
     ]);
 }
@@ -459,13 +498,21 @@ if ($action === 'revoke-device' && $method === 'POST') {
 // -------------------------------------------------------------
 if ($action === 'me' && $method === 'GET') {
     $auth = requireAuthUser();
-    $stmt = $pdo->prepare("SELECT id, username, email, name, createdAt FROM admin_users WHERE id = ? LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id, username, email, name, role, roleTitle, workflowRole, department, phone, permissions, status, lastLoginAt, createdAt FROM admin_users WHERE id = ? LIMIT 1");
     $stmt->execute([(int)$auth['id']]);
     $user = $stmt->fetch();
 
     if (!$user) {
         sendJson(['success' => false, 'error' => 'User not found'], 404);
     }
+
+    if (isset($user['status']) && $user['status'] === 'inactive') {
+        sendJson(['success' => false, 'error' => 'Your management account has been deactivated.'], 403);
+    }
+
+    $user['permissions'] = !empty($user['permissions']) 
+        ? json_decode($user['permissions'], true) 
+        : ['manage_team', 'manage_content', 'manage_blog', 'manage_projects', 'manage_developers', 'manage_payroll', 'manage_timetracking', 'manage_security'];
 
     sendJson(['success' => true, 'user' => $user]);
 }

@@ -133,7 +133,16 @@ if ($path === 'blog' || $path === 'admin/blog' || str_starts_with($path, 'blog/'
     exit(0);
 }
 
-// 10. Inquiry & Contact Routes (/inquiry, /contact)
+// 11. Management Team & Role Access Control (/team, /admin/team)
+if ($path === 'team' || $path === 'admin/team' || str_starts_with($path, 'team/') || str_starts_with($path, 'admin/team/')) {
+    if (preg_match('#(?:admin/)?team/([a-zA-Z0-9_-]+)#', $path, $matches)) {
+        $_GET['action'] = $matches[1];
+    }
+    require __DIR__ . '/team.php';
+    exit(0);
+}
+
+// 12. Inquiry & Contact Routes (/inquiry, /contact)
 if ($path === 'inquiry' || $path === 'contact') {
     require dirname(__DIR__) . '/mailer.php';
     exit(0);
