@@ -351,7 +351,6 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-lime-500/10 text-lime-400 border border-lime-500/30">
                   {editingArticleId ? 'Editing Article' : 'New Article'}
                 </span>
-                <span className="text-xs text-slate-400 font-mono">WordPress Gutenberg Mode</span>
               </div>
               <h2 className="text-base font-black text-white mt-0.5 truncate max-w-xl">
                 {title || 'Untitled Article'}
@@ -704,7 +703,7 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
             <BookOpen className="w-5 h-5 text-lime-400" /> Blog & Editorial Manager
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            Publish articles, press releases, corporate insights, and multimedia stories with WordPress-grade editorial tools.
+            Publish articles, press releases, corporate insights, and multimedia stories with rich editorial tools.
           </p>
         </div>
 
@@ -915,7 +914,7 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
                         <button
                           onClick={() => handleEdit(art)}
                           className="p-1.5 bg-slate-800 hover:bg-slate-700 text-sky-400 rounded-lg transition-colors"
-                          title="Edit in WordPress Editor"
+                          title="Edit Article"
                         >
                           <Edit className="w-3.5 h-3.5" />
                         </button>

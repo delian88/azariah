@@ -323,9 +323,6 @@ export const WordPressEditor: React.FC<WordPressEditorProps> = ({
       ===================================================================== */}
       <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900/90 border-b border-slate-800">
         <div className="flex items-center gap-1.5">
-          <span className="text-[11px] font-black uppercase tracking-wider text-lime-400 mr-2 flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5" /> WordPress Editor
-          </span>
           <button
             type="button"
             onClick={() => setMode('visual')}
