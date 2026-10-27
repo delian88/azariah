@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SectionWrapper from './SectionWrapper';
 import { NEWS_ITEMS } from '../constants';
 import { 
@@ -16,24 +16,120 @@ import {
   Linkedin,
   Twitter,
   Facebook,
-  Instagram
+  Instagram,
+  Clock,
+  Eye,
+  Search,
+  Filter,
+  Star,
+  User,
+  BookOpen
 } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
+import { blogService, BlogPost } from '../services/blogService';
 
 const NewsPage: React.FC = () => {
   const { getSection } = useContent();
   const section = getSection('news_page');
-  const badge = section?.badge || "Global Intelligence";
-  const title = section?.title || "News & Press.";
+  const badge = section?.badge || "Global Intelligence & Media Impact";
+  const title = section?.title || "Blog, News & Insights.";
   const content = section?.content || "Stay informed with the latest organizational updates, industry insights, and impact reports from Azariah Management Group.";
 
+  // Dynamic Blog State
+  const [articles, setArticles] = useState<any[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [featuredArticle, setFeaturedArticle] = useState<any | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // Selected Article for Reading Modal
   const [selectedNews, setSelectedNews] = useState<any | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<boolean>(false);
+
+  // Fetch dynamic articles from the blog backend API
+  const loadBlogArticles = async () => {
+    setLoading(true);
+    try {
+      const res = await blogService.getArticles({
+        category: selectedCategory !== 'All' ? selectedCategory : undefined,
+        search: searchQuery || undefined
+      });
+
+      if (res.success && res.articles && res.articles.length > 0) {
+        setArticles(res.articles);
+        if (res.featured) setFeaturedArticle(res.featured);
+        if (res.categories) setCategories(['All', ...res.categories]);
+      } else {
+        // Fallback to constants if DB empty
+        const fallbackList = NEWS_ITEMS.map((item) => ({
+          id: item.id,
+          title: item.title,
+          slug: item.id,
+          excerpt: item.summary,
+          summary: item.summary,
+          content: Array.isArray(item.content) ? item.content.map((p) => `<p>${p}</p>`).join('') : item.content,
+          coverImage: item.image,
+          image: item.image,
+          category: item.category,
+          author: 'Azariah Editorial Team',
+          authorRole: 'Media Division',
+          publishedAt: item.date,
+          date: item.date,
+          readTimeMinutes: 4,
+          views: 140
+        }));
+        setArticles(fallbackList);
+        setCategories(['All', 'Studio AMG', 'Strategic Advisory', 'Global Trade']);
+      }
+    } catch {
+      // Fallback seamlessly on error
+      setArticles(NEWS_ITEMS.map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.id,
+        excerpt: item.summary,
+        summary: item.summary,
+        content: Array.isArray(item.content) ? item.content.map((p) => `<p>${p}</p>`).join('') : item.content,
+        coverImage: item.image,
+        image: item.image,
+        category: item.category,
+        author: 'Azariah Editorial Team',
+        authorRole: 'Media Division',
+        publishedAt: item.date,
+        date: item.date,
+        readTimeMinutes: 4,
+        views: 140
+      })));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadBlogArticles();
+  }, [selectedCategory, searchQuery]);
+
+  // Check URL parameter for direct article linking (e.g. #news-page?article=slug)
+  useEffect(() => {
+    const checkDeepLink = async () => {
+      const hash = window.location.hash;
+      if (hash.includes('article=')) {
+        const slug = hash.split('article=')[1]?.split('&')[0];
+        if (slug) {
+          const res = await blogService.getArticleBySlug(slug);
+          if (res.success && res.article) {
+            setSelectedNews(res.article);
+          }
+        }
+      }
+    };
+    checkDeepLink();
+  }, []);
 
   const getValidUrl = () => {
     try {
       const currentUrl = window.location.href;
-      // Handle sandbox blob URLs or invalid URLs by falling back to the origin
       if (currentUrl.startsWith('blob:') || !currentUrl.startsWith('http')) {
         return window.location.origin;
       }
@@ -49,16 +145,14 @@ const NewsPage: React.FC = () => {
     const shareUrl = getValidUrl();
     const shareData = {
       title: selectedNews.title,
-      text: selectedNews.summary,
+      text: selectedNews.excerpt || selectedNews.summary,
       url: shareUrl,
     };
 
-    // Navigator.share is the primary "one-click" share for mobile and modern browsers
     if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
       try {
         await navigator.share(shareData);
       } catch (err) {
-        // If user cancels or error occurs, fallback to manual copy
         if ((err as Error).name !== 'AbortError') {
           copyToClipboard();
         }
@@ -98,31 +192,41 @@ const NewsPage: React.FC = () => {
         shareUrl = `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`;
         break;
       case 'Instagram':
-        // Instagram doesn't support sharing links via URL parameters (intent).
-        // Best practice: Copy the link for the user and then open Instagram.
         copyToClipboard();
         window.open('https://www.instagram.com', '_blank', 'noopener,noreferrer');
         return;
       case 'Email':
-        shareUrl = `mailto:?subject=${encodedText}&body=Check out this news from Azariah Management Group: ${encodedUrl}`;
+        shareUrl = `mailto:?subject=${encodedText}&body=Check out this article from Azariah Management Group: ${encodedUrl}`;
         break;
       default:
         return;
     }
-    
     if (shareUrl) {
       window.open(shareUrl, '_blank', 'noopener,noreferrer');
     }
   };
 
+  const formatDisplayDate = (dStr?: string) => {
+    if (!dStr) return '';
+    try {
+      const d = new Date(dStr);
+      if (isNaN(d.getTime())) return dStr;
+      return d.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+      return dStr;
+    }
+  };
+
   return (
-    <div className="pt-24">
-      {/* HERO SECTION */}
-      <SectionWrapper bg="white" className="relative overflow-hidden pb-32">
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-slate-50 -skew-x-12 translate-x-1/2 -z-10"></div>
+    <div className="pt-24 pb-20">
+      {/* =====================================================================
+          HERO BANNER
+      ===================================================================== */}
+      <SectionWrapper bg="white" className="relative overflow-hidden pb-16">
+        <div className="absolute top-0 right-0 w-1/4 h-full bg-slate-50 -skew-x-12 translate-x-1/2 -z-10" />
         <div className="max-w-4xl space-y-8 reveal active">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-800 text-xs font-black uppercase tracking-widest rounded-full border border-blue-100">
-            <Globe className="w-4 h-4" /> {badge}
+            <Globe className="w-4 h-4 text-lime-600" /> {badge}
           </div>
           <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none text-shine">
             {title}
@@ -133,66 +237,192 @@ const NewsPage: React.FC = () => {
         </div>
       </SectionWrapper>
 
-      {/* NEWS GRID */}
-      <SectionWrapper bg="light" className="py-20">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {NEWS_ITEMS.map((item) => (
-            <div 
-              key={item.id} 
-              className="reveal active bg-white border border-slate-100 flex flex-col h-full hover:shadow-2xl transition-all duration-500 group cursor-pointer"
-              onClick={() => setSelectedNews(item)}
-            >
-              <div className="aspect-video overflow-hidden relative">
-                <img 
-                  src={item.image} 
-                  alt={item.title} 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-slate-900 text-white text-[8px] font-black uppercase tracking-widest">
-                    {item.category}
-                  </span>
-                </div>
-              </div>
-              <div className="p-8 flex-1 flex flex-col space-y-4">
-                <div className="flex items-center gap-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-3 h-3" /> {item.date}
-                  </div>
-                </div>
-                <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter leading-tight group-hover:text-blue-600 transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-slate-500 text-sm font-medium leading-relaxed flex-1">
-                  {item.summary}
-                </p>
-                <div className="pt-4 flex items-center gap-2 text-[10px] font-black text-slate-900 uppercase tracking-widest group-hover:gap-4 transition-all">
-                  Read Article <ArrowRight className="w-4 h-4 text-lime-500" />
-                </div>
+      {/* =====================================================================
+          SEARCH & CATEGORIES FILTER BAR
+      ===================================================================== */}
+      <div className="max-w-screen-2xl mx-auto px-6 md:px-12 mb-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+          {/* Category Tabs */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all whitespace-nowrap ${
+                  selectedCategory === cat
+                    ? 'bg-slate-900 text-white shadow-md'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Search Input */}
+          <div className="relative min-w-[280px]">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+            <input
+              type="text"
+              placeholder="Search articles & press..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-sm text-xs text-slate-900 font-medium focus:outline-none focus:border-slate-900 transition-colors"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* =====================================================================
+          FEATURED HERO ARTICLE HIGHLIGHT (IF AVAILABLE)
+      ===================================================================== */}
+      {featuredArticle && selectedCategory === 'All' && !searchQuery && (
+        <div className="max-w-screen-2xl mx-auto px-6 md:px-12 mb-16">
+          <div
+            onClick={() => setSelectedNews(featuredArticle)}
+            className="group cursor-pointer bg-slate-900 rounded-sm overflow-hidden grid lg:grid-cols-12 shadow-2xl hover:shadow-lime-500/10 transition-all border border-slate-800"
+          >
+            <div className="lg:col-span-7 aspect-video lg:aspect-auto overflow-hidden relative">
+              <img
+                src={featuredArticle.coverImage || featuredArticle.image}
+                alt={featuredArticle.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-90 group-hover:opacity-100"
+              />
+              <div className="absolute top-4 left-4">
+                <span className="px-3.5 py-1 bg-lime-500 text-slate-950 text-[10px] font-black uppercase tracking-widest flex items-center gap-1 shadow-md">
+                  <Star className="w-3 h-3 fill-slate-950" /> Featured Story
+                </span>
               </div>
             </div>
-          ))}
+
+            <div className="lg:col-span-5 p-8 md:p-12 flex flex-col justify-between text-white space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 text-xs text-slate-400 font-mono">
+                  <span className="text-lime-400 font-bold uppercase">{featuredArticle.category}</span>
+                  <span>•</span>
+                  <span>{featuredArticle.readTimeMinutes || 4} min read</span>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight group-hover:text-lime-400 transition-colors leading-tight">
+                  {featuredArticle.title}
+                </h2>
+                <p className="text-slate-300 text-sm leading-relaxed line-clamp-3 font-medium">
+                  {featuredArticle.excerpt || featuredArticle.summary}
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-black uppercase tracking-wider text-lime-400 group-hover:gap-2 transition-all">
+                <span>Read Full Article</span>
+                <ArrowRight className="w-4 h-4 text-lime-400 group-hover:translate-x-2 transition-transform" />
+              </div>
+            </div>
+          </div>
         </div>
+      )}
+
+      {/* =====================================================================
+          ARTICLES GRID
+      ===================================================================== */}
+      <SectionWrapper bg="light" className="py-12">
+        {loading ? (
+          <div className="py-24 text-center space-y-3">
+            <div className="w-8 h-8 border-4 border-slate-900 border-t-lime-500 rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-black uppercase tracking-widest text-slate-500">
+              Loading articles & intelligence...
+            </p>
+          </div>
+        ) : articles.length === 0 ? (
+          <div className="py-24 text-center bg-white border border-slate-200 rounded-sm p-12 max-w-xl mx-auto space-y-3">
+            <BookOpen className="w-10 h-10 text-slate-400 mx-auto" />
+            <h3 className="text-base font-black uppercase text-slate-900">No articles found</h3>
+            <p className="text-xs text-slate-500">
+              Try adjusting your search query or selecting a different category tab.
+            </p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {articles.map((item) => (
+              <div 
+                key={item.id} 
+                className="reveal active bg-white border border-slate-100 flex flex-col h-full hover:shadow-2xl transition-all duration-500 group cursor-pointer"
+                onClick={() => setSelectedNews(item)}
+              >
+                <div className="aspect-video overflow-hidden relative">
+                  <img 
+                    src={item.coverImage || item.image || 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=2006'} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-slate-900 text-white text-[8px] font-black uppercase tracking-widest">
+                      {item.category}
+                    </span>
+                  </div>
+                  {Boolean(item.isFeatured) && (
+                    <div className="absolute top-4 right-4">
+                      <span className="px-2 py-1 bg-lime-500 text-slate-950 text-[8px] font-black uppercase tracking-widest flex items-center gap-1">
+                        <Star className="w-2.5 h-2.5 fill-slate-950" /> Featured
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-8 flex-1 flex flex-col space-y-4">
+                  <div className="flex items-center gap-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="w-3 h-3" /> {formatDisplayDate(item.publishedAt || item.date)}
+                    </div>
+                    <span>•</span>
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3 h-3" /> {item.readTimeMinutes || 4} min read
+                    </div>
+                  </div>
+
+                  <h3 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter leading-tight group-hover:text-blue-600 transition-colors">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-slate-500 text-sm font-medium leading-relaxed flex-1 line-clamp-3">
+                    {item.excerpt || item.summary}
+                  </p>
+
+                  <div className="pt-4 flex items-center justify-between border-t border-slate-50">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-slate-900 uppercase tracking-widest group-hover:gap-4 transition-all">
+                      Read Article <ArrowRight className="w-4 h-4 text-lime-500" />
+                    </div>
+                    {item.views > 0 && (
+                      <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
+                        <Eye className="w-3 h-3" /> {item.views}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </SectionWrapper>
 
-      {/* ARTICLE OVERLAY */}
+      {/* =====================================================================
+          ARTICLE READER OVERLAY / MODAL
+      ===================================================================== */}
       {selectedNews && (
         <div className="fixed inset-0 z-[100] bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
-          <div className="sticky top-0 bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-6 md:px-12 flex justify-between items-center z-50">
+          {/* Header Action Bar */}
+          <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-100 px-6 py-5 md:px-12 flex justify-between items-center z-50">
             <button 
               onClick={() => setSelectedNews(null)}
-              className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-950 transition-colors group"
+              className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-slate-600 hover:text-slate-950 transition-colors group"
             >
               <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-              Back to News
+              Back to Blog & News
             </button>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
                <button 
                  onClick={handleNativeShare}
-                 className="p-2 text-slate-400 hover:text-slate-950 transition-colors"
+                 className="flex items-center gap-1.5 px-4 py-2 bg-slate-900 text-white rounded-sm text-xs font-black uppercase tracking-wider hover:bg-lime-500 hover:text-slate-950 transition-colors"
                  title="Quick Share"
                >
-                 <Share2 className="w-5 h-5" />
+                 <Share2 className="w-4 h-4" /> Share
                </button>
                <button 
                  onClick={() => setSelectedNews(null)}
@@ -203,41 +433,91 @@ const NewsPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Reader Body */}
           <div className="flex-1 overflow-y-auto">
             <div className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-12">
                <div className="space-y-6">
-                  <span className="px-4 py-1.5 bg-lime-500 text-slate-950 text-[10px] font-black uppercase tracking-widest">
-                    {selectedNews.category}
-                  </span>
-                  <h2 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none uppercase">
+                  <div className="flex items-center gap-3">
+                    <span className="px-4 py-1.5 bg-lime-500 text-slate-950 text-[10px] font-black uppercase tracking-widest">
+                      {selectedNews.category}
+                    </span>
+                    <span className="text-xs text-slate-400 font-mono">
+                      {selectedNews.readTimeMinutes || 4} min read
+                    </span>
+                  </div>
+
+                  <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none uppercase">
                     {selectedNews.title}
-                  </h2>
-                  <div className="flex items-center gap-4 text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-8">
-                    <Calendar className="w-4 h-4" /> Published {selectedNews.date}
+                  </h1>
+
+                  {/* Author Byline */}
+                  <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-8">
+                    <div className="flex items-center gap-3 text-slate-700">
+                      <div className="w-8 h-8 rounded-full bg-slate-900 text-lime-400 flex items-center justify-center font-bold">
+                        {selectedNews.author ? selectedNews.author.charAt(0) : 'A'}
+                      </div>
+                      <div>
+                        <div className="font-black text-slate-900">{selectedNews.author || 'Azariah Editorial Team'}</div>
+                        <div className="text-[10px] text-slate-400">{selectedNews.authorRole || 'Contributor'}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" /> Published {formatDisplayDate(selectedNews.publishedAt || selectedNews.date)}
+                    </div>
                   </div>
                </div>
 
-               <div className="aspect-video bg-slate-100 overflow-hidden shadow-2xl">
-                  <img src={selectedNews.image} className="w-full h-full object-cover" alt="" />
-               </div>
+               {/* Cover Image */}
+               {(selectedNews.coverImage || selectedNews.image) && (
+                 <div className="aspect-video bg-slate-100 overflow-hidden shadow-2xl rounded-sm">
+                    <img 
+                      src={selectedNews.coverImage || selectedNews.image} 
+                      className="w-full h-full object-cover" 
+                      alt={selectedNews.title} 
+                    />
+                 </div>
+               )}
 
-               <div className="space-y-8 prose prose-slate prose-lg max-w-none">
-                  {selectedNews.content.map((p: string, i: number) => (
-                    <p key={i} className="text-xl md:text-2xl text-slate-700 leading-relaxed font-medium whitespace-pre-line">
-                      {p}
+               {/* Formatted Content */}
+               <div className="space-y-6">
+                  {typeof selectedNews.content === 'string' && selectedNews.content.includes('<') ? (
+                    <div 
+                      className="prose prose-slate prose-xl max-w-none text-slate-800 leading-relaxed font-medium
+                        [&>h1]:text-3xl [&>h1]:font-black [&>h1]:text-slate-900 [&>h1]:mt-10 [&>h1]:mb-4
+                        [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:text-slate-900 [&>h2]:mt-8 [&>h2]:mb-3
+                        [&>h3]:text-xl [&>h3]:font-bold [&>h3]:text-blue-600 [&>h3]:mt-6 [&>h3]:mb-2
+                        [&>p]:text-xl [&>p]:md:text-2xl [&>p]:text-slate-700 [&>p]:leading-relaxed [&>p]:mb-6
+                        [&>blockquote]:border-l-4 [&>blockquote]:border-lime-500 [&>blockquote]:pl-6 [&>blockquote]:italic [&>blockquote]:text-slate-600 [&>blockquote]:bg-slate-50 [&>blockquote]:py-4 [&>blockquote]:my-8
+                        [&>ul]:list-disc [&>ul]:pl-8 [&>ul]:space-y-3 [&>ul]:text-lg
+                        [&>ol]:list-decimal [&>ol]:pl-8 [&>ol]:space-y-3 [&>ol]:text-lg
+                        [&>figure]:my-10 [&>figure>img]:rounded-xl [&>figure>img]:shadow-2xl [&>figure>figcaption]:text-xs [&>figure>figcaption]:text-slate-500 [&>figure>figcaption]:mt-2"
+                      dangerouslySetInnerHTML={{ __html: selectedNews.content }}
+                    />
+                  ) : Array.isArray(selectedNews.content) ? (
+                    <div className="space-y-8 prose prose-slate prose-lg max-w-none">
+                      {selectedNews.content.map((p: string, i: number) => (
+                        <p key={i} className="text-xl md:text-2xl text-slate-700 leading-relaxed font-medium whitespace-pre-line">
+                          {p}
+                        </p>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xl md:text-2xl text-slate-700 leading-relaxed font-medium whitespace-pre-line">
+                      {selectedNews.content}
                     </p>
-                  ))}
+                  )}
                </div>
 
+               {/* Share & Distribution Footer */}
                <div className="pt-20 border-t border-slate-100 flex flex-col md:flex-row gap-12 items-center justify-between">
                   <div className="space-y-10 w-full md:w-auto">
                     <div className="space-y-2">
-                       <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">Share on social media</h4>
-                       <p className="text-[10px] text-slate-500 font-bold uppercase">Distribute this insight to your network</p>
+                       <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">Share this insight</h4>
+                       <p className="text-[10px] text-slate-500 font-bold uppercase">Distribute to your professional network</p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4">
-                       {/* PRIMARY NATIVE SHARE */}
                        <button 
                          onClick={handleNativeShare}
                          className="flex items-center gap-3 px-8 py-5 bg-slate-900 text-white rounded-sm hover:bg-lime-500 hover:text-slate-950 transition-all group shadow-xl"
@@ -246,7 +526,6 @@ const NewsPage: React.FC = () => {
                          <span className="text-xs font-black uppercase tracking-widest">One-Click Share</span>
                        </button>
 
-                       {/* COPY LINK */}
                        <button 
                          onClick={copyToClipboard}
                          className={`flex items-center gap-3 px-8 py-5 border-2 transition-all rounded-sm font-black uppercase tracking-widest text-xs ${
@@ -256,7 +535,7 @@ const NewsPage: React.FC = () => {
                          }`}
                        >
                          {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                         <span>{copied ? 'Copied!' : 'Copy Link'}</span>
+                         <span>{copied ? 'Link Copied!' : 'Copy Link'}</span>
                        </button>
                     </div>
 
@@ -305,11 +584,11 @@ const NewsPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 bg-slate-50 p-6 border border-slate-100 rounded-sm">
-                     <Sparkles className="w-8 h-8 text-lime-500" />
+                  <div className="flex items-center gap-4 bg-slate-50 p-6 border border-slate-100 rounded-sm max-w-sm">
+                     <Sparkles className="w-8 h-8 text-lime-500 shrink-0" />
                      <div>
                        <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Azariah Management Group</p>
-                       <p className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Strategic insight powered by Azariah Management Group</p>
+                       <p className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Strategic intelligence powered by AMG Executive Editorial</p>
                      </div>
                   </div>
                </div>

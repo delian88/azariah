@@ -372,3 +372,111 @@ function ensureDevModuleTables($pdo) {
         @file_put_contents(dirname(__DIR__) . '/db_migration_err.log', date('c') . " " . $e->getMessage() . "\n", FILE_APPEND);
     }
 }
+
+function ensureBlogTables($pdo) {
+    static $blogTablesChecked = false;
+    if ($blogTablesChecked) return;
+
+    try {
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS `blog_posts` (
+              `id` INT NOT NULL AUTO_INCREMENT,
+              `title` VARCHAR(255) NOT NULL,
+              `slug` VARCHAR(255) NOT NULL,
+              `excerpt` TEXT NULL,
+              `content` LONGTEXT NOT NULL,
+              `coverImage` VARCHAR(500) NULL,
+              `category` VARCHAR(100) NOT NULL DEFAULT 'Insights',
+              `tags` VARCHAR(255) NULL,
+              `author` VARCHAR(191) NOT NULL DEFAULT 'Azariah Editorial Team',
+              `authorRole` VARCHAR(191) NULL DEFAULT 'Executive Contributor',
+              `authorAvatar` VARCHAR(500) NULL,
+              `status` ENUM('published', 'draft', 'archived') NOT NULL DEFAULT 'published',
+              `isFeatured` TINYINT(1) NOT NULL DEFAULT 0,
+              `readTimeMinutes` INT NOT NULL DEFAULT 5,
+              `views` INT NOT NULL DEFAULT 0,
+              `publishedAt` DATETIME NULL,
+              `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+              `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `blog_slug_key` (`slug`),
+              INDEX `idx_blog_status` (`status`),
+              INDEX `idx_blog_category` (`category`),
+              INDEX `idx_blog_featured` (`isFeatured`),
+              INDEX `idx_blog_published` (`publishedAt`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        ");
+
+        // Seed initial articles if empty
+        $count = (int)$pdo->query("SELECT COUNT(*) FROM `blog_posts`")->fetchColumn();
+        if ($count === 0) {
+            $stmt = $pdo->prepare("
+                INSERT INTO `blog_posts` 
+                (`title`, `slug`, `excerpt`, `content`, `coverImage`, `category`, `tags`, `author`, `authorRole`, `status`, `isFeatured`, `readTimeMinutes`, `views`, `publishedAt`, `createdAt`)
+                VALUES 
+                (:title, :slug, :excerpt, :content, :coverImage, :category, :tags, :author, :authorRole, :status, :isFeatured, :readTime, :views, :publishedAt, :createdAt)
+            ");
+
+            // Seed Article 1: Nolly Oh!
+            $content1 = "<p>Azariah Management Group (AMG), through its media division <strong>Studio AMG</strong>, is proud to announce its role as a technical partner and featured creative contributor to <em>“Nolly Oh!”</em>, a landmark Nollywood and Nigerian cultural festival set to take place across the United Kingdom.</p>
+<h3>A UK-Wide Celebration of Nollywood & Nigerian Heritage</h3>
+<p>Launched in celebration of Nigeria’s 65th Independence Anniversary, Nolly Oh! is a bold, global initiative honoring African storytelling, cultural integration, and the extraordinary impact of Nollywood on the world stage. The festival is presented by Grey Cinema (UK) in partnership with The New Black Film Collective (TNBFC) and is proudly supported by the British Film Institute (BFI).</p>
+<p>Nolly Oh! runs across London, Birmingham, Manchester, Newcastle, and Liverpool, bringing Nigerian cinema and culture directly to diverse communities throughout the UK.</p>
+<blockquote>“Nolly Oh! represents a defining moment for Nollywood’s global journey, connecting filmmakers, audiences, institutions, and creatives while honoring our heritage and future.”</blockquote>
+<h3>Beyond Film: A Multi-Sensory Cultural Experience</h3>
+<p>More than a traditional film festival, Nolly Oh! is designed as an immersive cultural experience. Audiences engage with the full spectrum of Nigerian creativity through authentic cuisine, live musical performances, fashion showcases, and contemporary African art displays.</p>";
+
+            $stmt->execute([
+                ':title' => 'Studio AMG Partners on “Nolly Oh!” A Landmark Nollywood & Nigerian Cultural Festival Across the UK',
+                ':slug' => 'studio-amg-partners-on-nolly-oh-festival-uk',
+                ':excerpt' => 'Azariah Management Group announces its role as technical partner for a UK-wide Nollywood festival celebrating Nigerian culture and cinema.',
+                ':content' => $content1,
+                ':coverImage' => 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1925',
+                ':category' => 'Studio AMG',
+                ':tags' => 'Nollywood, Film Festival, UK, Studio AMG, Culture',
+                ':author' => 'Azariah Editorial Team',
+                ':authorRole' => 'Media & Culture Division',
+                ':status' => 'published',
+                ':isFeatured' => 1,
+                ':readTime' => 4,
+                ':views' => 248,
+                ':publishedAt' => '2025-10-01 10:00:00',
+                ':createdAt' => '2025-10-01 10:00:00'
+            ]);
+
+            // Seed Article 2: Strategic AI & Diaspora Capital
+            $content2 = "<p>As algorithmic intelligence transforms global capital allocation, diaspora-led institutional networks are uniquely positioned to bridge emerging market innovation with international investment.</p>
+<h3>Reimagining Trade Corridors</h3>
+<p>Through our G.A.M.E. Trade Ecosystem, Azariah Management Group has pioneered cross-border compliance and verified partner frameworks connecting high-growth African technology hubs directly to North American institutional investors.</p>
+<p>By eliminating information asymmetries and deploying algorithmic intelligence to risk scoring, we enable capital to flow where impact and yield intersect.</p>
+<h3>Key Milestones</h3>
+<ul>
+  <li>Facilitated over $5M in diaspora-led innovation investments</li>
+  <li>Implemented automated real-time supply chain transparency protocols</li>
+  <li>Developed risk-adjusted benchmarking for emerging frontier ventures</li>
+</ul>";
+
+            $stmt->execute([
+                ':title' => 'The Next Decade of Strategic AI & Diaspora Capital Allocation',
+                ':slug' => 'next-decade-strategic-ai-diaspora-capital',
+                ':excerpt' => 'How autonomous intelligence, diaspora networks, and verified trade architecture are redefining cross-border investment into emerging market innovation hubs.',
+                ':content' => $content2,
+                ':coverImage' => 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=2006',
+                ':category' => 'Strategic Advisory',
+                ':tags' => 'AI, Diaspora, Investment, Innovation, Global Trade',
+                ':author' => 'Executive Office',
+                ':authorRole' => 'Strategic Intelligence Unit',
+                ':status' => 'published',
+                ':isFeatured' => 0,
+                ':readTime' => 5,
+                ':views' => 182,
+                ':publishedAt' => '2025-11-15 14:30:00',
+                ':createdAt' => '2025-11-15 14:30:00'
+            ]);
+        }
+
+        $blogTablesChecked = true;
+    } catch (Exception $e) {
+        @file_put_contents(dirname(__DIR__) . '/db_migration_err.log', date('c') . " [Blog Migration Error] " . $e->getMessage() . "\n", FILE_APPEND);
+    }
+}

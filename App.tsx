@@ -71,7 +71,7 @@ const MainApp: React.FC = () => {
       else if (hash === '#programs-page') nextView = 'programs';
       else if (hash === '#mentorship-page') nextView = 'mentorship';
       else if (hash === '#studio-page') nextView = 'studio';
-      else if (hash === '#news-page') nextView = 'news';
+      else if (hash === '#news-page' || hash === '#blog-page' || hash === '#blog') nextView = 'news';
       else if (hash === '#products-page') nextView = 'products';
       else if (hash === '#terms-page') nextView = 'terms';
       else if (hash === '#privacy-page') nextView = 'privacy';

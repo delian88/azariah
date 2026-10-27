@@ -115,7 +115,16 @@ if ($path === 'payslips' || $path === 'admin/payslips' || str_starts_with($path,
     exit(0);
 }
 
-// 9. Inquiry & Contact Routes (/inquiry, /contact)
+// 9. Blog & Articles Management Routes (/blog, /admin/blog)
+if ($path === 'blog' || $path === 'admin/blog' || str_starts_with($path, 'blog/') || str_starts_with($path, 'admin/blog/')) {
+    if (preg_match('#(?:admin/)?blog/([a-zA-Z0-9_-]+)#', $path, $matches)) {
+        $_GET['action'] = $matches[1];
+    }
+    require __DIR__ . '/blog.php';
+    exit(0);
+}
+
+// 10. Inquiry & Contact Routes (/inquiry, /contact)
 if ($path === 'inquiry' || $path === 'contact') {
     require dirname(__DIR__) . '/mailer.php';
     exit(0);

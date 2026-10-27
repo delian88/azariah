@@ -43,7 +43,8 @@ import {
   ChevronLeft,
   Home,
   Users,
-  DollarSign
+  DollarSign,
+  BookOpen
 } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
 import Logo from './Logo';
@@ -51,6 +52,7 @@ import AdminDevelopersTab from './admin/AdminDevelopersTab';
 import AdminProjectsTab from './admin/AdminProjectsTab';
 import AdminTimeTrackingTab from './admin/AdminTimeTrackingTab';
 import AdminPayrollTab from './admin/AdminPayrollTab';
+import AdminBlogTab from './admin/AdminBlogTab';
 
 export interface SectionMeta {
   key: string;
@@ -349,7 +351,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
   const [loadingDevices, setLoadingDevices] = useState(false);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'branding' | 'sections' | 'media' | 'projects' | 'developers' | 'timetracking' | 'payroll' | 'system'>('branding');
+  const [activeTab, setActiveTab] = useState<'branding' | 'sections' | 'media' | 'blog' | 'projects' | 'developers' | 'timetracking' | 'payroll' | 'system'>('branding');
   const [activeSectionKey, setActiveSectionKey] = useState<string>('hero');
 
   // Mobile Navigation & Responsive Breadcrumb State
@@ -1046,6 +1048,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   {activeTab === 'branding' && 'Logo & Brand'}
                   {activeTab === 'sections' && 'Sections Text'}
                   {activeTab === 'media' && 'Media Gallery'}
+                  {activeTab === 'blog' && 'Blog & Editorial'}
                   {activeTab === 'projects' && 'Projects'}
                   {activeTab === 'developers' && 'Developers'}
                   {activeTab === 'timetracking' && 'Time Tracking'}
@@ -1104,6 +1107,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                       }`}
                     >
                       <Upload className="w-3.5 h-3.5" /> Media & Storage Gallery
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('blog');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to Blog & Editorial Manager.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'blog' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <BookOpen className="w-3.5 h-3.5" /> Blog & Editorial Manager
                     </button>
                     <button
                       type="button"
@@ -1317,6 +1333,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 >
                   <span className="flex items-center gap-3">
                     <Upload className="w-4 h-4" /> Media Gallery
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('blog');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to Blog & Editorial Manager.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'blog'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <BookOpen className="w-4 h-4" /> Blog & Editorial
                   </span>
                   <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
@@ -1619,6 +1654,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
               }`}
             >
               <Upload className="w-4 h-4" /> Media Gallery
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab('blog');
+                showToast('Switched to Blog & Editorial Manager.', 'info');
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                activeTab === 'blog'
+                  ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" /> Blog & Editorial
             </button>
 
             <button
@@ -2846,6 +2895,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 )}
               </div>
             </div>
+          )}
+
+          {/* TAB: BLOG & EDITORIAL MANAGER */}
+          {activeTab === 'blog' && (
+            <AdminBlogTab
+              showToast={showToast}
+              onViewLiveArticle={() => {
+                onNavigate?.('news');
+              }}
+            />
           )}
 
           {/* TAB: PROJECTS & MILESTONES */}

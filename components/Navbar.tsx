@@ -121,6 +121,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           <a href="#products-page" onClick={(e) => handleLinkClick(e, '#products-page', 'products')} className={`font-black uppercase tracking-widest transition-colors text-[8px] lg:text-[10px] ${textColorClass}`}>Products</a>
           <a href="#studio-page" onClick={(e) => handleLinkClick(e, '#studio-page', 'studio')} className={`font-black uppercase tracking-widest transition-colors text-[8px] lg:text-[10px] ${textColorClass}`}>Studio AMG</a>
           <a href="#creaitube-page" onClick={(e) => handleLinkClick(e, '#creaitube-page', 'creaitube')} className={`font-black uppercase tracking-widest transition-colors text-[8px] lg:text-[10px] ${textColorClass}`}>CreAItube</a>
+          <a href="#news-page" onClick={(e) => handleLinkClick(e, '#news-page', 'news')} className={`font-black uppercase tracking-widest transition-colors text-[8px] lg:text-[10px] ${textColorClass} ${currentView === 'news' ? 'text-lime-600' : ''}`}>Blog & News</a>
 
           <a
             href={ctaLink}
@@ -169,6 +170,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
           </div>
           <a href="#services-page" onClick={(e) => handleLinkClick(e, '#services-page', 'services')} className="block font-black uppercase tracking-widest text-slate-600 py-2 border-b border-slate-50 text-[10px]">Services</a>
           <a href="#studio-page" onClick={(e) => handleLinkClick(e, '#studio-page', 'studio')} className="block font-black uppercase tracking-widest text-slate-600 py-2 border-b border-slate-50 text-[10px]">Studio AMG</a>
+          <a href="#news-page" onClick={(e) => handleLinkClick(e, '#news-page', 'news')} className="block font-black uppercase tracking-widest text-slate-600 py-2 border-b border-slate-50 text-[10px]">Blog & News</a>
           <a href={ctaLink} onClick={(e) => handleLinkClick(e, ctaLink)} className="block w-full py-4 bg-slate-900 text-white text-center font-black uppercase tracking-widest rounded-sm text-[10px] mt-4">{ctaText}</a>
         </div>
       )}
