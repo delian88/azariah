@@ -64,14 +64,27 @@ const MainApp: React.FC = () => {
   useEffect(() => {
     const handleHashRouting = () => {
       const hash = window.location.hash;
+      const path = window.location.pathname;
+      const search = window.location.search;
       
       let nextView: ViewState = 'home';
-      if (hash === '#services-page') nextView = 'services';
+      if (
+        hash === '#news-page' || 
+        hash.startsWith('#news-page') || 
+        hash === '#blog-page' || 
+        hash === '#blog' ||
+        path.startsWith('/article/') ||
+        path.startsWith('/news/') ||
+        path.startsWith('/blog/') ||
+        new URLSearchParams(search).has('article')
+      ) {
+        nextView = 'news';
+      }
+      else if (hash === '#services-page') nextView = 'services';
       else if (hash === '#about-page') nextView = 'about';
       else if (hash === '#programs-page') nextView = 'programs';
       else if (hash === '#mentorship-page') nextView = 'mentorship';
       else if (hash === '#studio-page') nextView = 'studio';
-      else if (hash === '#news-page' || hash === '#blog-page' || hash === '#blog') nextView = 'news';
       else if (hash === '#products-page') nextView = 'products';
       else if (hash === '#terms-page') nextView = 'terms';
       else if (hash === '#privacy-page') nextView = 'privacy';
@@ -87,7 +100,7 @@ const MainApp: React.FC = () => {
 
       setView(nextView);
       
-      if (hash.includes('-page') || hash === '#admin') {
+      if (hash.includes('-page') || hash === '#admin' || path.startsWith('/article/') || path.startsWith('/news/')) {
         window.scrollTo(0, 0);
       } else if (hash.length > 1) {
         const id = hash.substring(1);
@@ -106,6 +119,7 @@ const MainApp: React.FC = () => {
 
     handleHashRouting();
     window.addEventListener('hashchange', handleHashRouting);
+    window.addEventListener('popstate', handleHashRouting);
 
     const timer = setTimeout(() => {
       setLoading(false);
@@ -114,6 +128,7 @@ const MainApp: React.FC = () => {
     return () => {
       clearTimeout(timer);
       window.removeEventListener('hashchange', handleHashRouting);
+      window.removeEventListener('popstate', handleHashRouting);
     };
   }, []);
 

@@ -83,46 +83,99 @@ const NewsPage: React.FC = () => {
     loadBlogArticles();
   }, [selectedCategory, searchQuery]);
 
-  // Check URL parameter for direct article linking (e.g. #news-page?article=slug)
+  // Canonical shareable URL for an article
+  const getArticleShareUrl = (art?: any) => {
+    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://azariahmg.com';
+    const target = art || selectedNews;
+    if (target && target.slug) {
+      return `${origin}/article/${encodeURIComponent(target.slug)}`;
+    }
+    if (target && target.id) {
+      return `${origin}/article/${encodeURIComponent(target.id)}`;
+    }
+    return `${origin}/#news-page`;
+  };
+
+  const openArticle = (item: any) => {
+    setSelectedNews(item);
+    if (typeof window !== 'undefined') {
+      const shareUrl = getArticleShareUrl(item);
+      window.history.pushState({ articleSlug: item.slug || item.id }, '', shareUrl);
+      if (item.title) {
+        document.title = `${item.title} | Azariah Management Group`;
+      }
+    }
+  };
+
+  const closeArticle = () => {
+    setSelectedNews(null);
+    if (typeof window !== 'undefined') {
+      window.history.pushState({}, '', '/#news-page');
+      document.title = 'Azariah Management Group | Strategic Management & Intelligence';
+    }
+  };
+
+  // Deep linking: resolve /article/:slug, /news/:slug, ?article=:slug, #news-page?article=:slug
   useEffect(() => {
     const checkDeepLink = async () => {
+      if (typeof window === 'undefined') return;
+
+      const path = window.location.pathname;
       const hash = window.location.hash;
-      if (hash.includes('article=')) {
-        const slug = hash.split('article=')[1]?.split('&')[0];
-        if (slug) {
+      const search = window.location.search;
+
+      let slug = '';
+      const pathMatch = path.match(/^\/(?:article|news|blog)\/([^/?#]+)/i);
+      if (pathMatch && pathMatch[1]) {
+        slug = decodeURIComponent(pathMatch[1]);
+      } else if (hash.includes('article=')) {
+        slug = hash.split('article=')[1]?.split('&')[0];
+      } else if (search.includes('article=')) {
+        const params = new URLSearchParams(search);
+        slug = params.get('article') || '';
+      } else if (search.includes('slug=')) {
+        const params = new URLSearchParams(search);
+        slug = params.get('slug') || '';
+      }
+
+      if (slug) {
+        try {
           const res = await blogService.getArticleBySlug(slug);
           if (res.success && res.article) {
             setSelectedNews(res.article);
+            document.title = `${res.article.title} | Azariah Management Group`;
           }
+        } catch (err) {
+          console.error('Error loading deep linked article:', err);
         }
       }
     };
-    checkDeepLink();
-  }, []);
 
-  const getValidUrl = () => {
-    try {
-      const currentUrl = window.location.href;
-      if (currentUrl.startsWith('blob:') || !currentUrl.startsWith('http')) {
-        return window.location.origin;
+    checkDeepLink();
+
+    const onPopState = () => {
+      const path = window.location.pathname;
+      if (!path.includes('/article/') && !window.location.hash.includes('article=')) {
+        setSelectedNews(null);
+      } else {
+        checkDeepLink();
       }
-      return new URL(currentUrl).href;
-    } catch {
-      return window.location.origin;
-    }
-  };
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   const handleNativeShare = async () => {
     if (!selectedNews) return;
     
-    const shareUrl = getValidUrl();
+    const shareUrl = getArticleShareUrl(selectedNews);
     const shareData = {
-      title: selectedNews.title,
-      text: selectedNews.excerpt || selectedNews.summary,
+      title: `${selectedNews.title} | Azariah Management Group`,
+      text: selectedNews.excerpt || selectedNews.summary || selectedNews.title,
       url: shareUrl,
     };
 
-    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+    if (typeof navigator !== 'undefined' && navigator.share && navigator.canShare && navigator.canShare(shareData)) {
       try {
         await navigator.share(shareData);
       } catch (err) {
@@ -136,8 +189,11 @@ const NewsPage: React.FC = () => {
   };
 
   const copyToClipboard = () => {
-    const url = getValidUrl();
-    navigator.clipboard.writeText(url);
+    if (!selectedNews) return;
+    const url = getArticleShareUrl(selectedNews);
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(url);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -145,10 +201,12 @@ const NewsPage: React.FC = () => {
   const handleManualShare = (platform: string) => {
     if (!selectedNews) return;
     
-    const url = getValidUrl();
-    const text = selectedNews.title;
+    const url = getArticleShareUrl(selectedNews);
+    const title = `${selectedNews.title} | Azariah Management Group`;
+    const summary = selectedNews.excerpt || selectedNews.summary || '';
     const encodedUrl = encodeURIComponent(url);
-    const encodedText = encodeURIComponent(text);
+    const encodedTitle = encodeURIComponent(title);
+    const encodedSummary = encodeURIComponent(summary);
 
     let shareUrl = '';
     switch (platform) {
@@ -156,20 +214,20 @@ const NewsPage: React.FC = () => {
         shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
         break;
       case 'Twitter':
-        shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`;
         break;
       case 'Facebook':
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
         break;
       case 'WhatsApp':
-        shareUrl = `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`;
+        shareUrl = `https://api.whatsapp.com/send?text=${encodedTitle}%0A${encodedUrl}`;
         break;
       case 'Instagram':
         copyToClipboard();
         window.open('https://www.instagram.com', '_blank', 'noopener,noreferrer');
         return;
       case 'Email':
-        shareUrl = `mailto:?subject=${encodedText}&body=Check out this article from Azariah Management Group: ${encodedUrl}`;
+        shareUrl = `mailto:?subject=${encodedTitle}&body=${encodedSummary}%0A%0ARead the full article on Azariah Management Group:%0A${encodedUrl}`;
         break;
       default:
         return;
@@ -265,7 +323,7 @@ const NewsPage: React.FC = () => {
       {featuredArticle && selectedCategory === 'All' && !searchQuery && (
         <div className="max-w-screen-2xl mx-auto px-6 md:px-12 mb-16">
           <div
-            onClick={() => setSelectedNews(featuredArticle)}
+            onClick={() => openArticle(featuredArticle)}
             className="group cursor-pointer bg-slate-900 rounded-sm overflow-hidden grid lg:grid-cols-12 shadow-2xl hover:shadow-lime-500/10 transition-all border border-slate-800"
           >
             {featuredArticle.coverImage && (
@@ -340,7 +398,7 @@ const NewsPage: React.FC = () => {
               <div 
                 key={item.id} 
                 className="reveal active bg-white border border-slate-100 flex flex-col h-full hover:shadow-2xl transition-all duration-500 group cursor-pointer"
-                onClick={() => setSelectedNews(item)}
+                onClick={() => openArticle(item)}
               >
                 {item.coverImage ? (
                   <div className="aspect-video overflow-hidden relative">
@@ -429,7 +487,7 @@ const NewsPage: React.FC = () => {
           {/* Header Action Bar */}
           <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-100 px-6 py-5 md:px-12 flex justify-between items-center z-50">
             <button 
-              onClick={() => setSelectedNews(null)}
+              onClick={closeArticle}
               className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-slate-600 hover:text-slate-950 transition-colors group"
             >
               <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -444,7 +502,7 @@ const NewsPage: React.FC = () => {
                  <Share2 className="w-4 h-4" /> Share
                </button>
                <button 
-                 onClick={() => setSelectedNews(null)}
+                 onClick={closeArticle}
                  className="p-2 text-slate-400 hover:text-slate-950 transition-colors"
                >
                  <X className="w-6 h-6" />

@@ -115,7 +115,16 @@ if ($path === 'payslips' || $path === 'admin/payslips' || str_starts_with($path,
     exit(0);
 }
 
-// 9. Blog & Articles Management Routes (/blog, /admin/blog)
+// 9. Open Graph Social Preview Image Route (/og-image, /blog/og-image)
+if ($path === 'og-image' || $path === 'blog/og-image' || str_starts_with($path, 'og-image/')) {
+    if (preg_match('#og-image/([a-zA-Z0-9_-]+)#', $path, $matches)) {
+        $_GET['slug'] = $matches[1];
+    }
+    require __DIR__ . '/og-image.php';
+    exit(0);
+}
+
+// 10. Blog & Articles Management Routes (/blog, /admin/blog)
 if ($path === 'blog' || $path === 'admin/blog' || str_starts_with($path, 'blog/') || str_starts_with($path, 'admin/blog/')) {
     if (preg_match('#(?:admin/)?blog/([a-zA-Z0-9_-]+)#', $path, $matches)) {
         $_GET['action'] = $matches[1];
