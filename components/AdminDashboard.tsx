@@ -369,6 +369,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
     route: '#home',
   };
 
+  // Dynamic System Status
+  const isLocalEnv = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const environmentLabel = isLocalEnv ? 'Local Development' : 'Live Production';
+  const adminIdentifier = adminUser?.name || adminUser?.username || adminUser?.email || 'Administrator';
+  const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   // CMS Section Navigation & Search State
   const [sectionCategoryFilter, setSectionCategoryFilter] = useState<'all' | 'landing' | 'page' | 'header' | 'footer'>('all');
   const [sectionSearch, setSectionSearch] = useState<string>('');
@@ -1455,12 +1472,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
               {/* Status Card in Drawer */}
               <div className="bg-slate-950 border border-slate-800 rounded-sm p-3.5 text-[11px] space-y-2 text-slate-400">
                 <div className="flex items-center gap-2 text-slate-200 font-bold uppercase tracking-wider text-[10px]">
-                  <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span>
+                  <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-lime-500 animate-pulse' : 'bg-red-500'}`}></span>
                   System Status
                 </div>
-                <p>Environment: <strong className="text-white">Live Production</strong></p>
-                <p>Services: <strong className="text-lime-400">Synchronized & Active</strong></p>
-                <p>Admin: <strong className="text-slate-200">{adminUser?.username || 'Administrator'}</strong></p>
+                <p>Environment: <strong className="text-white">{environmentLabel}</strong></p>
+                <p>Services: <strong className={isOnline ? 'text-lime-400' : 'text-red-400'}>{isOnline ? 'Synchronized & Active' : 'Offline'}</strong></p>
+                <p>Admin: <strong className="text-slate-200">{adminIdentifier}</strong></p>
               </div>
             </div>
 
@@ -1744,12 +1761,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
           {/* System Status Card */}
           <div className="bg-slate-900 border border-slate-800 rounded-sm p-4 text-[11px] space-y-2 text-slate-400">
             <div className="flex items-center gap-2 text-slate-200 font-bold uppercase tracking-wider text-[10px]">
-              <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span>
+              <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-lime-500 animate-pulse' : 'bg-red-500'}`}></span>
               System Status
             </div>
-            <p>Environment: <strong className="text-white">Live Production</strong></p>
-            <p>Services: <strong className="text-lime-400">Synchronized & Active</strong></p>
-            <p>Admin: <strong className="text-slate-200">{adminUser?.username || 'Administrator'}</strong></p>
+            <p>Environment: <strong className="text-white">{environmentLabel}</strong></p>
+            <p>Services: <strong className={isOnline ? 'text-lime-400' : 'text-red-400'}>{isOnline ? 'Synchronized & Active' : 'Offline'}</strong></p>
+            <p>Admin: <strong className="text-slate-200">{adminIdentifier}</strong></p>
           </div>
         </aside>
 

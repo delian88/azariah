@@ -67,25 +67,7 @@ export const PORTFOLIO_PROJECTS = [
   }
 ];
 
-export const NEWS_ITEMS: NewsItem[] = [
-  {
-    id: 'news-nolly-oh',
-    title: "Studio AMG Partners on “Nolly Oh!” A Landmark Nollywood & Nigerian Cultural Festival Across the UK",
-    date: "October 01, 2025",
-    category: "Studio AMG",
-    summary: "Azariah Management Group announces its role as technical partner for a UK-wide Nollywood festival celebrating Nigerian culture and cinema.",
-    image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1925",
-    content: [
-      "Azariah Management Group (AMG), through its media division Studio AMG, is proud to announce its role as a technical partner and featured creative contributor to “Nolly Oh!”, a landmark Nollywood and Nigerian cultural festival set to take place across the United Kingdom.",
-      "Launched in celebration of Nigeria’s 65th Independence Anniversary, Nolly Oh! is a bold, global initiative honoring African storytelling, cultural integration, and the extraordinary impact of Nollywood on the world stage. The festival is presented by Grey Cinema (UK) in partnership with The New Black Film Collective (TNBFC) and is proudly supported by the British Film Institute (BFI).",
-      "A UK-Wide Celebration of Nollywood & Nigerian Heritage\nNolly Oh! will run from October to December 2025, with events hosted across London, Birmingham, Manchester, Newcastle, and Liverpool bringing Nigerian cinema and culture directly to diverse communities throughout the UK. The festival officially opens in London on Wednesday, 1st October 2025, aligning with celebrations marking Nigeria’s Independence Day, and setting the tone for a season of cultural excellence, dialogue, and creative exchange.",
-      "Opening Night Highlight: “MAMI WATA” UK Screening\nThe highly anticipated opening night will feature the UK screening of MAMI WATA the critically acclaimed, award-nominated film directed by CJ Obasi at 7:00 PM. Coinciding with the BFI’s Melodrama Blockbuster Season, the premiere will also host a panel discussion and live Q&A, bringing together leading Nigerian and global filmmakers, producers, and cultural voices to explore the evolution, influence, and future of Nollywood.",
-      "Beyond Film: A Multi-Sensory Cultural Experience\nMore than a traditional film festival, Nolly Oh! is designed as an immersive cultural experience. Audiences will engage with the full spectrum of Nigerian creativity through:\n• Authentic Nigerian cuisine\n• Live music performances\n• Fashion showcases\n• Dance exhibitions\n• Contemporary African art displays\nThis holistic approach celebrates not only storytelling on screen but also the broader creative industries that shape Nigeria’s cultural and economic influence globally.",
-      "Studio AMG’s Role\nAs a technical partner, Studio AMG supported the festival through production expertise, media collaboration, and the showcasing of select projects aligned with AMG’s mission to amplify powerful stories, cultural narratives, and global African voices. This partnership reflects Azariah Management Group’s ongoing commitment to cultural advocacy, creative excellence, and diaspora engagement through media and storytelling.",
-      "A Global Moment for Nollywood\nNolly Oh! stands as a defining moment for Nollywood’s global journey connecting filmmakers, audiences, institutions, and creatives while honoring Nigeria’s past, present, and future. Azariah Management Group is honored to be part of this historic celebration and looks forward to contributing to its lasting cultural impact."
-    ]
-  }
-];
+export const NEWS_ITEMS: NewsItem[] = [];
 
 export const PRODUCT_ITEMS: ProductItem[] = [
   {

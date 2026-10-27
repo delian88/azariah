@@ -35,6 +35,20 @@ interface AdminBlogTabProps {
   onViewLiveArticle?: (slug: string) => void;
 }
 
+const STANDARD_BLOG_CATEGORIES = [
+  'Insights',
+  'Strategic Advisory',
+  'AI & Innovation',
+  'Studio AMG',
+  'Global Trade',
+  'Press Release'
+];
+
+const HARDCODED_SAMPLE_SLUGS = [
+  'studio-amg-partners-on-nolly-oh-festival-uk',
+  'next-decade-strategic-ai-diaspora-capital'
+];
+
 export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiveArticle }) => {
   const [articles, setArticles] = useState<BlogPost[]>([]);
   const [metrics, setMetrics] = useState<BlogMetrics>({
@@ -62,10 +76,11 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
   const [coverImage, setCoverImage] = useState('');
-  const [category, setCategory] = useState('Insights');
+  const [category, setCategory] = useState('');
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [tags, setTags] = useState('');
-  const [author, setAuthor] = useState('Azariah Editorial Team');
-  const [authorRole, setAuthorRole] = useState('Executive Contributor');
+  const [author, setAuthor] = useState('');
+  const [authorRole, setAuthorRole] = useState('');
   const [status, setStatus] = useState<'published' | 'draft' | 'archived'>('published');
   const [isFeatured, setIsFeatured] = useState(false);
   const [publishedAt, setPublishedAt] = useState('');
@@ -88,11 +103,40 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
       });
 
       if (res.success && res.articles) {
-        setArticles(res.articles);
-        if (res.metrics) setMetrics(res.metrics);
-        if (res.categories) setCategories(res.categories);
+        // Filter out any legacy hardcoded sample/seed articles
+        const cleanArticles = res.articles.filter(
+          (a) =>
+            !HARDCODED_SAMPLE_SLUGS.includes(a.slug) &&
+            !a.title?.toLowerCase().includes('nolly oh!') &&
+            !a.title?.toLowerCase().includes('strategic ai & diaspora capital')
+        );
+        setArticles(cleanArticles);
+
+        // Recalculate metrics accurately based on clean real articles
+        if (cleanArticles.length !== res.articles.length) {
+          const publishedCount = cleanArticles.filter((a) => a.status === 'published').length;
+          const draftCount = cleanArticles.filter((a) => a.status === 'draft').length;
+          const totalViews = cleanArticles.reduce((sum, a) => sum + (Number(a.views) || 0), 0);
+          setMetrics({
+            total: cleanArticles.length,
+            published: publishedCount,
+            draft: draftCount,
+            totalViews
+          });
+        } else if (res.metrics) {
+          setMetrics(res.metrics);
+        }
+
+        if (res.categories) {
+          setCategories(res.categories);
+        }
       } else {
-        showToast(res.error || 'Failed to load articles', 'error');
+        setArticles([]);
+        setMetrics({ total: 0, published: 0, draft: 0, totalViews: 0 });
+        setCategories([]);
+        if (res.error) {
+          showToast(res.error, 'error');
+        }
       }
     } catch (e: any) {
       showToast(e.message || 'Network error fetching articles', 'error');
@@ -113,10 +157,11 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
     setExcerpt('');
     setContent('');
     setCoverImage('');
-    setCategory('Insights');
+    setCategory('');
+    setIsCustomCategory(false);
     setTags('');
-    setAuthor('Azariah Editorial Team');
-    setAuthorRole('Executive Contributor');
+    setAuthor('');
+    setAuthorRole('');
     setStatus('published');
     setIsFeatured(false);
     setPublishedAt(new Date().toISOString().slice(0, 16));
@@ -131,10 +176,11 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
     setExcerpt(art.excerpt || '');
     setContent(art.content || '');
     setCoverImage(art.coverImage || '');
-    setCategory(art.category || 'Insights');
+    setCategory(art.category || '');
+    setIsCustomCategory(Boolean(art.category && !STANDARD_BLOG_CATEGORIES.includes(art.category)));
     setTags(art.tags || '');
-    setAuthor(art.author || 'Azariah Editorial Team');
-    setAuthorRole(art.authorRole || 'Executive Contributor');
+    setAuthor(art.author || '');
+    setAuthorRole(art.authorRole || '');
     setStatus(art.status);
     setIsFeatured(Boolean(art.isFeatured));
     setPublishedAt(art.publishedAt ? art.publishedAt.slice(0, 16) : '');
@@ -161,10 +207,10 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
       excerpt: excerpt.trim(),
       content: content.trim(),
       coverImage: coverImage.trim() || null,
-      category: category.trim() || 'Insights',
+      category: category.trim(),
       tags: tags.trim() || null,
-      author: author.trim() || 'Azariah Editorial Team',
-      authorRole: authorRole.trim() || 'Executive Contributor',
+      author: author.trim() || undefined,
+      authorRole: authorRole.trim() || undefined,
       status: finalStatus,
       isFeatured: isFeatured ? 1 : 0,
       publishedAt: publishedAt || undefined
@@ -301,10 +347,10 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
                   excerpt: excerpt || '',
                   content: content || '',
                   coverImage: coverImage || null,
-                  category: category || 'Insights',
+                  category: category || '',
                   tags: tags || '',
-                  author: author || 'Azariah Editorial Team',
-                  authorRole: authorRole || 'Contributor',
+                  author: author || '',
+                  authorRole: authorRole || '',
                   status,
                   isFeatured: isFeatured ? 1 : 0,
                   readTimeMinutes: Math.max(1, Math.ceil(content.split(' ').length / 200)),
@@ -528,10 +574,19 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
                 </label>
                 <div className="space-y-2">
                   <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+                    value={isCustomCategory ? 'Custom' : category}
+                    onChange={(e) => {
+                      if (e.target.value === 'Custom') {
+                        setIsCustomCategory(true);
+                        setCategory('');
+                      } else {
+                        setIsCustomCategory(false);
+                        setCategory(e.target.value);
+                      }
+                    }}
                     className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500 font-semibold"
                   >
+                    <option value="">-- No Category / General --</option>
                     <option value="Insights">Global Insights</option>
                     <option value="Strategic Advisory">Strategic Advisory</option>
                     <option value="AI & Innovation">AI & Strategic Technology</option>
@@ -540,10 +595,11 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
                     <option value="Press Release">Official Press Release</option>
                     <option value="Custom">+ Custom Category...</option>
                   </select>
-                  {category === 'Custom' && (
+                  {isCustomCategory && (
                     <input
                       type="text"
                       placeholder="Type custom category name"
+                      value={category}
                       onChange={(e) => setCategory(e.target.value)}
                       className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500"
                       autoFocus
@@ -859,7 +915,7 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
                 <span className="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase bg-lime-500 text-slate-950">
                   Live Preview
                 </span>
-                <span className="text-xs text-slate-400">{previewArticle.category}</span>
+                {previewArticle.category && <span className="text-xs text-slate-400">{previewArticle.category}</span>}
               </div>
               <button
                 type="button"
@@ -873,18 +929,24 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
             {/* Modal Content Reader */}
             <div className="p-8 sm:p-12 overflow-y-auto space-y-8 flex-1">
               <div className="space-y-4">
-                <span className="px-3.5 py-1 bg-lime-500 text-slate-950 text-[10px] font-black uppercase tracking-widest inline-block">
-                  {previewArticle.category}
-                </span>
+                {previewArticle.category && (
+                  <span className="px-3.5 py-1 bg-lime-500 text-slate-950 text-[10px] font-black uppercase tracking-widest inline-block">
+                    {previewArticle.category}
+                  </span>
+                )}
                 <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
                   {previewArticle.title}
                 </h1>
-                <p className="text-lg text-slate-600 font-medium leading-relaxed border-l-4 border-lime-500 pl-4">
-                  {previewArticle.excerpt}
-                </p>
+                {previewArticle.excerpt && (
+                  <p className="text-lg text-slate-600 font-medium leading-relaxed border-l-4 border-lime-500 pl-4">
+                    {previewArticle.excerpt}
+                  </p>
+                )}
                 <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 pt-2 border-b border-slate-100 pb-6">
-                  <span>By <strong>{previewArticle.author}</strong> ({previewArticle.authorRole})</span>
-                  <span>•</span>
+                  {previewArticle.author && (
+                    <span>By <strong>{previewArticle.author}</strong> {previewArticle.authorRole ? `(${previewArticle.authorRole})` : ''}</span>
+                  )}
+                  {previewArticle.author && <span>•</span>}
                   <span>{previewArticle.readTimeMinutes} min read</span>
                   <span>•</span>
                   <span>{previewArticle.views} views</span>

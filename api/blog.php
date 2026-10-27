@@ -21,6 +21,13 @@ if (!$action) {
 $pdo = getDbConnection();
 ensureBlogTables($pdo);
 
+// Permanently purge any hardcoded legacy sample/seed articles
+try {
+    $pdo->exec("DELETE FROM `blog_posts` WHERE `slug` IN ('studio-amg-partners-on-nolly-oh-festival-uk', 'next-decade-strategic-ai-diaspora-capital') OR `title` LIKE '%Nolly Oh!%' OR `title` LIKE '%Strategic AI & Diaspora Capital Allocation%'");
+} catch (Exception $e) {
+    // Ignore if table not created yet
+}
+
 // Helper function to create clean SEO slugs
 function generateSlug($title, $pdo, $excludeId = null) {
     $slug = strtolower(trim($title));
@@ -331,10 +338,10 @@ if ($method === 'POST') {
     }
 
     $coverImage = trim($input['coverImage'] ?? '');
-    $category = trim($input['category'] ?? 'Insights') ?: 'Insights';
+    $category = trim($input['category'] ?? '');
     $tags = trim($input['tags'] ?? '');
-    $author = trim($input['author'] ?? 'Azariah Editorial Team') ?: 'Azariah Editorial Team';
-    $authorRole = trim($input['authorRole'] ?? 'Executive Contributor') ?: 'Executive Contributor';
+    $author = trim($input['author'] ?? '');
+    $authorRole = trim($input['authorRole'] ?? '');
     $authorAvatar = trim($input['authorAvatar'] ?? '');
     $status = in_array($input['status'] ?? '', ['published', 'draft', 'archived']) ? $input['status'] : 'published';
     $isFeatured = !empty($input['isFeatured']) ? 1 : 0;
@@ -416,10 +423,10 @@ if ($method === 'PUT') {
     }
 
     $coverImage = trim($input['coverImage'] ?? '');
-    $category = trim($input['category'] ?? 'Insights') ?: 'Insights';
+    $category = trim($input['category'] ?? '');
     $tags = trim($input['tags'] ?? '');
-    $author = trim($input['author'] ?? 'Azariah Editorial Team') ?: 'Azariah Editorial Team';
-    $authorRole = trim($input['authorRole'] ?? 'Executive Contributor') ?: 'Executive Contributor';
+    $author = trim($input['author'] ?? '');
+    $authorRole = trim($input['authorRole'] ?? '');
     $authorAvatar = trim($input['authorAvatar'] ?? '');
     $status = in_array($input['status'] ?? '', ['published', 'draft', 'archived']) ? $input['status'] : 'published';
     $isFeatured = !empty($input['isFeatured']) ? 1 : 0;

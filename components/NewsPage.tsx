@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import SectionWrapper from './SectionWrapper';
-import { NEWS_ITEMS } from '../constants';
 import { 
   Calendar, 
   ArrowRight, 
@@ -31,13 +30,14 @@ import { blogService, BlogPost } from '../services/blogService';
 const NewsPage: React.FC = () => {
   const { getSection } = useContent();
   const section = getSection('news_page');
-  const badge = section?.badge || "Global Intelligence & Media Impact";
-  const title = section?.title || "Blog, News & Insights.";
-  const content = section?.content || "Stay informed with the latest organizational updates, industry insights, and impact reports from Azariah Management Group.";
+  const badge = section?.badge || "Intellectual Capital";
+  const title = section?.title || "News & Strategic Insights";
+  const subtitle = section?.subtitle || "Briefings, Thought Leadership & Press Releases";
+  const content = section?.content || "Stay informed with analysis from AMG partners on international market dynamics, regulatory compliance, generative AI governance, and creator economy trends.";
 
   // Dynamic Blog State
   const [articles, setArticles] = useState<any[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>(['All']);
   const [featuredArticle, setFeaturedArticle] = useState<any | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -47,7 +47,7 @@ const NewsPage: React.FC = () => {
   const [selectedNews, setSelectedNews] = useState<any | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
 
-  // Fetch dynamic articles from the blog backend API
+  // Fetch dynamic articles strictly from the blog backend API
   const loadBlogArticles = async () => {
     setLoading(true);
     try {
@@ -56,51 +56,25 @@ const NewsPage: React.FC = () => {
         search: searchQuery || undefined
       });
 
-      if (res.success && res.articles && res.articles.length > 0) {
+      if (res.success && Array.isArray(res.articles)) {
         setArticles(res.articles);
-        if (res.featured) setFeaturedArticle(res.featured);
-        if (res.categories) setCategories(['All', ...res.categories]);
+        setFeaturedArticle(res.featured || (res.articles.find((a: any) => a.isFeatured) ?? null));
+        
+        // Dynamically compute categories from actual returned articles and backend list
+        const apiCategories = res.categories || [];
+        const articleCategories = res.articles.map((a: any) => a.category).filter(Boolean);
+        const combined = Array.from(new Set([...apiCategories, ...articleCategories]));
+        setCategories(combined.length > 0 ? ['All', ...combined] : ['All']);
       } else {
-        // Fallback to constants if DB empty
-        const fallbackList = NEWS_ITEMS.map((item) => ({
-          id: item.id,
-          title: item.title,
-          slug: item.id,
-          excerpt: item.summary,
-          summary: item.summary,
-          content: Array.isArray(item.content) ? item.content.map((p) => `<p>${p}</p>`).join('') : item.content,
-          coverImage: item.image,
-          image: item.image,
-          category: item.category,
-          author: 'Azariah Editorial Team',
-          authorRole: 'Media Division',
-          publishedAt: item.date,
-          date: item.date,
-          readTimeMinutes: 4,
-          views: 140
-        }));
-        setArticles(fallbackList);
-        setCategories(['All', 'Studio AMG', 'Strategic Advisory', 'Global Trade']);
+        setArticles([]);
+        setFeaturedArticle(null);
+        setCategories(['All']);
       }
-    } catch {
-      // Fallback seamlessly on error
-      setArticles(NEWS_ITEMS.map((item) => ({
-        id: item.id,
-        title: item.title,
-        slug: item.id,
-        excerpt: item.summary,
-        summary: item.summary,
-        content: Array.isArray(item.content) ? item.content.map((p) => `<p>${p}</p>`).join('') : item.content,
-        coverImage: item.image,
-        image: item.image,
-        category: item.category,
-        author: 'Azariah Editorial Team',
-        authorRole: 'Media Division',
-        publishedAt: item.date,
-        date: item.date,
-        readTimeMinutes: 4,
-        views: 140
-      })));
+    } catch (err) {
+      console.error('Failed to load blog articles:', err);
+      setArticles([]);
+      setFeaturedArticle(null);
+      setCategories(['All']);
     } finally {
       setLoading(false);
     }
@@ -224,54 +198,67 @@ const NewsPage: React.FC = () => {
       ===================================================================== */}
       <SectionWrapper bg="white" className="relative overflow-hidden pb-16">
         <div className="absolute top-0 right-0 w-1/4 h-full bg-slate-50 -skew-x-12 translate-x-1/2 -z-10" />
-        <div className="max-w-4xl space-y-8 reveal active">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-800 text-xs font-black uppercase tracking-widest rounded-full border border-blue-100">
-            <Globe className="w-4 h-4 text-lime-600" /> {badge}
-          </div>
+        <div className="max-w-4xl space-y-6 reveal active">
+          {badge && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-800 text-xs font-black uppercase tracking-widest rounded-full border border-blue-100">
+              <Globe className="w-4 h-4 text-lime-600" /> {badge}
+            </div>
+          )}
           <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none text-shine">
             {title}
           </h1>
-          <p className="text-xl text-slate-600 leading-relaxed font-medium border-l-4 border-lime-500 pl-6 max-w-2xl">
-            {content}
-          </p>
+          {subtitle && (
+            <p className="text-sm md:text-base font-black uppercase tracking-widest text-lime-600">
+              {subtitle}
+            </p>
+          )}
+          {content && (
+            <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium border-l-4 border-lime-500 pl-6 max-w-2xl">
+              {content}
+            </p>
+          )}
         </div>
       </SectionWrapper>
 
       {/* =====================================================================
           SEARCH & CATEGORIES FILTER BAR
       ===================================================================== */}
-      <div className="max-w-screen-2xl mx-auto px-6 md:px-12 mb-10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
-          {/* Category Tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all whitespace-nowrap ${
-                  selectedCategory === cat
-                    ? 'bg-slate-900 text-white shadow-md'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+      {(categories.length > 1 || articles.length > 0 || searchQuery) && (
+        <div className="max-w-screen-2xl mx-auto px-6 md:px-12 mb-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+            {/* Category Tabs */}
+            {categories.length > 1 && (
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-4 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all whitespace-nowrap ${
+                      selectedCategory === cat
+                        ? 'bg-slate-900 text-white shadow-md'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            )}
 
-          {/* Search Input */}
-          <div className="relative min-w-[280px]">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-            <input
-              type="text"
-              placeholder="Search articles & press..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-sm text-xs text-slate-900 font-medium focus:outline-none focus:border-slate-900 transition-colors"
-            />
+            {/* Search Input */}
+            <div className="relative min-w-[280px]">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              <input
+                type="text"
+                placeholder="Search articles & press..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-sm text-xs text-slate-900 font-medium focus:outline-none focus:border-slate-900 transition-colors"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* =====================================================================
           FEATURED HERO ARTICLE HIGHLIGHT (IF AVAILABLE)
@@ -282,32 +269,42 @@ const NewsPage: React.FC = () => {
             onClick={() => setSelectedNews(featuredArticle)}
             className="group cursor-pointer bg-slate-900 rounded-sm overflow-hidden grid lg:grid-cols-12 shadow-2xl hover:shadow-lime-500/10 transition-all border border-slate-800"
           >
-            <div className="lg:col-span-7 aspect-video lg:aspect-auto overflow-hidden relative">
-              <img
-                src={featuredArticle.coverImage || featuredArticle.image}
-                alt={featuredArticle.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-90 group-hover:opacity-100"
-              />
-              <div className="absolute top-4 left-4">
-                <span className="px-3.5 py-1 bg-lime-500 text-slate-950 text-[10px] font-black uppercase tracking-widest flex items-center gap-1 shadow-md">
-                  <Star className="w-3 h-3 fill-slate-950" /> Featured Story
-                </span>
+            {featuredArticle.coverImage && (
+              <div className="lg:col-span-7 aspect-video lg:aspect-auto overflow-hidden relative">
+                <img
+                  src={featuredArticle.coverImage}
+                  alt={featuredArticle.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-90 group-hover:opacity-100"
+                />
+                <div className="absolute top-4 left-4">
+                  <span className="px-3.5 py-1 bg-lime-500 text-slate-950 text-[10px] font-black uppercase tracking-widest flex items-center gap-1 shadow-md">
+                    <Star className="w-3 h-3 fill-slate-950" /> Featured Story
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="lg:col-span-5 p-8 md:p-12 flex flex-col justify-between text-white space-y-6">
+            <div className={`${featuredArticle.coverImage ? 'lg:col-span-5' : 'lg:col-span-12'} p-8 md:p-12 flex flex-col justify-between text-white space-y-6`}>
               <div className="space-y-4">
                 <div className="flex items-center gap-3 text-xs text-slate-400 font-mono">
-                  <span className="text-lime-400 font-bold uppercase">{featuredArticle.category}</span>
-                  <span>•</span>
-                  <span>{featuredArticle.readTimeMinutes || 4} min read</span>
+                  {featuredArticle.category && (
+                    <span className="text-lime-400 font-bold uppercase">{featuredArticle.category}</span>
+                  )}
+                  {featuredArticle.readTimeMinutes && (
+                    <>
+                      <span>•</span>
+                      <span>{featuredArticle.readTimeMinutes} min read</span>
+                    </>
+                  )}
                 </div>
                 <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight group-hover:text-lime-400 transition-colors leading-tight">
                   {featuredArticle.title}
                 </h2>
-                <p className="text-slate-300 text-sm leading-relaxed line-clamp-3 font-medium">
-                  {featuredArticle.excerpt || featuredArticle.summary}
-                </p>
+                {featuredArticle.excerpt && (
+                  <p className="text-slate-300 text-sm leading-relaxed line-clamp-3 font-medium">
+                    {featuredArticle.excerpt}
+                  </p>
+                )}
               </div>
 
               <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-black uppercase tracking-wider text-lime-400 group-hover:gap-2 transition-all">
@@ -333,9 +330,9 @@ const NewsPage: React.FC = () => {
         ) : articles.length === 0 ? (
           <div className="py-24 text-center bg-white border border-slate-200 rounded-sm p-12 max-w-xl mx-auto space-y-3">
             <BookOpen className="w-10 h-10 text-slate-400 mx-auto" />
-            <h3 className="text-base font-black uppercase text-slate-900">No articles found</h3>
+            <h3 className="text-base font-black uppercase text-slate-900">No articles published yet</h3>
             <p className="text-xs text-slate-500">
-              Try adjusting your search query or selecting a different category tab.
+              Articles and news published from the Admin Blog Manager will appear here.
             </p>
           </div>
         ) : (
@@ -346,44 +343,67 @@ const NewsPage: React.FC = () => {
                 className="reveal active bg-white border border-slate-100 flex flex-col h-full hover:shadow-2xl transition-all duration-500 group cursor-pointer"
                 onClick={() => setSelectedNews(item)}
               >
-                <div className="aspect-video overflow-hidden relative">
-                  <img 
-                    src={item.coverImage || item.image || 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=2006'} 
-                    alt={item.title} 
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
-                  />
-                  <div className="absolute top-4 left-4">
+                {item.coverImage ? (
+                  <div className="aspect-video overflow-hidden relative">
+                    <img 
+                      src={item.coverImage} 
+                      alt={item.title} 
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                    />
+                    {item.category && (
+                      <div className="absolute top-4 left-4">
+                        <span className="px-3 py-1 bg-slate-900 text-white text-[8px] font-black uppercase tracking-widest">
+                          {item.category}
+                        </span>
+                      </div>
+                    )}
+                    {Boolean(item.isFeatured) && (
+                      <div className="absolute top-4 right-4">
+                        <span className="px-2 py-1 bg-lime-500 text-slate-950 text-[8px] font-black uppercase tracking-widest flex items-center gap-1">
+                          <Star className="w-2.5 h-2.5 fill-slate-950" /> Featured
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ) : item.category ? (
+                  <div className="p-6 pb-0 flex items-center justify-between">
                     <span className="px-3 py-1 bg-slate-900 text-white text-[8px] font-black uppercase tracking-widest">
                       {item.category}
                     </span>
-                  </div>
-                  {Boolean(item.isFeatured) && (
-                    <div className="absolute top-4 right-4">
+                    {Boolean(item.isFeatured) && (
                       <span className="px-2 py-1 bg-lime-500 text-slate-950 text-[8px] font-black uppercase tracking-widest flex items-center gap-1">
                         <Star className="w-2.5 h-2.5 fill-slate-950" /> Featured
                       </span>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                ) : null}
 
                 <div className="p-8 flex-1 flex flex-col space-y-4">
-                  <div className="flex items-center gap-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="w-3 h-3" /> {formatDisplayDate(item.publishedAt || item.date)}
+                  {(item.publishedAt || item.readTimeMinutes) && (
+                    <div className="flex items-center gap-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                      {item.publishedAt && (
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-3 h-3" /> {formatDisplayDate(item.publishedAt)}
+                        </div>
+                      )}
+                      {item.publishedAt && item.readTimeMinutes && <span>•</span>}
+                      {item.readTimeMinutes && (
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3 h-3" /> {item.readTimeMinutes} min read
+                        </div>
+                      )}
                     </div>
-                    <span>•</span>
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="w-3 h-3" /> {item.readTimeMinutes || 4} min read
-                    </div>
-                  </div>
+                  )}
 
                   <h3 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter leading-tight group-hover:text-blue-600 transition-colors">
                     {item.title}
                   </h3>
 
-                  <p className="text-slate-500 text-sm font-medium leading-relaxed flex-1 line-clamp-3">
-                    {item.excerpt || item.summary}
-                  </p>
+                  {item.excerpt && (
+                    <p className="text-slate-500 text-sm font-medium leading-relaxed flex-1 line-clamp-3">
+                      {item.excerpt}
+                    </p>
+                  )}
 
                   <div className="pt-4 flex items-center justify-between border-t border-slate-50">
                     <div className="flex items-center gap-2 text-[10px] font-black text-slate-900 uppercase tracking-widest group-hover:gap-4 transition-all">
@@ -438,12 +458,16 @@ const NewsPage: React.FC = () => {
             <div className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-12">
                <div className="space-y-6">
                   <div className="flex items-center gap-3">
-                    <span className="px-4 py-1.5 bg-lime-500 text-slate-950 text-[10px] font-black uppercase tracking-widest">
-                      {selectedNews.category}
-                    </span>
-                    <span className="text-xs text-slate-400 font-mono">
-                      {selectedNews.readTimeMinutes || 4} min read
-                    </span>
+                    {selectedNews.category && (
+                      <span className="px-4 py-1.5 bg-lime-500 text-slate-950 text-[10px] font-black uppercase tracking-widest">
+                        {selectedNews.category}
+                      </span>
+                    )}
+                    {selectedNews.readTimeMinutes && (
+                      <span className="text-xs text-slate-400 font-mono">
+                        {selectedNews.readTimeMinutes} min read
+                      </span>
+                    )}
                   </div>
 
                   <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none uppercase">
@@ -451,28 +475,36 @@ const NewsPage: React.FC = () => {
                   </h1>
 
                   {/* Author Byline */}
-                  <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-8">
-                    <div className="flex items-center gap-3 text-slate-700">
-                      <div className="w-8 h-8 rounded-full bg-slate-900 text-lime-400 flex items-center justify-center font-bold">
-                        {selectedNews.author ? selectedNews.author.charAt(0) : 'A'}
-                      </div>
-                      <div>
-                        <div className="font-black text-slate-900">{selectedNews.author || 'Azariah Editorial Team'}</div>
-                        <div className="text-[10px] text-slate-400">{selectedNews.authorRole || 'Contributor'}</div>
-                      </div>
-                    </div>
+                  {(selectedNews.author || selectedNews.publishedAt) && (
+                    <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-8">
+                      {selectedNews.author && (
+                        <div className="flex items-center gap-3 text-slate-700">
+                          <div className="w-8 h-8 rounded-full bg-slate-900 text-lime-400 flex items-center justify-center font-bold">
+                            {selectedNews.author.charAt(0)}
+                          </div>
+                          <div>
+                            <div className="font-black text-slate-900">{selectedNews.author}</div>
+                            {selectedNews.authorRole && (
+                              <div className="text-[10px] text-slate-400">{selectedNews.authorRole}</div>
+                            )}
+                          </div>
+                        </div>
+                      )}
 
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" /> Published {formatDisplayDate(selectedNews.publishedAt || selectedNews.date)}
+                      {selectedNews.publishedAt && (
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4" /> Published {formatDisplayDate(selectedNews.publishedAt)}
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
                </div>
 
                {/* Cover Image */}
-               {(selectedNews.coverImage || selectedNews.image) && (
+               {selectedNews.coverImage && (
                  <div className="aspect-video bg-slate-100 overflow-hidden shadow-2xl rounded-sm">
                     <img 
-                      src={selectedNews.coverImage || selectedNews.image} 
+                      src={selectedNews.coverImage} 
                       className="w-full h-full object-cover" 
                       alt={selectedNews.title} 
                     />
