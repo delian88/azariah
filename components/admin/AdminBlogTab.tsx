@@ -192,7 +192,7 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
   };
 
   // Open Editor for an Existing Article
-  const handleEdit = (art: BlogPost) => {
+  const handleEdit = async (art: BlogPost) => {
     setEditingArticleId(art.id);
     setTitle(art.title);
     setSlug(art.slug);
@@ -208,6 +208,18 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
     setIsFeatured(Boolean(art.isFeatured));
     setPublishedAt(art.publishedAt ? formatForDatetimeInput(art.publishedAt) : getLocalDatetimeString());
     setIsEditing(true);
+
+    // If content was not populated in the list view, load full article by slug
+    if (!art.content && art.slug) {
+      try {
+        const fullRes = await blogService.getArticleBySlug(art.slug);
+        if (fullRes.success && fullRes.article?.content) {
+          setContent(fullRes.article.content);
+        }
+      } catch {
+        // Fallback silently
+      }
+    }
   };
 
   // Save / Update Article
@@ -456,8 +468,9 @@ export const AdminBlogTab: React.FC<AdminBlogTabProps> = ({ showToast, onViewLiv
               </div>
             </div>
 
-            {/* WordPress Visual & HTML Editor */}
+            {/* Rich Visual & HTML Editor */}
             <WordPressEditor
+              key={editingArticleId ?? 'new'}
               initialContent={content}
               onChange={(newHtml) => setContent(newHtml)}
               minHeight="460px"

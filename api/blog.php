@@ -86,7 +86,7 @@ if ($action === 'admin-list' && $method === 'GET') {
     $whereClause = !empty($where) ? ('WHERE ' . implode(' AND ', $where)) : '';
 
     $stmt = $pdo->prepare("
-        SELECT id, title, slug, excerpt, coverImage, category, tags, author, authorRole, status, isFeatured, readTimeMinutes, views, publishedAt, createdAt, updatedAt
+        SELECT id, title, slug, excerpt, content, coverImage, category, tags, author, authorRole, authorAvatar, status, isFeatured, readTimeMinutes, views, publishedAt, createdAt, updatedAt
         FROM blog_posts
         $whereClause
         ORDER BY isFeatured DESC, COALESCE(publishedAt, createdAt) DESC

@@ -73,13 +73,11 @@ export const WordPressEditor: React.FC<WordPressEditorProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const savedSelectionRange = useRef<Range | null>(null);
 
-  // Sync initial content once
+  // Sync content on mount and whenever initialContent changes
   useEffect(() => {
-    if (initialContent !== contentHtml) {
-      setContentHtml(initialContent || '');
-      if (visualEditorRef.current && visualEditorRef.current.innerHTML !== (initialContent || '')) {
-        visualEditorRef.current.innerHTML = initialContent || '';
-      }
+    setContentHtml(initialContent || '');
+    if (visualEditorRef.current && visualEditorRef.current.innerHTML !== (initialContent || '')) {
+      visualEditorRef.current.innerHTML = initialContent || '';
     }
   }, [initialContent]);
 
