@@ -103,13 +103,25 @@ export const AdminPayrollTab: React.FC<AdminPayrollTabProps> = ({ showToast }) =
     fetchAll();
   }, [selectedDevFilter, statusFilter]);
 
-  // When developer selection changes, populate their hourly rate and currency
+  // When developer selection changes, populate their rate/salary and currency
   const handleDeveloperSelect = (id: number) => {
     setDeveloperId(id);
     const dev = developers.find((d) => d.id === id);
     if (dev) {
-      setHourlyRate(dev.hourlyRate || 45);
       setCurrency(dev.currency || 'USD');
+      if (dev.compensationType === 'salary') {
+        setHourlyRate(0);
+        setHoursBilled(1);
+        setTotalAmount(round2(Number(dev.salary) || 0));
+        setNotes(`Fixed Salary Disbursement (${dev.paytime || 'Monthly'})`);
+      } else if (dev.compensationType === 'contract') {
+        setHourlyRate(0);
+        setHoursBilled(1);
+        setTotalAmount(round2(Number(dev.contractAmount) || 0));
+        setNotes(`Contract Payment Disbursement (${dev.paytime || 'Milestone'})`);
+      } else {
+        setHourlyRate(dev.hourlyRate || 45);
+      }
     }
   };
 
@@ -424,11 +436,40 @@ export const AdminPayrollTab: React.FC<AdminPayrollTabProps> = ({ showToast }) =
                   <option value="">Choose Developer</option>
                   {developers.map((d) => (
                     <option key={d.id} value={d.id}>
-                      {d.name} — {d.roleTitle} ({d.currency} {d.hourlyRate}/h)
+                      {d.name} — {d.roleTitle} (
+                        {d.compensationType === 'salary'
+                          ? `Salary: ${d.currency} ${Number(d.salary || 0).toLocaleString()} • ${d.paytime || 'Monthly'}`
+                          : d.compensationType === 'contract'
+                          ? `Contract: ${d.currency} ${Number(d.contractAmount || 0).toLocaleString()} • ${d.paytime || 'Milestone'}`
+                          : `Hourly: ${d.currency} ${d.hourlyRate}/h • ${d.paytime || 'Hourly'}`}
+                      )
                     </option>
                   ))}
                 </select>
               </div>
+
+              {developerId && (() => {
+                const selDev = developers.find(d => d.id === Number(developerId));
+                if (!selDev) return null;
+                return (
+                  <div className="p-3 bg-slate-950/90 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
+                    <span className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
+                      Staff Compensation Structure
+                    </span>
+                    <span className="font-bold">
+                      {selDev.compensationType === 'salary' && (
+                        <span className="text-amber-400">💼 Fixed Salary: {selDev.currency} {Number(selDev.salary || 0).toLocaleString()} ({selDev.paytime || 'Monthly'})</span>
+                      )}
+                      {selDev.compensationType === 'contract' && (
+                        <span className="text-purple-400">📜 Paid on Contract: {selDev.currency} {Number(selDev.contractAmount || 0).toLocaleString()} ({selDev.paytime || 'Milestone'})</span>
+                      )}
+                      {(!selDev.compensationType || selDev.compensationType === 'hourly') && (
+                        <span className="text-sky-400">⏱️ Hourly Rate: {selDev.currency} {Number(selDev.hourlyRate || 0).toFixed(2)}/hr ({selDev.paytime || 'Hourly'})</span>
+                      )}
+                    </span>
+                  </div>
+                );
+              })()}
 
               {/* Date Range & Auto Calculate Button */}
               <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-xl space-y-3">

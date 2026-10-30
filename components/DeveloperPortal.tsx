@@ -530,11 +530,26 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex flex-col text-right">
             <span className="text-xs font-bold text-white">{developer?.name || 'Staff Member'}</span>
-            <div className="flex items-center gap-1.5 justify-end">
+            <div className="flex items-center gap-1.5 justify-end flex-wrap">
               <span className="text-[11px] text-slate-400">{developer?.roleTitle || 'Associate'}</span>
               {developer?.department && (
-                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-sky-500/15 text-sky-300 border border-sky-500/30">
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-sky-500/15 text-sky-300 border border-sky-500/30">
                   {developer.department}
+                </span>
+              )}
+              {developer?.compensationType === 'salary' && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                  💼 Salary: {developer.currency} {Number(developer.salary || 0).toLocaleString()} • {developer.paytime || 'Monthly'}
+                </span>
+              )}
+              {developer?.compensationType === 'contract' && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-purple-500/15 text-purple-300 border border-purple-500/30">
+                  📜 Contract: {developer.currency} {Number(developer.contractAmount || 0).toLocaleString()} • {developer.paytime || 'Milestone'}
+                </span>
+              )}
+              {(!developer?.compensationType || developer?.compensationType === 'hourly') && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-sky-500/15 text-sky-300 border border-sky-500/30">
+                  ⏱️ {developer?.currency || 'USD'} {Number(developer?.hourlyRate || 0).toFixed(2)}/hr • {developer?.paytime || 'Hourly'}
                 </span>
               )}
             </div>
@@ -1122,6 +1137,47 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
 
         {activeTab === 'payslips' && (
           <div className="space-y-6">
+            {/* Active Compensation Model Banner */}
+            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                  Active Staff Compensation Plan
+                </span>
+                <div className="flex items-center gap-2">
+                  <h4 className="text-base font-extrabold text-white">
+                    {developer?.compensationType === 'salary'
+                      ? `Fixed Salary: ${developer?.currency || 'USD'} ${Number(developer?.salary || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`
+                      : developer?.compensationType === 'contract'
+                      ? `Total Contract Value: ${developer?.currency || 'USD'} ${Number(developer?.contractAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`
+                      : `Hourly Billable Rate: ${developer?.currency || 'USD'} ${Number(developer?.hourlyRate || 0).toFixed(2)}/hr`}
+                  </h4>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
+                    developer?.compensationType === 'salary'
+                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                      : developer?.compensationType === 'contract'
+                      ? 'bg-purple-500/10 text-purple-400 border-purple-500/30'
+                      : 'bg-sky-500/10 text-sky-400 border-sky-500/30'
+                  }`}>
+                    {developer?.compensationType === 'salary' ? '💼 Fixed Salary' : developer?.compensationType === 'contract' ? '📜 Paid on Contract' : '⏱️ Hourly Rate'}
+                  </span>
+                </div>
+                {developer?.contractTerms && (
+                  <p className="text-xs text-slate-400 mt-1.5 italic">
+                    Terms: &quot;{developer.contractTerms}&quot;
+                  </p>
+                )}
+              </div>
+
+              <div className="text-right self-start sm:self-auto">
+                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
+                  Disbursement Schedule
+                </span>
+                <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono">
+                  {developer?.paytime ? developer.paytime.toUpperCase() : 'SCHEDULED'}
+                </span>
+              </div>
+            </div>
+
             <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
               <div className="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>

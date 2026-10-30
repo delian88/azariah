@@ -259,7 +259,14 @@ function ensureDevModuleTables($pdo) {
               `email` VARCHAR(191) NOT NULL,
               `passwordHash` VARCHAR(191) NOT NULL,
               `roleTitle` VARCHAR(191) NOT NULL DEFAULT 'Developer',
+              `departmentId` INT NULL,
+              `department` VARCHAR(191) NULL DEFAULT 'Engineering & Technology',
+              `compensationType` VARCHAR(32) NOT NULL DEFAULT 'hourly',
               `hourlyRate` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+              `salary` DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+              `paytime` VARCHAR(64) NOT NULL DEFAULT 'hourly',
+              `contractAmount` DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+              `contractTerms` TEXT NULL,
               `currency` VARCHAR(10) NOT NULL DEFAULT 'USD',
               `phone` VARCHAR(64) NULL,
               `status` ENUM('active', 'inactive', 'pending') NOT NULL DEFAULT 'active',
@@ -405,6 +412,23 @@ function ensureDevModuleTables($pdo) {
         } catch (Exception $e) {}
         try {
             $pdo->exec("ALTER TABLE `developers` ADD COLUMN `department` VARCHAR(191) NULL DEFAULT 'Engineering & Technology' AFTER `departmentId`");
+        } catch (Exception $e) {}
+
+        // Safely migrate existing developers table to have compensation fields: compensationType, salary, paytime, contractAmount, contractTerms
+        try {
+            $pdo->exec("ALTER TABLE `developers` ADD COLUMN `compensationType` VARCHAR(32) NOT NULL DEFAULT 'hourly' AFTER `department`");
+        } catch (Exception $e) {}
+        try {
+            $pdo->exec("ALTER TABLE `developers` ADD COLUMN `salary` DECIMAL(12, 2) NOT NULL DEFAULT 0.00 AFTER `compensationType`");
+        } catch (Exception $e) {}
+        try {
+            $pdo->exec("ALTER TABLE `developers` ADD COLUMN `paytime` VARCHAR(64) NOT NULL DEFAULT 'hourly' AFTER `salary`");
+        } catch (Exception $e) {}
+        try {
+            $pdo->exec("ALTER TABLE `developers` ADD COLUMN `contractAmount` DECIMAL(12, 2) NOT NULL DEFAULT 0.00 AFTER `paytime`");
+        } catch (Exception $e) {}
+        try {
+            $pdo->exec("ALTER TABLE `developers` ADD COLUMN `contractTerms` TEXT NULL AFTER `contractAmount`");
         } catch (Exception $e) {}
 
         // Safely migrate existing developer_tasks table to have departmentId & department

@@ -22,13 +22,15 @@ import {
   Tag,
   Layers,
   ChevronRight,
-  Filter
+  Filter,
+  FileText
 } from 'lucide-react';
 import {
   developerService,
   Developer,
   Project,
-  Department
+  Department,
+  CompensationType
 } from '../../services/developerService';
 
 interface AdminDevelopersTabProps {
@@ -63,7 +65,12 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
   const [departmentId, setDepartmentId] = useState<number | ''>('');
   const [departmentName, setDepartmentName] = useState<string>('Engineering & Technology');
   const [customDeptInput, setCustomDeptInput] = useState(false);
+  const [compensationType, setCompensationType] = useState<CompensationType>('hourly');
   const [hourlyRate, setHourlyRate] = useState<number | ''>(45);
+  const [salary, setSalary] = useState<number | ''>(5000);
+  const [paytime, setPaytime] = useState<string>('hourly');
+  const [contractAmount, setContractAmount] = useState<number | ''>(10000);
+  const [contractTerms, setContractTerms] = useState<string>('');
   const [currency, setCurrency] = useState('USD');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -78,7 +85,12 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
   const [editRoleTitle, setEditRoleTitle] = useState('');
   const [editDeptId, setEditDeptId] = useState<number | ''>('');
   const [editDeptName, setEditDeptName] = useState('');
+  const [editCompensationType, setEditCompensationType] = useState<CompensationType>('hourly');
   const [editHourlyRate, setEditHourlyRate] = useState<number | ''>(45);
+  const [editSalary, setEditSalary] = useState<number | ''>(5000);
+  const [editPaytime, setEditPaytime] = useState<string>('hourly');
+  const [editContractAmount, setEditContractAmount] = useState<number | ''>(10000);
+  const [editContractTerms, setEditContractTerms] = useState<string>('');
   const [editCurrency, setEditCurrency] = useState('USD');
   const [editPhone, setEditPhone] = useState('');
   const [editStatus, setEditStatus] = useState<'active' | 'inactive' | 'pending'>('active');
@@ -101,6 +113,7 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
     portalUrl: string;
     role?: string;
     department?: string;
+    compensationSummary?: string;
   } | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -154,7 +167,12 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
       setDepartmentName('Engineering & Technology');
     }
     setCustomDeptInput(false);
+    setCompensationType('hourly');
     setHourlyRate(45);
+    setSalary(5000);
+    setPaytime('hourly');
+    setContractAmount(10000);
+    setContractTerms('');
     setCurrency('USD');
     setPhone('');
     setAssignedProjectIds([]);
@@ -169,7 +187,12 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
     setEditRoleTitle(staff.roleTitle || 'Associate');
     setEditDeptId(staff.departmentId || '');
     setEditDeptName(staff.department || 'Engineering & Technology');
+    setEditCompensationType(staff.compensationType || 'hourly');
     setEditHourlyRate(staff.hourlyRate || 0);
+    setEditSalary(staff.salary || 0);
+    setEditPaytime(staff.paytime || (staff.compensationType === 'salary' ? 'monthly' : staff.compensationType === 'contract' ? 'contract' : 'hourly'));
+    setEditContractAmount(staff.contractAmount || 0);
+    setEditContractTerms(staff.contractTerms || '');
     setEditCurrency(staff.currency || 'USD');
     setEditPhone(staff.phone || '');
     setEditStatus(staff.status || 'active');
@@ -187,13 +210,29 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
     setSaving(true);
     const chosenDeptName = customDeptInput ? departmentName : (departments.find(d => d.id === departmentId)?.name || departmentName || 'Engineering & Technology');
 
+    const effectiveHourly = compensationType === 'hourly' ? (Number(hourlyRate) || 0) : 0;
+    const effectiveSalary = compensationType === 'salary' ? (Number(salary) || 0) : 0;
+    const effectiveContract = compensationType === 'contract' ? (Number(contractAmount) || 0) : 0;
+
+    let compSummary = `${currency} ${effectiveHourly.toFixed(2)}/hr (${paytime})`;
+    if (compensationType === 'salary') {
+      compSummary = `${currency} ${effectiveSalary.toLocaleString(undefined, { minimumFractionDigits: 2 })} / month (${paytime})`;
+    } else if (compensationType === 'contract') {
+      compSummary = `${currency} ${effectiveContract.toLocaleString(undefined, { minimumFractionDigits: 2 })} total contract (${paytime})`;
+    }
+
     const res = await developerService.adminCreateDeveloper({
       name,
       email,
       roleTitle,
       departmentId: typeof departmentId === 'number' ? departmentId : null,
       department: chosenDeptName,
-      hourlyRate: Number(hourlyRate) || 0,
+      compensationType,
+      hourlyRate: effectiveHourly,
+      salary: effectiveSalary,
+      paytime,
+      contractAmount: effectiveContract,
+      contractTerms: compensationType === 'contract' ? contractTerms : undefined,
       currency,
       phone,
       password,
@@ -212,7 +251,8 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
           password: res.credentials.password,
           portalUrl: res.credentials.portalUrl,
           role: roleTitle,
-          department: chosenDeptName
+          department: chosenDeptName,
+          compensationSummary: compSummary
         });
         setCredsModalOpen(true);
       }
@@ -235,7 +275,12 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
       roleTitle: editRoleTitle,
       departmentId: typeof editDeptId === 'number' ? editDeptId : null,
       department: chosenDeptName,
-      hourlyRate: Number(editHourlyRate) || 0,
+      compensationType: editCompensationType,
+      hourlyRate: editCompensationType === 'hourly' ? (Number(editHourlyRate) || 0) : 0,
+      salary: editCompensationType === 'salary' ? (Number(editSalary) || 0) : 0,
+      paytime: editPaytime,
+      contractAmount: editCompensationType === 'contract' ? (Number(editContractAmount) || 0) : 0,
+      contractTerms: editCompensationType === 'contract' ? editContractTerms : undefined,
       currency: editCurrency,
       phone: editPhone,
       status: editStatus,
@@ -254,10 +299,11 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
 
   const handleCopyCredentials = () => {
     if (!latestCreds) return;
+    const compLine = latestCreds.compensationSummary ? `Compensation: ${latestCreds.compensationSummary}\n` : '';
     const text = `AZARIAH MANAGEMENT GROUP — STAFF CREDENTIALS
 Department: ${latestCreds.department || 'Corporate'}
 Role: ${latestCreds.role || 'Staff Member'}
-Portal URL: ${latestCreds.portalUrl}
+${compLine}Portal URL: ${latestCreds.portalUrl}
 Login Email: ${latestCreds.email}
 Password: ${latestCreds.password}
 
@@ -488,7 +534,7 @@ Please sign in to access your assigned tasks, department records, and time track
                 <th className="py-3.5 px-5">Staff Member</th>
                 <th className="py-3.5 px-5">Department</th>
                 <th className="py-3.5 px-5">Role Title</th>
-                <th className="py-3.5 px-5">Hourly Rate</th>
+                <th className="py-3.5 px-5">Compensation & Paytime</th>
                 <th className="py-3.5 px-5">Assigned Projects</th>
                 <th className="py-3.5 px-5">Work Status</th>
                 <th className="py-3.5 px-5">Hours Logged</th>
@@ -532,8 +578,38 @@ Please sign in to access your assigned tasks, department records, and time track
                         </span>
                       </td>
                       <td className="py-4 px-5 text-slate-200 font-semibold">{dev.roleTitle}</td>
-                      <td className="py-4 px-5 text-white font-mono font-semibold">
-                        {dev.currency} {Number(dev.hourlyRate).toFixed(2)}/hr
+                      <td className="py-4 px-5">
+                        {dev.compensationType === 'salary' ? (
+                          <div>
+                            <div className="text-white font-mono font-bold text-sm">
+                              {dev.currency} {Number(dev.salary || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            </div>
+                            <div className="text-[10px] text-amber-400 font-semibold uppercase tracking-wider flex items-center gap-1 mt-0.5">
+                              <Briefcase className="w-3 h-3 text-amber-400 shrink-0" />
+                              <span>Fixed Salary • {dev.paytime || 'Monthly'}</span>
+                            </div>
+                          </div>
+                        ) : dev.compensationType === 'contract' ? (
+                          <div>
+                            <div className="text-white font-mono font-bold text-sm">
+                              {dev.currency} {Number(dev.contractAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            </div>
+                            <div className="text-[10px] text-purple-400 font-semibold uppercase tracking-wider flex items-center gap-1 mt-0.5">
+                              <FileText className="w-3 h-3 text-purple-400 shrink-0" />
+                              <span>Paid on Contract • {dev.paytime || 'Milestone'}</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div>
+                            <div className="text-white font-mono font-bold text-sm">
+                              {dev.currency} {Number(dev.hourlyRate || 0).toFixed(2)}/hr
+                            </div>
+                            <div className="text-[10px] text-sky-400 font-semibold uppercase tracking-wider flex items-center gap-1 mt-0.5">
+                              <Clock className="w-3 h-3 text-sky-400 shrink-0" />
+                              <span>Hourly Rate • {dev.paytime || 'Hourly'}</span>
+                            </div>
+                          </div>
+                        )}
                       </td>
                       <td className="py-4 px-5">
                         {dev.projects && dev.projects.length > 0 ? (
@@ -888,35 +964,241 @@ Please sign in to access your assigned tasks, department records, and time track
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                    Hourly Rate
+              {/* Compensation Model & Paytime Architecture */}
+              <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <DollarSign className="w-3.5 h-3.5 text-amber-400" />
+                    Compensation Model
                   </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={hourlyRate}
-                    onChange={(e) => setHourlyRate(e.target.value ? Number(e.target.value) : '')}
-                    placeholder="45.00"
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
-                  />
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {compensationType === 'hourly' && '⏱️ Pay per logged hour'}
+                    {compensationType === 'salary' && '💼 Fixed recurring salary'}
+                    {compensationType === 'contract' && '📜 Paid based on contract / milestones'}
+                  </span>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                    Currency
-                  </label>
-                  <select
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
+
+                {/* Segmented Toggle: Hourly / Salary / Contract */}
+                <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-900 rounded-lg border border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCompensationType('hourly');
+                      if (paytime !== 'hourly' && paytime !== 'weekly' && paytime !== 'biweekly' && paytime !== 'monthly') {
+                        setPaytime('hourly');
+                      }
+                    }}
+                    className={`py-2 px-2.5 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                      compensationType === 'hourly'
+                        ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    }`}
                   >
-                    <option value="USD">USD ($)</option>
-                    <option value="GHS">GHS (GH₵)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="GBP">GBP (£)</option>
-                  </select>
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Hourly Rate</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCompensationType('salary');
+                      if (paytime !== 'monthly' && paytime !== 'biweekly' && paytime !== 'semimonthly' && paytime !== 'weekly') {
+                        setPaytime('monthly');
+                      }
+                    }}
+                    className={`py-2 px-2.5 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                      compensationType === 'salary'
+                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    }`}
+                  >
+                    <Briefcase className="w-3.5 h-3.5" />
+                    <span>Fixed Salary</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCompensationType('contract');
+                      if (paytime !== 'contract' && paytime !== 'milestone' && paytime !== 'retainer') {
+                        setPaytime('contract');
+                      }
+                    }}
+                    className={`py-2 px-2.5 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                      compensationType === 'contract'
+                        ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    }`}
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Paid on Contract</span>
+                  </button>
                 </div>
+
+                {/* Conditional Inputs based on selected Compensation Model */}
+                {compensationType === 'hourly' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Hourly Rate
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={hourlyRate}
+                        onChange={(e) => setHourlyRate(e.target.value ? Number(e.target.value) : '')}
+                        placeholder="45.00"
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 font-mono font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Currency
+                      </label>
+                      <select
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-sky-500"
+                      >
+                        <option value="USD">USD ($)</option>
+                        <option value="GHS">GHS (GH₵)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="CAD">CAD ($)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Paytime / Frequency
+                      </label>
+                      <select
+                        value={paytime}
+                        onChange={(e) => setPaytime(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-sky-500"
+                      >
+                        <option value="hourly">Hourly (Per Session / Clock-out)</option>
+                        <option value="weekly">Weekly (Every Friday)</option>
+                        <option value="biweekly">Bi-Weekly (Every 2 Weeks)</option>
+                        <option value="monthly">Monthly (End of Month)</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {compensationType === 'salary' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Salary Amount
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={salary}
+                        onChange={(e) => setSalary(e.target.value ? Number(e.target.value) : '')}
+                        placeholder="5000.00"
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 font-mono font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Currency
+                      </label>
+                      <select
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500"
+                      >
+                        <option value="USD">USD ($)</option>
+                        <option value="GHS">GHS (GH₵)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="CAD">CAD ($)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Paytime / Frequency
+                      </label>
+                      <select
+                        value={paytime}
+                        onChange={(e) => setPaytime(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500"
+                      >
+                        <option value="monthly">Monthly (End of Month)</option>
+                        <option value="biweekly">Bi-Weekly (1st & 15th / Every 2 Wks)</option>
+                        <option value="semimonthly">Semi-Monthly (Twice a month)</option>
+                        <option value="weekly">Weekly (Every Friday)</option>
+                        <option value="annual">Annual / Quarterly</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {compensationType === 'contract' && (
+                  <div className="space-y-3 pt-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                          Contract Value / Sum
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={contractAmount}
+                          onChange={(e) => setContractAmount(e.target.value ? Number(e.target.value) : '')}
+                          placeholder="12000.00"
+                          className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 font-mono font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                          Currency
+                        </label>
+                        <select
+                          value={currency}
+                          onChange={(e) => setCurrency(e.target.value)}
+                          className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-purple-500"
+                        >
+                          <option value="USD">USD ($)</option>
+                          <option value="GHS">GHS (GH₵)</option>
+                          <option value="EUR">EUR (€)</option>
+                          <option value="GBP">GBP (£)</option>
+                          <option value="CAD">CAD ($)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                          Paytime / Terms
+                        </label>
+                        <select
+                          value={paytime}
+                          onChange={(e) => setPaytime(e.target.value)}
+                          className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-purple-500"
+                        >
+                          <option value="contract">Paid Based on Contract / Milestone</option>
+                          <option value="milestone">Milestone Deliverable Sign-off</option>
+                          <option value="upfront_50_50">50% Advance, 50% on Delivery</option>
+                          <option value="retainer">Monthly Contract Retainer</option>
+                          <option value="delivery">End of Project Full Delivery</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Contract Scope & Payment Terms (Optional)
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={contractTerms}
+                        onChange={(e) => setContractTerms(e.target.value)}
+                        placeholder="e.g. Full delivery of module deliverables, disbursements release on milestone QA sign-off..."
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Password Generator */}
@@ -1094,34 +1376,241 @@ Please sign in to access your assigned tasks, department records, and time track
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                    Hourly Rate
+              {/* Edit Compensation Model & Paytime Architecture */}
+              <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <DollarSign className="w-3.5 h-3.5 text-amber-400" />
+                    Compensation Model
                   </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={editHourlyRate}
-                    onChange={(e) => setEditHourlyRate(e.target.value ? Number(e.target.value) : '')}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
-                  />
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {editCompensationType === 'hourly' && '⏱️ Pay per logged hour'}
+                    {editCompensationType === 'salary' && '💼 Fixed recurring salary'}
+                    {editCompensationType === 'contract' && '📜 Paid based on contract / milestones'}
+                  </span>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                    Currency
-                  </label>
-                  <select
-                    value={editCurrency}
-                    onChange={(e) => setEditCurrency(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
+
+                {/* Segmented Toggle: Hourly / Salary / Contract */}
+                <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-900 rounded-lg border border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditCompensationType('hourly');
+                      if (editPaytime !== 'hourly' && editPaytime !== 'weekly' && editPaytime !== 'biweekly' && editPaytime !== 'monthly') {
+                        setEditPaytime('hourly');
+                      }
+                    }}
+                    className={`py-2 px-2.5 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                      editCompensationType === 'hourly'
+                        ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    }`}
                   >
-                    <option value="USD">USD ($)</option>
-                    <option value="GHS">GHS (GH₵)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="GBP">GBP (£)</option>
-                  </select>
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Hourly Rate</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditCompensationType('salary');
+                      if (editPaytime !== 'monthly' && editPaytime !== 'biweekly' && editPaytime !== 'semimonthly' && editPaytime !== 'weekly') {
+                        setEditPaytime('monthly');
+                      }
+                    }}
+                    className={`py-2 px-2.5 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                      editCompensationType === 'salary'
+                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    }`}
+                  >
+                    <Briefcase className="w-3.5 h-3.5" />
+                    <span>Fixed Salary</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditCompensationType('contract');
+                      if (editPaytime !== 'contract' && editPaytime !== 'milestone' && editPaytime !== 'retainer') {
+                        setEditPaytime('contract');
+                      }
+                    }}
+                    className={`py-2 px-2.5 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                      editCompensationType === 'contract'
+                        ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    }`}
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Paid on Contract</span>
+                  </button>
                 </div>
+
+                {/* Conditional Inputs based on selected Compensation Model */}
+                {editCompensationType === 'hourly' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Hourly Rate
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={editHourlyRate}
+                        onChange={(e) => setEditHourlyRate(e.target.value ? Number(e.target.value) : '')}
+                        placeholder="45.00"
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 font-mono font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Currency
+                      </label>
+                      <select
+                        value={editCurrency}
+                        onChange={(e) => setEditCurrency(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-sky-500"
+                      >
+                        <option value="USD">USD ($)</option>
+                        <option value="GHS">GHS (GH₵)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="CAD">CAD ($)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Paytime / Frequency
+                      </label>
+                      <select
+                        value={editPaytime}
+                        onChange={(e) => setEditPaytime(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-sky-500"
+                      >
+                        <option value="hourly">Hourly (Per Session / Clock-out)</option>
+                        <option value="weekly">Weekly (Every Friday)</option>
+                        <option value="biweekly">Bi-Weekly (Every 2 Weeks)</option>
+                        <option value="monthly">Monthly (End of Month)</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {editCompensationType === 'salary' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Salary Amount
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={editSalary}
+                        onChange={(e) => setEditSalary(e.target.value ? Number(e.target.value) : '')}
+                        placeholder="5000.00"
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 font-mono font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Currency
+                      </label>
+                      <select
+                        value={editCurrency}
+                        onChange={(e) => setEditCurrency(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500"
+                      >
+                        <option value="USD">USD ($)</option>
+                        <option value="GHS">GHS (GH₵)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="CAD">CAD ($)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Paytime / Frequency
+                      </label>
+                      <select
+                        value={editPaytime}
+                        onChange={(e) => setEditPaytime(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500"
+                      >
+                        <option value="monthly">Monthly (End of Month)</option>
+                        <option value="biweekly">Bi-Weekly (1st & 15th / Every 2 Wks)</option>
+                        <option value="semimonthly">Semi-Monthly (Twice a month)</option>
+                        <option value="weekly">Weekly (Every Friday)</option>
+                        <option value="annual">Annual / Quarterly</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {editCompensationType === 'contract' && (
+                  <div className="space-y-3 pt-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                          Contract Value / Sum
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={editContractAmount}
+                          onChange={(e) => setEditContractAmount(e.target.value ? Number(e.target.value) : '')}
+                          placeholder="12000.00"
+                          className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 font-mono font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                          Currency
+                        </label>
+                        <select
+                          value={editCurrency}
+                          onChange={(e) => setEditCurrency(e.target.value)}
+                          className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-purple-500"
+                        >
+                          <option value="USD">USD ($)</option>
+                          <option value="GHS">GHS (GH₵)</option>
+                          <option value="EUR">EUR (€)</option>
+                          <option value="GBP">GBP (£)</option>
+                          <option value="CAD">CAD ($)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                          Paytime / Terms
+                        </label>
+                        <select
+                          value={editPaytime}
+                          onChange={(e) => setEditPaytime(e.target.value)}
+                          className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-purple-500"
+                        >
+                          <option value="contract">Paid Based on Contract / Milestone</option>
+                          <option value="milestone">Milestone Deliverable Sign-off</option>
+                          <option value="upfront_50_50">50% Advance, 50% on Delivery</option>
+                          <option value="retainer">Monthly Contract Retainer</option>
+                          <option value="delivery">End of Project Full Delivery</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        Contract Scope & Payment Terms (Optional)
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={editContractTerms}
+                        onChange={(e) => setEditContractTerms(e.target.value)}
+                        placeholder="e.g. Full delivery of module deliverables, disbursements release on milestone QA sign-off..."
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1214,6 +1703,14 @@ Please sign in to access your assigned tasks, department records, and time track
                 </span>
                 <span className="text-sky-400 font-bold">{latestCreds.department} — {latestCreds.role}</span>
               </div>
+              {latestCreds.compensationSummary && (
+                <div>
+                  <span className="text-[10px] uppercase font-sans text-slate-500 tracking-wider block">
+                    Compensation
+                  </span>
+                  <span className="text-amber-400 font-bold">{latestCreds.compensationSummary}</span>
+                </div>
+              )}
               <div>
                 <span className="text-[10px] uppercase font-sans text-slate-500 tracking-wider block">
                   Portal Login URL

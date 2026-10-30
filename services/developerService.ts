@@ -14,6 +14,8 @@ export interface Department {
   updatedAt?: string;
 }
 
+export type CompensationType = 'hourly' | 'salary' | 'contract';
+
 export interface Developer {
   id: number;
   name: string;
@@ -21,7 +23,12 @@ export interface Developer {
   roleTitle: string;
   departmentId?: number | null;
   department?: string;
+  compensationType?: CompensationType;
   hourlyRate: number;
+  salary?: number;
+  paytime?: string;
+  contractAmount?: number;
+  contractTerms?: string;
   currency: string;
   phone?: string;
   status: 'active' | 'inactive' | 'pending';
@@ -382,7 +389,12 @@ export const developerService = {
     roleTitle: string;
     departmentId?: number | null;
     department?: string;
-    hourlyRate: number;
+    compensationType?: CompensationType;
+    hourlyRate?: number;
+    salary?: number;
+    paytime?: string;
+    contractAmount?: number;
+    contractTerms?: string;
     currency: string;
     phone?: string;
     password?: string;
@@ -414,7 +426,12 @@ export const developerService = {
     roleTitle?: string;
     departmentId?: number | null;
     department?: string;
+    compensationType?: CompensationType;
     hourlyRate?: number;
+    salary?: number;
+    paytime?: string;
+    contractAmount?: number;
+    contractTerms?: string;
     currency?: string;
     phone?: string;
     status?: 'active' | 'inactive' | 'pending';

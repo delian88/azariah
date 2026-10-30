@@ -34,7 +34,7 @@ if ($action === 'login' && $method === 'POST') {
         sendJson(['success' => false, 'error' => 'Email and password are required'], 400);
     }
 
-    $stmt = $pdo->prepare("SELECT id, name, email, passwordHash, roleTitle, departmentId, department, hourlyRate, currency, phone, status, emailConfirmed FROM developers WHERE email = ? LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id, name, email, passwordHash, roleTitle, departmentId, department, compensationType, hourlyRate, salary, paytime, contractAmount, contractTerms, currency, phone, status, emailConfirmed FROM developers WHERE email = ? LIMIT 1");
     $stmt->execute([$email]);
     $dev = $stmt->fetch();
 
@@ -79,7 +79,12 @@ if ($action === 'login' && $method === 'POST') {
             'roleTitle' => $dev['roleTitle'],
             'departmentId' => $dev['departmentId'],
             'department' => $dev['department'] ?: 'Engineering & Technology',
+            'compensationType' => $dev['compensationType'] ?: 'hourly',
             'hourlyRate' => (float)$dev['hourlyRate'],
+            'salary' => (float)($dev['salary'] ?? 0.00),
+            'paytime' => $dev['paytime'] ?: 'hourly',
+            'contractAmount' => (float)($dev['contractAmount'] ?? 0.00),
+            'contractTerms' => $dev['contractTerms'] ?: '',
             'currency' => $dev['currency'],
             'phone' => $dev['phone'],
             'status' => $dev['status'],
@@ -96,7 +101,7 @@ if ($action === 'me' && $method === 'GET') {
     $auth = requireDeveloperUser();
     $devId = $auth['id'];
 
-    $stmt = $pdo->prepare("SELECT id, name, email, roleTitle, departmentId, department, hourlyRate, currency, phone, status, emailConfirmed, lastLoginAt, createdAt FROM developers WHERE id = ? LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id, name, email, roleTitle, departmentId, department, compensationType, hourlyRate, salary, paytime, contractAmount, contractTerms, currency, phone, status, emailConfirmed, lastLoginAt, createdAt FROM developers WHERE id = ? LIMIT 1");
     $stmt->execute([$devId]);
     $dev = $stmt->fetch();
 
@@ -217,7 +222,7 @@ if ($method === 'GET') {
     $whereSql = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
 
     $stmt = $pdo->prepare("
-        SELECT d.id, d.name, d.email, d.roleTitle, d.departmentId, d.department, d.hourlyRate, d.currency, d.phone, d.status, d.emailConfirmed, d.lastLoginAt, d.createdAt,
+        SELECT d.id, d.name, d.email, d.roleTitle, d.departmentId, d.department, d.compensationType, d.hourlyRate, d.salary, d.paytime, d.contractAmount, d.contractTerms, d.currency, d.phone, d.status, d.emailConfirmed, d.lastLoginAt, d.createdAt,
             (SELECT COUNT(*) FROM project_developers pd WHERE pd.developerId = d.id) as assignedProjectsCount,
             (SELECT COALESCE(SUM(totalMinutes), 0) FROM developer_time_logs tl WHERE tl.developerId = d.id) as totalMinutesLogged,
             (SELECT COUNT(*) FROM developer_time_logs tl WHERE tl.developerId = d.id AND tl.clockOut IS NULL) as isCurrentlyClockedIn
@@ -268,7 +273,15 @@ if ($method === 'POST') {
         $department = 'Engineering & Technology';
     }
 
+    $compensationType = trim($input['compensationType'] ?? 'hourly');
+    if (!in_array($compensationType, ['hourly', 'salary', 'contract'])) {
+        $compensationType = 'hourly';
+    }
     $hourlyRate = (float)($input['hourlyRate'] ?? 0.00);
+    $salary = (float)($input['salary'] ?? 0.00);
+    $paytime = trim($input['paytime'] ?? 'hourly');
+    $contractAmount = (float)($input['contractAmount'] ?? 0.00);
+    $contractTerms = trim($input['contractTerms'] ?? '');
     $currency = trim($input['currency'] ?? 'USD');
     $phone = trim($input['phone'] ?? '');
     $assignedProjectIds = is_array($input['assignedProjectIds'] ?? null) ? $input['assignedProjectIds'] : [];
@@ -299,8 +312,8 @@ if ($method === 'POST') {
     $confirmationToken = bin2hex(random_bytes(32));
 
     $insStmt = $pdo->prepare("
-        INSERT INTO developers (name, email, passwordHash, roleTitle, departmentId, department, hourlyRate, currency, phone, status, emailConfirmed, confirmationToken, createdAt, updatedAt)
-        VALUES (:name, :email, :pass, :role, :deptId, :dept, :rate, :curr, :phone, 'active', 0, :token, NOW(3), NOW(3))
+        INSERT INTO developers (name, email, passwordHash, roleTitle, departmentId, department, compensationType, hourlyRate, salary, paytime, contractAmount, contractTerms, currency, phone, status, emailConfirmed, confirmationToken, createdAt, updatedAt)
+        VALUES (:name, :email, :pass, :role, :deptId, :dept, :compType, :rate, :salary, :paytime, :contractAmount, :contractTerms, :curr, :phone, 'active', 0, :token, NOW(3), NOW(3))
     ");
     $insStmt->execute([
         ':name' => $name,
@@ -309,7 +322,12 @@ if ($method === 'POST') {
         ':role' => $roleTitle,
         ':deptId' => $departmentId,
         ':dept' => $department,
+        ':compType' => $compensationType,
         ':rate' => $hourlyRate,
+        ':salary' => $salary,
+        ':paytime' => $paytime,
+        ':contractAmount' => $contractAmount,
+        ':contractTerms' => $contractTerms,
         ':curr' => $currency,
         ':phone' => $phone,
         ':token' => $confirmationToken
@@ -347,7 +365,15 @@ if ($method === 'POST') {
             $roleTitle,
             $assignedProjectNames,
             '',
-            $department ?: 'Engineering & Technology'
+            $department ?: 'Engineering & Technology',
+            [
+                'compensationType' => $compensationType,
+                'hourlyRate' => $hourlyRate,
+                'salary' => $salary,
+                'paytime' => $paytime,
+                'contractAmount' => $contractAmount,
+                'currency' => $currency
+            ]
         );
         $mailStatus = $mailResult['success'];
         $mailTransport = $mailResult['transport'] ?? null;
@@ -363,7 +389,12 @@ if ($method === 'POST') {
             'roleTitle' => $roleTitle,
             'departmentId' => $departmentId,
             'department' => $department,
+            'compensationType' => $compensationType,
             'hourlyRate' => $hourlyRate,
+            'salary' => $salary,
+            'paytime' => $paytime,
+            'contractAmount' => $contractAmount,
+            'contractTerms' => $contractTerms,
             'currency' => $currency,
             'phone' => $phone,
             'status' => 'active',
@@ -401,7 +432,15 @@ if ($method === 'PUT') {
         $department = $dStmt->fetchColumn() ?: null;
     }
 
+    $compensationType = isset($input['compensationType']) ? trim($input['compensationType']) : null;
+    if ($compensationType !== null && !in_array($compensationType, ['hourly', 'salary', 'contract'])) {
+        $compensationType = 'hourly';
+    }
     $hourlyRate = isset($input['hourlyRate']) ? (float)$input['hourlyRate'] : null;
+    $salary = isset($input['salary']) ? (float)$input['salary'] : null;
+    $paytime = isset($input['paytime']) ? trim($input['paytime']) : null;
+    $contractAmount = isset($input['contractAmount']) ? (float)$input['contractAmount'] : null;
+    $contractTerms = isset($input['contractTerms']) ? trim($input['contractTerms']) : null;
     $currency = trim($input['currency'] ?? 'USD');
     $phone = trim($input['phone'] ?? '');
     $status = trim($input['status'] ?? 'active');
@@ -415,7 +454,12 @@ if ($method === 'PUT') {
     if ($roleTitle) { $updFields[] = 'roleTitle = :role'; $params[':role'] = $roleTitle; }
     if (array_key_exists('departmentId', $input)) { $updFields[] = 'departmentId = :deptId'; $params[':deptId'] = $departmentId; }
     if ($department !== null) { $updFields[] = 'department = :dept'; $params[':dept'] = $department; }
+    if ($compensationType !== null) { $updFields[] = 'compensationType = :compType'; $params[':compType'] = $compensationType; }
     if ($hourlyRate !== null) { $updFields[] = 'hourlyRate = :rate'; $params[':rate'] = $hourlyRate; }
+    if ($salary !== null) { $updFields[] = 'salary = :salary'; $params[':salary'] = $salary; }
+    if ($paytime !== null) { $updFields[] = 'paytime = :paytime'; $params[':paytime'] = $paytime; }
+    if ($contractAmount !== null) { $updFields[] = 'contractAmount = :contractAmount'; $params[':contractAmount'] = $contractAmount; }
+    if ($contractTerms !== null) { $updFields[] = 'contractTerms = :contractTerms'; $params[':contractTerms'] = $contractTerms; }
     if ($currency) { $updFields[] = 'currency = :curr'; $params[':curr'] = $currency; }
     if ($phone !== null) { $updFields[] = 'phone = :phone'; $params[':phone'] = $phone; }
     if (in_array($status, ['active', 'inactive', 'pending'])) { $updFields[] = 'status = :status'; $params[':status'] = $status; }

@@ -139,7 +139,7 @@ function dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $h
 /**
  * Send Welcome Email with Login Credentials and Confirmation Link to New Developer
  */
-function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPassword, $roleTitle = 'Developer', $projectNames = [], $portalUrl = '', $department = 'Engineering & Technology') {
+function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPassword, $roleTitle = 'Developer', $projectNames = [], $portalUrl = '', $department = 'Engineering & Technology', $compensation = []) {
     if (!$portalUrl) {
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
         $host = $_SERVER['HTTP_HOST'] ?? 'azariahmg.com';
@@ -147,6 +147,27 @@ function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPasswo
     }
 
     $departmentClean = htmlspecialchars($department ?: 'Engineering & Technology');
+
+    // Build compensation summary for email
+    $compType = $compensation['compensationType'] ?? 'hourly';
+    $curr = htmlspecialchars($compensation['currency'] ?? 'USD');
+    $paytime = htmlspecialchars($compensation['paytime'] ?? 'hourly');
+    $compLabel = 'Hourly Rate';
+    $compVal = $curr . ' ' . number_format((float)($compensation['hourlyRate'] ?? 0), 2) . '/hr';
+    if ($compType === 'salary') {
+        $compLabel = 'Fixed Salary';
+        $compVal = $curr . ' ' . number_format((float)($compensation['salary'] ?? 0), 2) . ' (' . ucfirst($paytime) . ')';
+    } elseif ($compType === 'contract') {
+        $compLabel = 'Paid on Contract';
+        $compVal = $curr . ' ' . number_format((float)($compensation['contractAmount'] ?? 0), 2) . ' (' . ucfirst($paytime) . ')';
+    }
+
+    $compRowHtml = '<tr>
+      <td style="padding: 14px 18px; border-bottom: 1px solid #1e293b;">
+        <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">Compensation & Pay Schedule</div>
+        <div style="font-size: 14px; color: #fbbf24; font-weight: 700; margin-top: 4px;">' . $compLabel . ': <span style="color: #ffffff;">' . $compVal . '</span></div>
+      </td>
+    </tr>';
 
     $projectsHtml = '';
     if (!empty($projectNames)) {
@@ -216,6 +237,7 @@ function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPasswo
                     <div style="font-size: 16px; color: #34d399; font-weight: 800; font-family: monospace; letter-spacing: 0.05em; margin-top: 4px; padding: 6px 10px; background: rgba(16, 185, 129, 0.1); border-radius: 4px; display: inline-block;">{$plainPassword}</div>
                   </td>
                 </tr>
+                {$compRowHtml}
                 <tr>
                   <td style="padding: 14px 18px;">
                     <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">Assigned Department</div>
