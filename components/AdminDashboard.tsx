@@ -45,16 +45,19 @@ import {
   Home,
   Users,
   DollarSign,
-  BookOpen
+  BookOpen,
+  CheckSquare
 } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
 import Logo from './Logo';
 import AdminDevelopersTab from './admin/AdminDevelopersTab';
 import AdminProjectsTab from './admin/AdminProjectsTab';
+import AdminTasksTab from './admin/AdminTasksTab';
 import AdminTimeTrackingTab from './admin/AdminTimeTrackingTab';
 import AdminPayrollTab from './admin/AdminPayrollTab';
 import AdminBlogTab from './admin/AdminBlogTab';
 import AdminTeamTab from './admin/AdminTeamTab';
+
 
 export interface SectionMeta {
   key: string;
@@ -353,8 +356,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
   const [loadingDevices, setLoadingDevices] = useState(false);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'branding' | 'sections' | 'media' | 'blog' | 'projects' | 'developers' | 'timetracking' | 'payroll' | 'team' | 'system'>('branding');
+  const [activeTab, setActiveTab] = useState<'branding' | 'sections' | 'media' | 'blog' | 'projects' | 'developers' | 'tasks' | 'timetracking' | 'payroll' | 'team' | 'system'>('branding');
   const [activeSectionKey, setActiveSectionKey] = useState<string>('hero');
+
 
   // Mobile Navigation & Responsive Breadcrumb State
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -1092,12 +1096,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   {activeTab === 'blog' && 'Blog & Editorial'}
                   {activeTab === 'projects' && 'Projects'}
                   {activeTab === 'developers' && 'Developers'}
+                  {activeTab === 'tasks' && 'Task Management'}
                   {activeTab === 'timetracking' && 'Time Tracking'}
                   {activeTab === 'payroll' && 'Payroll'}
                   {activeTab === 'team' && 'Management Team'}
                   {activeTab === 'system' && 'Security'}
                 </span>
                 <ChevronDown className="w-3 h-3 text-lime-400" />
+
               </button>
 
               {/* Module Dropdown */}
@@ -1188,6 +1194,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                       }`}
                     >
                       <Users className="w-3.5 h-3.5" /> Developers & Credentials
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('tasks');
+                        setMobileTabPickerOpen(false);
+                        showToast('Switched to Task Management.', 'info');
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
+                        activeTab === 'tasks' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      <CheckSquare className="w-3.5 h-3.5" /> Task Management
                     </button>
                     <button
                       type="button"
@@ -1445,6 +1464,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 >
                   <span className="flex items-center gap-3">
                     <Users className="w-4 h-4" /> Developers & Credentials
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('tasks');
+                    setMobileDrawerOpen(false);
+                    showToast('Switched to Task Management & Assignments.', 'info');
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                    activeTab === 'tasks'
+                      ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <CheckSquare className="w-4 h-4" /> Task Management
                   </span>
                   <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
@@ -1770,6 +1808,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
               }`}
             >
               <Users className="w-4 h-4" /> Developers & Credentials
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab('tasks');
+                showToast('Switched to Task Management & Assignments.', 'info');
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
+                activeTab === 'tasks'
+                  ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <CheckSquare className="w-4 h-4" /> Task Management
             </button>
 
             <button
@@ -3003,6 +3055,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
           {/* TAB: DEVELOPERS & CREDENTIALS */}
           {activeTab === 'developers' && (
             <AdminDevelopersTab showToast={showToast} />
+          )}
+
+          {/* TAB: TASK MANAGEMENT & ASSIGNMENTS */}
+          {activeTab === 'tasks' && (
+            <AdminTasksTab showToast={showToast} />
           )}
 
           {/* TAB: TIME TRACKING & ATTENDANCE */}

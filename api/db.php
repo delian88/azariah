@@ -357,6 +357,32 @@ function ensureDevModuleTables($pdo) {
               INDEX `idx_payslips_dev` (`developerId`),
               INDEX `idx_payslips_status` (`status`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            CREATE TABLE IF NOT EXISTS `developer_tasks` (
+              `id` INT NOT NULL AUTO_INCREMENT,
+              `title` VARCHAR(255) NOT NULL,
+              `description` LONGTEXT NULL,
+              `developerId` INT NOT NULL,
+              `projectId` INT NULL,
+              `priority` ENUM('low', 'medium', 'high', 'urgent') NOT NULL DEFAULT 'medium',
+              `status` ENUM('pending', 'in_progress', 'in_review', 'completed', 'blocked') NOT NULL DEFAULT 'pending',
+              `dueDate` DATE NULL,
+              `estimatedHours` DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
+              `actualHours` DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
+              `assignedByAdminId` INT NULL,
+              `assignedByAdminName` VARCHAR(191) NULL DEFAULT 'Admin',
+              `completedAt` DATETIME NULL,
+              `notes` TEXT NULL,
+              `emailNotified` TINYINT(1) NOT NULL DEFAULT 0,
+              `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+              `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+              PRIMARY KEY (`id`),
+              INDEX `idx_tasks_dev` (`developerId`),
+              INDEX `idx_tasks_status` (`status`),
+              INDEX `idx_tasks_priority` (`priority`),
+              INDEX `idx_tasks_proj` (`projectId`),
+              INDEX `idx_tasks_due` (`dueDate`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ");
 
         // Safely migrate existing developer_time_logs table to have clientTimezone column

@@ -22,7 +22,8 @@ import {
   Code2,
   ExternalLink,
   Sparkles,
-  UserCheck
+  UserCheck,
+  CheckSquare
 } from 'lucide-react';
 import {
   developerService,
@@ -31,6 +32,9 @@ import {
   TimeLog,
   TimeStatus,
   Payslip,
+  DeveloperTask,
+  TaskStatus,
+  TaskPriority,
   getDeveloperToken,
   setDeveloperToken,
   clearDeveloperSession,
@@ -40,6 +44,7 @@ import {
   formatLocalDate,
   getClientTimezone
 } from '../services/developerService';
+
 import {
   printTimeLogsReport,
   printProjectsReport,
@@ -64,7 +69,7 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
   const [loginError, setLoginError] = useState('');
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'tracker' | 'projects' | 'payslips'>('tracker');
+  const [activeTab, setActiveTab] = useState<'tracker' | 'projects' | 'tasks' | 'payslips'>('tracker');
 
   // Time Tracker State
   const [timeStatus, setTimeStatus] = useState<TimeStatus | null>(null);
@@ -82,11 +87,15 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
   const [timeLogs, setTimeLogs] = useState<TimeLog[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [payslips, setPayslips] = useState<Payslip[]>([]);
+  const [tasks, setTasks] = useState<DeveloperTask[]>([]);
   const [loadingData, setLoadingData] = useState(false);
+  const [updatingTaskId, setUpdatingTaskId] = useState<number | null>(null);
+  const [taskStatusFilter, setTaskStatusFilter] = useState<TaskStatus | 'all'>('all');
 
   // Selected Payslip for Voucher Modal / Print
   const [selectedPayslip, setSelectedPayslip] = useState<Payslip | null>(null);
   const [confirmingPayslipId, setConfirmingPayslipId] = useState<number | null>(null);
+
 
   // Toast State
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -103,11 +112,12 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
     if (!token) return;
     setLoadingData(true);
     try {
-      const [statusRes, logsRes, projectsRes, payslipsRes] = await Promise.all([
+      const [statusRes, logsRes, projectsRes, payslipsRes, tasksRes] = await Promise.all([
         developerService.getDevTimeStatus(),
         developerService.getDevTimeHistory(100),
         developerService.getDevAssignedProjects(),
-        developerService.getDevPayslips()
+        developerService.getDevPayslips(),
+        developerService.devGetMyTasks()
       ]);
 
       if (statusRes.success) {
@@ -137,11 +147,16 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
       if (payslipsRes.success && payslipsRes.payslips) {
         setPayslips(payslipsRes.payslips);
       }
+
+      if (tasksRes.success && tasksRes.tasks) {
+        setTasks(tasksRes.tasks);
+      }
     } catch (err: any) {
       showToast(err.message || 'Failed to sync developer portal data', 'error');
     } finally {
       setLoadingData(false);
     }
+
   }, [token]);
 
   useEffect(() => {
@@ -314,6 +329,28 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
       }
     } else {
       showToast(res.error || 'Failed to confirm payment', 'error');
+    }
+  };
+
+  // ---------------------------------------------------------------------------
+  // TASK STATUS UPDATE (DEVELOPER)
+  // ---------------------------------------------------------------------------
+  const handleDevUpdateTask = async (taskId: number, newStatus: TaskStatus, notes?: string) => {
+    setUpdatingTaskId(taskId);
+    try {
+      const res = await developerService.devUpdateTaskStatus(taskId, newStatus, notes);
+      if (res.success) {
+        showToast(res.message || `Task status updated to ${newStatus.toUpperCase()}`);
+        setTasks((prev) =>
+          prev.map((t) => (t.id === taskId ? { ...t, status: newStatus, ...(notes ? { notes } : {}) } : t))
+        );
+      } else {
+        showToast(res.error || 'Failed to update task', 'error');
+      }
+    } catch (e: any) {
+      showToast(e.message || 'Error updating task', 'error');
+    } finally {
+      setUpdatingTaskId(null);
     }
   };
 
@@ -662,6 +699,16 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
             <Folder className="w-4 h-4" /> Assigned Projects ({projects.length})
           </button>
           <button
+            onClick={() => setActiveTab('tasks')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              activeTab === 'tasks'
+                ? 'bg-lime-500/15 border border-lime-500/40 text-lime-400 shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+            }`}
+          >
+            <CheckSquare className="w-4 h-4" /> Assigned Tasks ({tasks.length})
+          </button>
+          <button
             onClick={() => setActiveTab('payslips')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
               activeTab === 'payslips'
@@ -672,6 +719,7 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
             <DollarSign className="w-4 h-4" /> Payslips & Vouchers ({payslips.length})
           </button>
         </div>
+
 
         {/* =====================================================================
             TAB 1: TIME LOGS & ATTENDANCE HISTORY
@@ -880,8 +928,191 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
         )}
 
         {/* =====================================================================
-            TAB 3: PAYSLIPS & CONFIRMATION
+            TAB 3: ASSIGNED TASKS & PROGRESS UPDATER
         ===================================================================== */}
+        {activeTab === 'tasks' && (
+          <div className="space-y-6">
+            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+              <div className="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <CheckSquare className="w-5 h-5 text-lime-400" />
+                    <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                      My Assigned Engineering Tasks
+                    </h3>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Tasks assigned by administrators. Start work, update status, and log progress notes.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <select
+                    value={taskStatusFilter}
+                    onChange={(e) => setTaskStatusFilter(e.target.value as any)}
+                    className="px-3 py-1.5 bg-slate-950 border border-slate-700 text-white rounded-lg text-xs font-bold focus:outline-none focus:border-lime-500"
+                  >
+                    <option value="all">All Tasks ({tasks.length})</option>
+                    <option value="pending">Pending</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="in_review">In Review</option>
+                    <option value="completed">Completed</option>
+                    <option value="blocked">Blocked</option>
+                  </select>
+
+                  <button
+                    onClick={refreshAllData}
+                    disabled={loadingData}
+                    className="text-xs text-lime-400 hover:text-lime-300 font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-lime-500/10 hover:bg-lime-500/20 transition-colors"
+                  >
+                    Sync Tasks
+                  </button>
+                </div>
+              </div>
+
+              {/* Task Cards Grid */}
+              <div className="p-5 space-y-4">
+                {tasks.filter(t => taskStatusFilter === 'all' || t.status === taskStatusFilter).length === 0 ? (
+                  <div className="py-12 text-center text-slate-500 text-xs">
+                    {taskStatusFilter === 'all'
+                      ? 'No tasks assigned to your developer profile at this time.'
+                      : `No tasks currently matching "${taskStatusFilter}".`}
+                  </div>
+                ) : (
+                  tasks
+                    .filter(t => taskStatusFilter === 'all' || t.status === taskStatusFilter)
+                    .map((task) => {
+                      const isUpdating = updatingTaskId === task.id;
+                      const priorityColor =
+                        task.priority === 'urgent' ? 'text-red-400 border-red-500/40 bg-red-950/40' :
+                        task.priority === 'high' ? 'text-amber-400 border-amber-500/40 bg-amber-950/40' :
+                        task.priority === 'medium' ? 'text-sky-400 border-sky-500/40 bg-sky-950/40' :
+                        'text-slate-300 border-slate-700 bg-slate-800';
+
+                      const statusColor =
+                        task.status === 'completed' ? 'text-lime-400 border-lime-500/40 bg-lime-950/40' :
+                        task.status === 'in_progress' ? 'text-sky-400 border-sky-500/40 bg-sky-950/40' :
+                        task.status === 'in_review' ? 'text-purple-400 border-purple-500/40 bg-purple-950/40' :
+                        task.status === 'blocked' ? 'text-rose-400 border-rose-500/40 bg-rose-950/40' :
+                        'text-slate-400 border-slate-700 bg-slate-900';
+
+                      return (
+                        <div
+                          key={task.id}
+                          className="bg-slate-950/80 border border-slate-800 rounded-xl p-5 space-y-4 hover:border-slate-700 transition-all shadow-sm"
+                        >
+                          {/* Card Header */}
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                            <div className="flex items-center flex-wrap gap-2">
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider border ${priorityColor}`}>
+                                {task.priority} Priority
+                              </span>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider border ${statusColor}`}>
+                                {task.status.replace('_', ' ')}
+                              </span>
+                              {task.projectName && (
+                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-sky-400 bg-sky-950/30 px-2 py-0.5 rounded border border-sky-800/40">
+                                  <Folder className="w-3 h-3" /> {task.projectName}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-3 text-xs text-slate-400 font-mono">
+                              {task.dueDate && (
+                                <span className="flex items-center gap-1 text-amber-300">
+                                  <Calendar className="w-3.5 h-3.5" /> Due: {task.dueDate}
+                                </span>
+                              )}
+                              <span>
+                                Est: <strong className="text-white">{task.estimatedHours}h</strong>
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Title & Description */}
+                          <div>
+                            <h4 className="text-base font-bold text-white">
+                              {task.title}
+                            </h4>
+                            {task.description && (
+                              <p className="text-xs text-slate-300 leading-relaxed mt-2 whitespace-pre-wrap bg-slate-900/60 p-3 rounded-lg border border-slate-800/80">
+                                {task.description}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Notes if present */}
+                          {task.notes && (
+                            <div className="text-xs text-slate-400 bg-slate-900/40 p-2.5 rounded border border-slate-800/60">
+                              <strong className="text-slate-300">Notes:</strong> {task.notes}
+                            </div>
+                          )}
+
+                          {/* Action Buttons Footer */}
+                          <div className="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+                            <div className="text-[11px] text-slate-500">
+                              Assigned by: <strong className="text-slate-300">{task.assignedByAdminName || 'Admin'}</strong>
+                            </div>
+
+                            <div className="flex items-center flex-wrap gap-2">
+                              {task.status === 'pending' && (
+                                <button
+                                  type="button"
+                                  disabled={isUpdating}
+                                  onClick={() => handleDevUpdateTask(task.id, 'in_progress')}
+                                  className="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm"
+                                >
+                                  ▶ Start Task
+                                </button>
+                              )}
+
+                              {task.status === 'in_progress' && (
+                                <>
+                                  <button
+                                    type="button"
+                                    disabled={isUpdating}
+                                    onClick={() => handleDevUpdateTask(task.id, 'in_review')}
+                                    className="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm"
+                                  >
+                                    🔍 Submit for Review
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={isUpdating}
+                                    onClick={() => handleDevUpdateTask(task.id, 'completed')}
+                                    className="px-3.5 py-1.5 bg-lime-500 hover:bg-lime-400 text-slate-950 rounded-lg text-xs font-black uppercase tracking-wider transition-colors flex items-center gap-1.5 shadow-sm"
+                                  >
+                                    <CheckCircle2 className="w-3.5 h-3.5" /> Mark Completed
+                                  </button>
+                                </>
+                              )}
+
+                              {task.status === 'in_review' && (
+                                <span className="text-xs text-purple-400 font-bold px-3 py-1 bg-purple-950/40 border border-purple-800/40 rounded-lg">
+                                  Awaiting Admin Verification
+                                </span>
+                              )}
+
+                              {task.status === 'completed' && (
+                                <span className="text-xs text-lime-400 font-bold px-3 py-1 bg-lime-950/40 border border-lime-800/40 rounded-lg flex items-center gap-1">
+                                  <CheckCircle2 className="w-3.5 h-3.5" /> Task Finished
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* =====================================================================
+            TAB 4: PAYSLIPS & CONFIRMATION
+        ===================================================================== */}
+
         {activeTab === 'payslips' && (
           <div className="space-y-6">
             <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">

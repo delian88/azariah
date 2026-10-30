@@ -121,6 +121,47 @@ export interface Payslip {
   createdAt?: string;
 }
 
+export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+export type TaskStatus = 'pending' | 'in_progress' | 'in_review' | 'completed' | 'blocked';
+
+export interface DeveloperTask {
+  id: number;
+  title: string;
+  description?: string;
+  developerId: number;
+  developerName?: string;
+  developerEmail?: string;
+  developerRole?: string;
+  projectId?: number | null;
+  projectName?: string;
+  projectSlug?: string;
+  priority: TaskPriority;
+  status: TaskStatus;
+  dueDate?: string | null;
+  estimatedHours: number;
+  actualHours: number;
+  assignedByAdminId?: number;
+  assignedByAdminName?: string;
+  completedAt?: string | null;
+  notes?: string | null;
+  emailNotified?: boolean | number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface TaskMetrics {
+  total: number;
+  pending: number;
+  in_progress: number;
+  in_review: number;
+  completed: number;
+  blocked: number;
+  urgent: number;
+  totalEstimatedHours: number;
+  totalActualHours: number;
+}
+
+
 // Helpers for auth headers
 const getAdminHeaders = (): HeadersInit => {
   const token = localStorage.getItem('amg_admin_token');
@@ -570,8 +611,141 @@ export const developerService = {
     } catch (e: any) {
       return { success: false, error: e.message };
     }
+  },
+
+  // ---------------------------------------------------------------------------
+  // TASK MANAGEMENT & DEVELOPER ASSIGNMENTS
+  // ---------------------------------------------------------------------------
+  async adminGetTasks(filters?: {
+    developerId?: number;
+    projectId?: number;
+    status?: string;
+    priority?: string;
+    search?: string;
+  }): Promise<{ success: boolean; tasks: DeveloperTask[]; error?: string }> {
+    try {
+      const params = new URLSearchParams();
+      if (filters?.developerId) params.append('developerId', String(filters.developerId));
+      if (filters?.projectId) params.append('projectId', String(filters.projectId));
+      if (filters?.status && filters.status !== 'all') params.append('status', filters.status);
+      if (filters?.priority && filters.priority !== 'all') params.append('priority', filters.priority);
+      if (filters?.search) params.append('search', filters.search);
+
+      const qs = params.toString() ? `?${params.toString()}` : '';
+      const res = await fetch(getApiUrl(`api/tasks${qs}`), {
+        headers: getAdminHeaders()
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, tasks: [], error: e.message };
+    }
+  },
+
+  async adminGetTaskStats(): Promise<{ success: boolean; metrics?: TaskMetrics; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl('api/tasks/stats'), {
+        headers: getAdminHeaders()
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    }
+  },
+
+  async adminCreateTask(data: {
+    title: string;
+    description?: string;
+    developerId: number;
+    projectId?: number | null;
+    priority?: TaskPriority;
+    status?: TaskStatus;
+    dueDate?: string | null;
+    estimatedHours?: number;
+    sendEmail?: boolean;
+  }): Promise<{ success: boolean; message?: string; task?: DeveloperTask; emailSent?: boolean; emailError?: string; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl('api/tasks'), {
+        method: 'POST',
+        headers: getAdminHeaders(),
+        body: JSON.stringify(data)
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    }
+  },
+
+  async adminUpdateTask(
+    id: number,
+    data: Partial<DeveloperTask> & { sendEmail?: boolean }
+  ): Promise<{ success: boolean; message?: string; task?: DeveloperTask; emailSent?: boolean; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl('api/tasks'), {
+        method: 'PUT',
+        headers: getAdminHeaders(),
+        body: JSON.stringify({ id, ...data })
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    }
+  },
+
+  async adminDeleteTask(id: number): Promise<{ success: boolean; message?: string; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl(`api/tasks?id=${id}`), {
+        method: 'DELETE',
+        headers: getAdminHeaders()
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    }
+  },
+
+  async adminResendTaskEmail(taskId: number): Promise<{ success: boolean; message?: string; emailResult?: any; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl('api/tasks/resend-email'), {
+        method: 'POST',
+        headers: getAdminHeaders(),
+        body: JSON.stringify({ taskId })
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    }
+  },
+
+  async devGetMyTasks(): Promise<{ success: boolean; tasks: DeveloperTask[]; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl('api/tasks/my-tasks'), {
+        headers: getDevHeaders()
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, tasks: [], error: e.message };
+    }
+  },
+
+  async devUpdateTaskStatus(
+    taskId: number,
+    status: TaskStatus,
+    notes?: string,
+    actualHours?: number
+  ): Promise<{ success: boolean; message?: string; task?: DeveloperTask; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl('api/tasks/update-status'), {
+        method: 'POST',
+        headers: getDevHeaders(),
+        body: JSON.stringify({ id: taskId, status, notes, actualHours })
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    }
   }
 };
+
 
 /**
  * Safely parses any date string from the server.

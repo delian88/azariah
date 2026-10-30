@@ -336,3 +336,154 @@ HTML;
 
     return dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $htmlBody);
 }
+
+/**
+ * Send Task Assignment Email with Priority, Due Date, and Developer Portal Direct Link
+ */
+function sendDeveloperTaskEmail($recipientEmail, $recipientName, $taskData, $portalUrl = '') {
+    if (!$portalUrl) {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'] ?? 'azariahmg.com';
+        $portalUrl = $protocol . $host . '/#dev-portal';
+    }
+
+    $taskTitle = htmlspecialchars($taskData['title'] ?? 'New Engineering Task');
+    $rawDesc = $taskData['description'] ?? '';
+    $taskDescHtml = !empty($rawDesc) ? nl2br(htmlspecialchars($rawDesc)) : '<em style="color:#64748b;">No detailed description provided.</em>';
+    $projectName = htmlspecialchars($taskData['projectName'] ?? ($taskData['projectId'] ? 'Project #' . $taskData['projectId'] : 'General Assignment / Engineering'));
+    $priority = strtolower($taskData['priority'] ?? 'medium');
+
+    $priorityColor = match($priority) {
+        'urgent' => '#ef4444',
+        'high'   => '#f97316',
+        'medium' => '#38bdf8',
+        default  => '#a3e635'
+    };
+    $priorityBg = match($priority) {
+        'urgent' => 'rgba(239, 68, 68, 0.15)',
+        'high'   => 'rgba(249, 115, 22, 0.15)',
+        'medium' => 'rgba(56, 189, 248, 0.15)',
+        default  => 'rgba(163, 230, 53, 0.15)'
+    };
+    $priorityLabel = strtoupper($priority);
+
+    $dueDate = !empty($taskData['dueDate']) ? htmlspecialchars($taskData['dueDate']) : 'Not Specified';
+    $estHours = !empty($taskData['estimatedHours']) ? number_format((float)$taskData['estimatedHours'], 1) . ' hrs' : 'Open / Unbounded';
+    $assignedBy = htmlspecialchars($taskData['assignedByAdminName'] ?? 'AMG Project Lead');
+    $status = strtoupper(str_replace('_', ' ', $taskData['status'] ?? 'PENDING'));
+
+    $subject = "📋 [Task Assigned: {$taskTitle}] — Azariah Management Group";
+
+    $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Task Assigned - Azariah Management Group</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0b0f19; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f8fafc;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0b0f19; padding: 40px 15px;">
+    <tr>
+      <td align="center">
+        <!-- Main Container -->
+        <table role="presentation" width="100%" style="max-width: 590px; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 10px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+          <!-- Top Accent Bar -->
+          <tr>
+            <td style="height: 4px; background: linear-gradient(90deg, #38bdf8 0%, #a3e635 100%);"></td>
+          </tr>
+          <!-- Header -->
+          <tr>
+            <td style="padding: 32px 30px 20px; text-align: center; border-bottom: 1px solid #1e293b;">
+              <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase;">
+                <span style="color: #38bdf8;">AZARI</span><span style="color: #a3e635;">AH</span>
+              </h1>
+              <p style="margin: 4px 0 0; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: #94a3b8; font-weight: 700;">
+                MANAGEMENT GROUP &bull; TASK MANAGEMENT & ENGINEERING COMMAND
+              </p>
+            </td>
+          </tr>
+          <!-- Body Content -->
+          <tr>
+            <td style="padding: 32px 35px 25px;">
+              <div style="text-align: center; margin-bottom: 18px;">
+                <span style="display: inline-block; padding: 6px 14px; background-color: {$priorityBg}; border: 1px solid {$priorityColor}; border-radius: 20px; font-size: 11px; font-weight: 800; color: {$priorityColor}; text-transform: uppercase; letter-spacing: 0.1em;">
+                  ⚡ {$priorityLabel} PRIORITY &bull; NEW TASK ASSIGNED
+                </span>
+              </div>
+              <h2 style="margin: 0 0 10px; font-size: 21px; font-weight: 700; color: #ffffff; text-align: center; line-height: 1.3;">
+                {$taskTitle}
+              </h2>
+              <p style="margin: 0 0 24px; font-size: 14px; line-height: 1.6; color: #cbd5e1; text-align: center;">
+                Hello <strong style="color: #38bdf8;">{$recipientName}</strong>, a new task has been officially assigned to you in the Azariah Management Group workflow pipeline. Please review the assignment details below.
+              </p>
+
+              <!-- Task Details Summary Card -->
+              <table role="presentation" width="100%" style="background-color: #030712; border: 1px solid #1e293b; border-radius: 8px; margin-bottom: 22px; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 12px; color: #94a3b8; font-weight: 600; width: 38%;">Assigned Project</td>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 13px; color: #ffffff; font-weight: 700; text-align: right;">{$projectName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 12px; color: #94a3b8; font-weight: 600;">Priority Level</td>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 12px; font-weight: 800; color: {$priorityColor}; text-align: right; text-transform: uppercase;">{$priorityLabel}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 12px; color: #94a3b8; font-weight: 600;">Due Date</td>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 13px; color: #fbbf24; font-weight: 700; text-align: right;">{$dueDate}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 12px; color: #94a3b8; font-weight: 600;">Estimated Hours</td>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 13px; color: #38bdf8; font-weight: 700; font-family: monospace; text-align: right;">{$estHours}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 12px; color: #94a3b8; font-weight: 600;">Assigned By</td>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 13px; color: #e2e8f0; font-weight: 600; text-align: right;">{$assignedBy}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 13px 18px; font-size: 12px; color: #94a3b8; font-weight: 600;">Current Status</td>
+                  <td style="padding: 13px 18px; font-size: 12px; color: #a3e635; font-weight: 800; text-align: right; letter-spacing: 0.05em;">{$status}</td>
+                </tr>
+              </table>
+
+              <!-- Scope of Work / Description -->
+              <div style="background-color: #030712; border: 1px solid #1e293b; border-radius: 8px; padding: 18px; margin-bottom: 24px;">
+                <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; font-weight: 700; margin-bottom: 8px;">
+                  Scope of Work & Instructions:
+                </div>
+                <div style="font-size: 13px; line-height: 1.6; color: #f1f5f9;">
+                  {$taskDescHtml}
+                </div>
+              </div>
+
+              <!-- CTA Button -->
+              <div style="text-align: center; margin: 30px 0 15px;">
+                <a href="{$portalUrl}" target="_blank" style="display: inline-block; padding: 14px 34px; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; font-size: 14px; font-weight: 800; text-decoration: none; border-radius: 6px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.45); text-transform: uppercase; letter-spacing: 0.08em;">
+                  Open Developer Portal &rarr;
+                </a>
+              </div>
+              <p style="text-align: center; font-size: 11px; color: #64748b; margin-top: 10px;">
+                Direct Portal Link: <a href="{$portalUrl}" style="color: #38bdf8; text-decoration: none;">{$portalUrl}</a>
+              </p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 20px 30px; background-color: #0b1120; border-top: 1px solid #1e293b; text-align: center;">
+              <p style="margin: 0; font-size: 11px; color: #64748b; line-height: 1.5;">
+                Azariah Management Group &bull; Corporate Engineering Operations &bull; Upper Marlboro, MD, USA<br>
+                For technical questions regarding this task, communicate directly with your project administrator.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+HTML;
+
+    return dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $htmlBody);
+}
+

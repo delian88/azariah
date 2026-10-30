@@ -652,4 +652,37 @@ CREATE TABLE IF NOT EXISTS `payslips` (
   CONSTRAINT `fk_payslips_developer` FOREIGN KEY (`developerId`) REFERENCES `developers` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ------------------------------------------------------------------------------
+-- 13. Table: developer_tasks
+-- Task assignments, priority levels, workflow status, estimated hours, and email alerts.
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `developer_tasks` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  `description` LONGTEXT NULL,
+  `developerId` INT NOT NULL,
+  `projectId` INT NULL,
+  `priority` ENUM('low', 'medium', 'high', 'urgent') NOT NULL DEFAULT 'medium',
+  `status` ENUM('pending', 'in_progress', 'in_review', 'completed', 'blocked') NOT NULL DEFAULT 'pending',
+  `dueDate` DATE NULL,
+  `estimatedHours` DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
+  `actualHours` DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
+  `assignedByAdminId` INT NULL,
+  `assignedByAdminName` VARCHAR(191) NULL DEFAULT 'Admin',
+  `completedAt` DATETIME NULL,
+  `notes` TEXT NULL,
+  `emailNotified` TINYINT(1) NOT NULL DEFAULT 0,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  INDEX `idx_tasks_dev` (`developerId`),
+  INDEX `idx_tasks_status` (`status`),
+  INDEX `idx_tasks_priority` (`priority`),
+  INDEX `idx_tasks_proj` (`projectId`),
+  INDEX `idx_tasks_due` (`dueDate`),
+  CONSTRAINT `fk_tasks_developer` FOREIGN KEY (`developerId`) REFERENCES `developers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_tasks_project` FOREIGN KEY (`projectId`) REFERENCES `projects` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;
+

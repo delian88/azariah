@@ -115,6 +115,15 @@ if ($path === 'payslips' || $path === 'admin/payslips' || str_starts_with($path,
     exit(0);
 }
 
+// 9. Task Management & Assignment Routes (/tasks, /admin/tasks)
+if ($path === 'tasks' || $path === 'admin/tasks' || str_starts_with($path, 'tasks/') || str_starts_with($path, 'admin/tasks/')) {
+    if (preg_match('#(?:admin/)?tasks/([a-zA-Z0-9_-]+)#', $path, $matches)) {
+        $_GET['action'] = $matches[1];
+    }
+    require __DIR__ . '/tasks.php';
+    exit(0);
+}
+
 // 9. Open Graph Social Preview Image Route (/og-image, /blog/og-image)
 if ($path === 'og-image' || $path === 'blog/og-image' || str_starts_with($path, 'og-image/')) {
     if (preg_match('#og-image/([a-zA-Z0-9_-]+)#', $path, $matches)) {
