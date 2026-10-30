@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter, Facebook, ShieldCheck, Code2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter, Facebook, Lock } from 'lucide-react';
 import Logo from './Logo';
 import { useContent } from '../context/ContentContext';
-import { getDeveloperToken } from '../services/developerService';
 import PortalAuthModal from './PortalAuthModal';
 
 interface FooterProps {
@@ -14,7 +13,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const section = getSection('footer');
 
   const [portalModalOpen, setPortalModalOpen] = useState(false);
-  const [portalInitialTab, setPortalInitialTab] = useState<'admin' | 'developer'>('admin');
 
   const contactEmail = settings?.contact_email || "info@azariahmg.com";
   const contactPhone = settings?.contact_phone || "240-813-0308";
@@ -32,25 +30,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     if (onNavigate) {
       e.preventDefault();
       onNavigate(view);
-    }
-  };
-
-  const handlePortalClick = (target: 'admin' | 'developer') => {
-    if (target === 'admin') {
-      if (isAdmin) {
-        onNavigate ? onNavigate('admin') : (window.location.hash = '#admin');
-      } else {
-        setPortalInitialTab('admin');
-        setPortalModalOpen(true);
-      }
-    } else {
-      const devToken = getDeveloperToken();
-      if (devToken) {
-        onNavigate ? onNavigate('developer') : (window.location.hash = '#dev-portal');
-      } else {
-        setPortalInitialTab('developer');
-        setPortalModalOpen(true);
-      }
     }
   };
 
@@ -124,28 +103,16 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Terms</a>
           <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Legal</a>
           
-          {/* ── Toggle Login Buttons (Matching Design Reference) ── */}
-          <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              onClick={() => handlePortalClick('admin')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-950/90 border border-slate-800 text-lime-400 hover:text-white hover:border-lime-500/70 hover:bg-slate-900 transition-all text-[10px] font-black uppercase tracking-[0.18em] shadow-sm hover:shadow-[0_0_12px_rgba(163,230,53,0.2)] active:scale-95 cursor-pointer"
-              title="Open Admin Console"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-lime-400 shrink-0" />
-              <span>Admin Console</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handlePortalClick('developer')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-950/90 border border-slate-800 text-sky-400 hover:text-white hover:border-sky-500/70 hover:bg-slate-900 transition-all text-[10px] font-black uppercase tracking-[0.18em] shadow-sm hover:shadow-[0_0_12px_rgba(56,189,248,0.2)] active:scale-95 cursor-pointer"
-              title="Open Developer Portal"
-            >
-              <Code2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-              <span>Developer Portal</span>
-            </button>
-          </div>
+          {/* ── Discreet Login Toggle (Admin and Developer not exposed) ── */}
+          <button
+            type="button"
+            onClick={() => setPortalModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-950/90 border border-slate-800 text-slate-300 hover:text-white hover:border-lime-500/60 hover:bg-slate-900 transition-all text-[10px] font-black uppercase tracking-[0.2em] shadow-sm hover:shadow-[0_0_12px_rgba(163,230,53,0.15)] active:scale-95 cursor-pointer"
+            title="Portal Login"
+          >
+            <Lock className="w-3.5 h-3.5 text-lime-400 shrink-0" />
+            <span>Login</span>
+          </button>
         </div>
       </div>
 
@@ -153,7 +120,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <PortalAuthModal
         isOpen={portalModalOpen}
         onClose={() => setPortalModalOpen(false)}
-        initialTab={portalInitialTab}
+        initialTab="admin"
         onNavigate={onNavigate}
       />
     </footer>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Code2, Lock, User, Mail, Eye, EyeOff, RefreshCw, X, AlertCircle, KeyRound, ArrowRight } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
-import { developerService, setDeveloperToken } from '../services/developerService';
+import { developerService, setDeveloperToken, getDeveloperToken, getSavedDeveloperUser } from '../services/developerService';
 
 interface PortalAuthModalProps {
   isOpen: boolean;
@@ -17,7 +17,7 @@ export const PortalAuthModal: React.FC<PortalAuthModalProps> = ({
   onNavigate,
 }) => {
   const [activeTab, setActiveTab] = useState<'admin' | 'developer'>(initialTab);
-  const { login, verifyOtp, resendOtp, showToast } = useContent();
+  const { login, verifyOtp, resendOtp, showToast, isAdmin } = useContent();
 
   // Admin form state
   const [adminUsername, setAdminUsername] = useState('');
@@ -283,64 +283,87 @@ export const PortalAuthModal: React.FC<PortalAuthModalProps> = ({
 
           {/* ── ADMIN LOGIN FORM ── */}
           {activeTab === 'admin' && !otpData && (
-            <form onSubmit={handleAdminLogin} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-lime-400" />
-                  <span>Username or Admin Email</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={adminUsername}
-                  onChange={(e) => setAdminUsername(e.target.value)}
-                  placeholder="admin or info@azariahmg.com"
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none transition-colors"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-lime-400" />
-                  <span>Password</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type={adminShowPassword ? 'text' : 'password'}
-                    required
-                    value={adminPassword}
-                    onChange={(e) => setAdminPassword(e.target.value)}
-                    placeholder="••••••••••••"
-                    className="w-full px-4 py-2.5 pr-10 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none transition-colors"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setAdminShowPassword(!adminShowPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-                  >
-                    {adminShowPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+            isAdmin ? (
+              <div className="p-4 bg-lime-500/10 border border-lime-500/30 rounded-lg text-xs space-y-3 text-center">
+                <div className="flex items-center justify-center gap-2 text-lime-400 font-bold uppercase tracking-wider">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Admin Session Active</span>
                 </div>
+                <p className="text-slate-300 text-[11px]">
+                  You are currently authenticated with administrator privileges.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    navigateTo('admin');
+                  }}
+                  className="w-full py-2.5 px-4 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black tracking-widest text-xs uppercase rounded-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-lime-500/20 cursor-pointer"
+                >
+                  <span>Enter Admin Console</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
+            ) : (
+              <form onSubmit={handleAdminLogin} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-lime-400" />
+                    <span>Username or Admin Email</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={adminUsername}
+                    onChange={(e) => setAdminUsername(e.target.value)}
+                    placeholder="admin or info@azariahmg.com"
+                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none transition-colors"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                disabled={adminLoading}
-                className="w-full py-3 px-4 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black tracking-widest text-xs uppercase rounded-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-lime-500/20 active:translate-y-0.5 cursor-pointer disabled:opacity-50"
-              >
-                {adminLoading ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Verifying...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Access Console</span>
-                    <ShieldCheck className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-lime-400" />
+                    <span>Password</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={adminShowPassword ? 'text' : 'password'}
+                      required
+                      value={adminPassword}
+                      onChange={(e) => setAdminPassword(e.target.value)}
+                      placeholder="••••••••••••"
+                      className="w-full px-4 py-2.5 pr-10 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setAdminShowPassword(!adminShowPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    >
+                      {adminShowPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={adminLoading}
+                  className="w-full py-3 px-4 bg-lime-500 hover:bg-lime-400 text-slate-950 font-black tracking-widest text-xs uppercase rounded-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-lime-500/20 active:translate-y-0.5 cursor-pointer disabled:opacity-50"
+                >
+                  {adminLoading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Verifying...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Access Console</span>
+                      <ShieldCheck className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+            )
           )}
 
           {/* ── ADMIN OTP 2FA STEP ── */}
@@ -416,64 +439,87 @@ export const PortalAuthModal: React.FC<PortalAuthModalProps> = ({
 
           {/* ── DEVELOPER LOGIN FORM ── */}
           {activeTab === 'developer' && (
-            <form onSubmit={handleDeveloperLogin} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5 text-sky-400" />
-                  <span>Developer Email Address</span>
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={devEmail}
-                  onChange={(e) => setDevEmail(e.target.value)}
-                  placeholder="engineer@azariahmg.com"
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-sky-500 focus:outline-none transition-colors"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-sky-400" />
-                  <span>Password</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type={devShowPassword ? 'text' : 'password'}
-                    required
-                    value={devPassword}
-                    onChange={(e) => setDevPassword(e.target.value)}
-                    placeholder="••••••••••••"
-                    className="w-full px-4 py-2.5 pr-10 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-sky-500 focus:outline-none transition-colors"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setDevShowPassword(!devShowPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-                  >
-                    {devShowPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+            getDeveloperToken() ? (
+              <div className="p-4 bg-sky-500/10 border border-sky-500/30 rounded-lg text-xs space-y-3 text-center">
+                <div className="flex items-center justify-center gap-2 text-sky-400 font-bold uppercase tracking-wider">
+                  <Code2 className="w-4 h-4" />
+                  <span>Developer Session Active</span>
                 </div>
+                <p className="text-slate-300 text-[11px]">
+                  You are signed in as <strong className="text-white">{getSavedDeveloperUser()?.name || 'Engineer'}</strong>.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    navigateTo('developer');
+                  }}
+                  className="w-full py-2.5 px-4 bg-gradient-to-r from-sky-600 to-emerald-600 hover:from-sky-500 hover:to-emerald-500 text-white font-black tracking-widest text-xs uppercase rounded-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-sky-600/25 cursor-pointer"
+                >
+                  <span>Enter Developer Portal</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
+            ) : (
+              <form onSubmit={handleDeveloperLogin} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Developer Email Address</span>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={devEmail}
+                    onChange={(e) => setDevEmail(e.target.value)}
+                    placeholder="engineer@azariahmg.com"
+                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-sky-500 focus:outline-none transition-colors"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                disabled={devLoading}
-                className="w-full py-3 px-4 bg-gradient-to-r from-sky-600 to-emerald-600 hover:from-sky-500 hover:to-emerald-500 text-white font-black tracking-widest text-xs uppercase rounded-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-sky-600/25 active:translate-y-0.5 cursor-pointer disabled:opacity-50"
-              >
-                {devLoading ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Authenticating...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Access Portal</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Password</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={devShowPassword ? 'text' : 'password'}
+                      required
+                      value={devPassword}
+                      onChange={(e) => setDevPassword(e.target.value)}
+                      placeholder="••••••••••••"
+                      className="w-full px-4 py-2.5 pr-10 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-sky-500 focus:outline-none transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setDevShowPassword(!devShowPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    >
+                      {devShowPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={devLoading}
+                  className="w-full py-3 px-4 bg-gradient-to-r from-sky-600 to-emerald-600 hover:from-sky-500 hover:to-emerald-500 text-white font-black tracking-widest text-xs uppercase rounded-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-sky-600/25 active:translate-y-0.5 cursor-pointer disabled:opacity-50"
+                >
+                  {devLoading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Authenticating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Access Portal</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+            )
           )}
 
           {/* Modal Footer Note */}
