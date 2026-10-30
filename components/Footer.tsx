@@ -1,7 +1,9 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter, Facebook, ShieldCheck, Code } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter, Facebook, ShieldCheck, Code2 } from 'lucide-react';
 import Logo from './Logo';
 import { useContent } from '../context/ContentContext';
+import { getDeveloperToken } from '../services/developerService';
+import PortalAuthModal from './PortalAuthModal';
 
 interface FooterProps {
   onNavigate?: (view: any) => void;
@@ -10,6 +12,9 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const { settings, getSection, isAdmin } = useContent();
   const section = getSection('footer');
+
+  const [portalModalOpen, setPortalModalOpen] = useState(false);
+  const [portalInitialTab, setPortalInitialTab] = useState<'admin' | 'developer'>('admin');
 
   const contactEmail = settings?.contact_email || "info@azariahmg.com";
   const contactPhone = settings?.contact_phone || "240-813-0308";
@@ -27,6 +32,25 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     if (onNavigate) {
       e.preventDefault();
       onNavigate(view);
+    }
+  };
+
+  const handlePortalClick = (target: 'admin' | 'developer') => {
+    if (target === 'admin') {
+      if (isAdmin) {
+        onNavigate ? onNavigate('admin') : (window.location.hash = '#admin');
+      } else {
+        setPortalInitialTab('admin');
+        setPortalModalOpen(true);
+      }
+    } else {
+      const devToken = getDeveloperToken();
+      if (devToken) {
+        onNavigate ? onNavigate('developer') : (window.location.hash = '#dev-portal');
+      } else {
+        setPortalInitialTab('developer');
+        setPortalModalOpen(true);
+      }
     }
   };
 
@@ -93,30 +117,45 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-600 uppercase tracking-[0.5em] font-black">
+      <div className="max-w-7xl mx-auto pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-600 uppercase tracking-[0.5em] font-black gap-6">
         <p>© {new Date().getFullYear()} AZARIAH MANAGEMENT GROUP. BUILT FOR SCALE.</p>
-        <div className="flex items-center space-x-8 mt-6 md:mt-0">
+        <div className="flex flex-wrap items-center gap-6 sm:gap-8">
           <a href="#privacy-page" onClick={(e) => handleLinkClick(e, 'privacy')} className="hover:text-white transition-colors">Privacy</a>
           <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Terms</a>
           <a href="#terms-page" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors">Legal</a>
-          <a 
-            href="#admin" 
-            onClick={(e) => handleLinkClick(e, 'admin')} 
-            className="flex items-center gap-1.5 text-lime-400 hover:text-white transition-colors px-2 py-1 bg-slate-900 border border-slate-800 rounded-sm hover:border-lime-500"
-          >
-            <ShieldCheck className="w-3 h-3 text-lime-400" />
-            {isAdmin ? "Admin Console" : "Admin Portal"}
-          </a>
-          <a 
-            href="#dev-portal" 
-            onClick={(e) => handleLinkClick(e, 'developer')} 
-            className="flex items-center gap-1.5 text-sky-400 hover:text-white transition-colors px-2 py-1 bg-slate-900 border border-slate-800 rounded-sm hover:border-sky-500"
-          >
-            <Code className="w-3 h-3 text-sky-400" />
-            Developer Portal
-          </a>
+          
+          {/* ── Toggle Login Buttons (Matching Design Reference) ── */}
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => handlePortalClick('admin')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-950/90 border border-slate-800 text-lime-400 hover:text-white hover:border-lime-500/70 hover:bg-slate-900 transition-all text-[10px] font-black uppercase tracking-[0.18em] shadow-sm hover:shadow-[0_0_12px_rgba(163,230,53,0.2)] active:scale-95 cursor-pointer"
+              title="Open Admin Console"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-lime-400 shrink-0" />
+              <span>Admin Console</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handlePortalClick('developer')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-950/90 border border-slate-800 text-sky-400 hover:text-white hover:border-sky-500/70 hover:bg-slate-900 transition-all text-[10px] font-black uppercase tracking-[0.18em] shadow-sm hover:shadow-[0_0_12px_rgba(56,189,248,0.2)] active:scale-95 cursor-pointer"
+              title="Open Developer Portal"
+            >
+              <Code2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+              <span>Developer Portal</span>
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* ── Toggle Login Gateway Modal ── */}
+      <PortalAuthModal
+        isOpen={portalModalOpen}
+        onClose={() => setPortalModalOpen(false)}
+        initialTab={portalInitialTab}
+        onNavigate={onNavigate}
+      />
     </footer>
   );
 };

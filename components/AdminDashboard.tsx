@@ -28,6 +28,7 @@ import {
   Filter,
   Folder,
   Code,
+  Code2,
   Layout,
   Globe,
   Compass,
@@ -869,6 +870,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
             /* STANDARD USERNAME & PASSWORD FORM          */
             /* ========================================== */
             <div className="space-y-6">
+              {/* Portal Toggle Switch (Matching Reference) */}
+              <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-950 rounded-lg border border-slate-800">
+                <button
+                  type="button"
+                  className="flex items-center justify-center gap-2 py-2 px-3 rounded text-[10px] sm:text-[11px] font-black uppercase tracking-[0.18em] bg-slate-900 text-lime-400 border border-lime-500/60 shadow-[0_0_12px_rgba(163,230,53,0.18)]"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-lime-400" />
+                  <span>Admin Console</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onNavigate) onNavigate('#dev-portal');
+                    else window.location.hash = '#dev-portal';
+                  }}
+                  className="flex items-center justify-center gap-2 py-2 px-3 rounded text-[10px] sm:text-[11px] font-black uppercase tracking-[0.18em] text-slate-400 hover:text-slate-200 border border-transparent hover:border-slate-800/80 transition-all cursor-pointer"
+                >
+                  <Code2 className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Developer Portal</span>
+                </button>
+              </div>
+
               <div className="text-center space-y-3">
                 <div className="flex justify-center mb-4">
                   <Logo variant="dark" className="h-8" />

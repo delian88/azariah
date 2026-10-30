@@ -18,6 +18,8 @@ import {
   ArrowLeft,
   KeyRound,
   Shield,
+  ShieldCheck,
+  Code2,
   ExternalLink,
   Sparkles,
   UserCheck
@@ -360,6 +362,27 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold">
               <Shield className="w-3.5 h-3.5" /> Engineer Portal
             </div>
+          </div>
+
+          {/* Portal Toggle Switch (Developer Active) */}
+          <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-950 rounded-lg border border-slate-800 mb-6">
+            <button
+              type="button"
+              onClick={() => {
+                window.location.hash = '#admin';
+              }}
+              className="flex items-center justify-center gap-2 py-2 px-3 rounded text-[10px] sm:text-[11px] font-black uppercase tracking-[0.18em] text-slate-400 hover:text-slate-200 border border-transparent hover:border-slate-800/80 transition-all cursor-pointer"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-lime-400" />
+              <span>Admin Console</span>
+            </button>
+            <button
+              type="button"
+              className="flex items-center justify-center gap-2 py-2 px-3 rounded text-[10px] sm:text-[11px] font-black uppercase tracking-[0.18em] bg-slate-900 text-sky-400 border border-sky-500/60 shadow-[0_0_12px_rgba(56,189,248,0.18)]"
+            >
+              <Code2 className="w-3.5 h-3.5 text-sky-400" />
+              <span>Developer Portal</span>
+            </button>
           </div>
 
           <div className="text-center mb-8">
