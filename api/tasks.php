@@ -17,6 +17,7 @@ if (!$action) {
     elseif (str_ends_with($uri, 'tasks/stats') || str_ends_with($uri, 'stats')) $action = 'stats';
     elseif (str_ends_with($uri, 'tasks/resend-email') || str_ends_with($uri, 'resend-email')) $action = 'resend-email';
     elseif (str_ends_with($uri, 'tasks/update-status') || str_ends_with($uri, 'update-status')) $action = 'update-status';
+    elseif (str_ends_with($uri, 'tasks/test-email') || str_ends_with($uri, 'test-email')) $action = 'test-email';
 }
 
 $pdo = getDbConnection();

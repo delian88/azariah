@@ -88,24 +88,50 @@ function dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $h
         } catch (Exception $e2) {
             $err2 = $mail2->ErrorInfo ?: $e2->getMessage();
 
-            // Tier 3: Native PHP mail() fallback with RFC-compliant UTF-8 base64 HTML headers
-            $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
-            $encodedFrom    = '=?UTF-8?B?' . base64_encode('Azariah Management Group') . '?= <' . $smtpUser . '>';
-            $headers  = "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-            $headers .= "Content-Transfer-Encoding: base64\r\n";
-            $headers .= "From: " . $encodedFrom . "\r\n";
-            $headers .= "Reply-To: support@azariahmg.com\r\n";
-            $headers .= "X-Mailer: Azariah Enterprise Mailer/2.0\r\n";
+            // Tier 3: Localhost Port 25 (cPanel Exim Relay)
+            try {
+                $mail3 = new PHPMailer(true);
+                $mail3->isSMTP();
+                $mail3->Host       = 'localhost';
+                $mail3->SMTPAuth   = false;
+                $mail3->Port       = 25;
+                $mail3->Timeout    = 5;
+                $mail3->CharSet    = 'UTF-8';
+                $mail3->Encoding   = 'base64';
 
-            $bodyChunked = rtrim(chunk_split(base64_encode($htmlBody)));
-            $sentNative  = @mail($recipientEmail, $encodedSubject, $bodyChunked, $headers, "-f" . $smtpUser);
-            if ($sentNative) {
-                return ['success' => true, 'transport' => 'native_mail_fallback'];
+                $mail3->setFrom('no-reply@azariahmg.com', 'Azariah Management Group');
+                $mail3->addAddress($recipientEmail, $recipientName ?: 'Developer');
+                $mail3->addReplyTo('support@azariahmg.com', 'Azariah Support');
+                $mail3->isHTML(true);
+                $mail3->Subject  = $subject;
+                $mail3->Body     = $htmlBody;
+                $mail3->AltBody  = $altBody ?: strip_tags($htmlBody);
+
+                $mail3->send();
+                return ['success' => true, 'transport' => 'cpanel_localhost_25'];
+            } catch (Exception $e3) {
+                $err3 = $mail3->ErrorInfo ?: $e3->getMessage();
+
+                // Tier 4: Native PHP mail() fallback with SPF/DMARC aligned domain and RFC base64 headers
+                $nativeFromEmail = (!empty($smtpUser) && !str_ends_with(strtolower($smtpUser), '@gmail.com')) ? $smtpUser : 'no-reply@azariahmg.com';
+                $encodedSubject  = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+                $encodedFrom     = '=?UTF-8?B?' . base64_encode('Azariah Management Group') . '?= <' . $nativeFromEmail . '>';
+                $headers  = "MIME-Version: 1.0\r\n";
+                $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+                $headers .= "Content-Transfer-Encoding: base64\r\n";
+                $headers .= "From: " . $encodedFrom . "\r\n";
+                $headers .= "Reply-To: support@azariahmg.com\r\n";
+                $headers .= "X-Mailer: Azariah Enterprise Mailer/2.0\r\n";
+
+                $bodyChunked = rtrim(chunk_split(base64_encode($htmlBody)));
+                $sentNative  = @mail($recipientEmail, $encodedSubject, $bodyChunked, $headers, "-f" . $nativeFromEmail);
+                if ($sentNative) {
+                    return ['success' => true, 'transport' => 'native_mail_fallback'];
+                }
+
+                @file_put_contents(dirname(__DIR__) . '/smtp_debug.log', date('c') . " [DEV MAIL ERR] SSL: $err1 | TLS: $err2 | Local25: $err3\n", FILE_APPEND);
+                return ['success' => false, 'error' => "SSL: $err1 | TLS: $err2 | Local25: $err3"];
             }
-
-            @file_put_contents(dirname(__DIR__) . '/smtp_debug.log', date('c') . " [DEV MAIL ERR] SSL: $err1 | TLS: $err2\n", FILE_APPEND);
-            return ['success' => false, 'error' => "SSL: $err1 | TLS: $err2"];
         }
     }
 }
