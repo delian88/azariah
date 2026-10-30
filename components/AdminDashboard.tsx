@@ -1454,7 +1454,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   onClick={() => {
                     setActiveTab('developers');
                     setMobileDrawerOpen(false);
-                    showToast('Switched to Developers & Team.', 'info');
+                    showToast('Switched to Staff & Departments.', 'info');
                   }}
                   className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
                     activeTab === 'developers'
@@ -1463,7 +1463,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   }`}
                 >
                   <span className="flex items-center gap-3">
-                    <Users className="w-4 h-4" /> Developers & Credentials
+                    <Users className="w-4 h-4" /> Staff & Departments
                   </span>
                   <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
@@ -1799,7 +1799,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
             <button
               onClick={() => {
                 setActiveTab('developers');
-                showToast('Switched to Developers & Team.', 'info');
+                showToast('Switched to Staff & Departments.', 'info');
               }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
                 activeTab === 'developers'
@@ -1807,7 +1807,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
             >
-              <Users className="w-4 h-4" /> Developers & Credentials
+              <Users className="w-4 h-4" /> Staff & Departments
             </button>
 
             <button

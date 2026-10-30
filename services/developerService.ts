@@ -1,10 +1,26 @@
 import { getApiUrl } from '../context/ContentContext';
 
+export interface Department {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  color?: string;
+  leadStaffId?: number | null;
+  leadStaffName?: string;
+  staffCount?: number;
+  tasksCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Developer {
   id: number;
   name: string;
   email: string;
   roleTitle: string;
+  departmentId?: number | null;
+  department?: string;
   hourlyRate: number;
   currency: string;
   phone?: string;
@@ -132,6 +148,8 @@ export interface DeveloperTask {
   developerName?: string;
   developerEmail?: string;
   developerRole?: string;
+  departmentId?: number | null;
+  department?: string;
   projectId?: number | null;
   projectName?: string;
   projectSlug?: string;
@@ -334,10 +352,22 @@ export const developerService = {
   // ==========================================
   // ADMIN PANEL OPERATIONS
   // ==========================================
-  // Developers CRUD
-  async adminGetDevelopers(): Promise<{ success: boolean; developers?: Developer[]; error?: string }> {
+  // Developers & Staff CRUD
+  async adminGetDevelopers(filters?: {
+    departmentId?: number;
+    department?: string;
+    status?: string;
+    search?: string;
+  }): Promise<{ success: boolean; developers?: Developer[]; error?: string }> {
     try {
-      const res = await fetch(getApiUrl('api/developers'), {
+      const params = new URLSearchParams();
+      if (filters?.departmentId) params.append('departmentId', String(filters.departmentId));
+      if (filters?.department && filters.department !== 'all') params.append('department', filters.department);
+      if (filters?.status && filters.status !== 'all') params.append('status', filters.status);
+      if (filters?.search) params.append('search', filters.search);
+
+      const qs = params.toString() ? `?${params.toString()}` : '';
+      const res = await fetch(getApiUrl(`api/developers${qs}`), {
         headers: getAdminHeaders()
       });
       return await res.json();
@@ -350,6 +380,8 @@ export const developerService = {
     name: string;
     email: string;
     roleTitle: string;
+    departmentId?: number | null;
+    department?: string;
     hourlyRate: number;
     currency: string;
     phone?: string;
@@ -380,6 +412,8 @@ export const developerService = {
     id: number;
     name?: string;
     roleTitle?: string;
+    departmentId?: number | null;
+    department?: string;
     hourlyRate?: number;
     currency?: string;
     phone?: string;
@@ -614,11 +648,13 @@ export const developerService = {
   },
 
   // ---------------------------------------------------------------------------
-  // TASK MANAGEMENT & DEVELOPER ASSIGNMENTS
+  // TASK MANAGEMENT & STAFF ASSIGNMENTS
   // ---------------------------------------------------------------------------
   async adminGetTasks(filters?: {
     developerId?: number;
     projectId?: number;
+    departmentId?: number;
+    department?: string;
     status?: string;
     priority?: string;
     search?: string;
@@ -627,6 +663,8 @@ export const developerService = {
       const params = new URLSearchParams();
       if (filters?.developerId) params.append('developerId', String(filters.developerId));
       if (filters?.projectId) params.append('projectId', String(filters.projectId));
+      if (filters?.departmentId) params.append('departmentId', String(filters.departmentId));
+      if (filters?.department && filters.department !== 'all') params.append('department', filters.department);
       if (filters?.status && filters.status !== 'all') params.append('status', filters.status);
       if (filters?.priority && filters.priority !== 'all') params.append('priority', filters.priority);
       if (filters?.search) params.append('search', filters.search);
@@ -656,6 +694,8 @@ export const developerService = {
     title: string;
     description?: string;
     developerId: number;
+    departmentId?: number | null;
+    department?: string;
     projectId?: number | null;
     priority?: TaskPriority;
     status?: TaskStatus;
@@ -738,6 +778,69 @@ export const developerService = {
         method: 'POST',
         headers: getDevHeaders(),
         body: JSON.stringify({ id: taskId, status, notes, actualHours })
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    }
+  },
+
+  // ---------------------------------------------------------------------------
+  // DEPARTMENTS MANAGEMENT
+  // ---------------------------------------------------------------------------
+  async adminGetDepartments(): Promise<{ success: boolean; departments: Department[]; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl('api/departments'), {
+        headers: getAdminHeaders()
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, departments: [], error: e.message };
+    }
+  },
+
+  async adminCreateDepartment(data: {
+    name: string;
+    description?: string;
+    color?: string;
+    leadStaffId?: number | null;
+  }): Promise<{ success: boolean; message?: string; department?: Department; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl('api/departments'), {
+        method: 'POST',
+        headers: getAdminHeaders(),
+        body: JSON.stringify(data)
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    }
+  },
+
+  async adminUpdateDepartment(data: {
+    id: number;
+    name?: string;
+    description?: string;
+    color?: string;
+    leadStaffId?: number | null;
+  }): Promise<{ success: boolean; message?: string; department?: Department; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl('api/departments'), {
+        method: 'PUT',
+        headers: getAdminHeaders(),
+        body: JSON.stringify(data)
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    }
+  },
+
+  async adminDeleteDepartment(id: number): Promise<{ success: boolean; message?: string; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl(`api/departments?id=${id}`), {
+        method: 'DELETE',
+        headers: getAdminHeaders()
       });
       return await res.json();
     } catch (e: any) {

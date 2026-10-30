@@ -30,11 +30,13 @@ if ($action === 'my-tasks' && $method === 'GET') {
     $devId = (int)$dev['id'];
 
     $stmt = $pdo->prepare("
-        SELECT t.id, t.title, t.description, t.developerId, t.projectId, t.priority,
-               t.status, t.dueDate, t.estimatedHours, t.actualHours, t.assignedByAdminId,
+        SELECT t.id, t.title, t.description, t.developerId, t.projectId, t.departmentId,
+               COALESCE(t.department, d.department, 'Engineering & Technology') as department,
+               t.priority, t.status, t.dueDate, t.estimatedHours, t.actualHours, t.assignedByAdminId,
                t.assignedByAdminName, t.completedAt, t.notes, t.emailNotified, t.createdAt, t.updatedAt,
                p.name as projectName, p.slug as projectSlug
         FROM developer_tasks t
+        LEFT JOIN developers d ON t.developerId = d.id
         LEFT JOIN projects p ON t.projectId = p.id
         WHERE t.developerId = ?
         ORDER BY 
@@ -248,6 +250,8 @@ if ($method === 'GET') {
 
     $devId = isset($_GET['developerId']) ? (int)$_GET['developerId'] : 0;
     $projId = isset($_GET['projectId']) ? (int)$_GET['projectId'] : 0;
+    $deptId = isset($_GET['departmentId']) ? (int)$_GET['departmentId'] : 0;
+    $dept = isset($_GET['department']) && $_GET['department'] !== 'all' ? trim($_GET['department']) : '';
     $status = isset($_GET['status']) && $_GET['status'] !== 'all' ? trim($_GET['status']) : '';
     $priority = isset($_GET['priority']) && $_GET['priority'] !== 'all' ? trim($_GET['priority']) : '';
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -263,6 +267,15 @@ if ($method === 'GET') {
         $where[] = "t.projectId = ?";
         $params[] = $projId;
     }
+    if ($deptId > 0) {
+        $where[] = "(t.departmentId = ? OR d.departmentId = ?)";
+        $params[] = $deptId;
+        $params[] = $deptId;
+    } elseif ($dept !== '') {
+        $where[] = "(t.department = ? OR d.department = ?)";
+        $params[] = $dept;
+        $params[] = $dept;
+    }
     if ($status !== '') {
         $where[] = "t.status = ?";
         $params[] = $status;
@@ -272,8 +285,10 @@ if ($method === 'GET') {
         $params[] = $priority;
     }
     if ($search !== '') {
-        $where[] = "(t.title LIKE ? OR t.description LIKE ? OR d.name LIKE ? OR p.name LIKE ?)";
+        $where[] = "(t.title LIKE ? OR t.description LIKE ? OR d.name LIKE ? OR p.name LIKE ? OR t.department LIKE ? OR d.department LIKE ?)";
         $searchTerm = "%$search%";
+        $params[] = $searchTerm;
+        $params[] = $searchTerm;
         $params[] = $searchTerm;
         $params[] = $searchTerm;
         $params[] = $searchTerm;
@@ -283,8 +298,9 @@ if ($method === 'GET') {
     $whereSql = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
 
     $sql = "
-        SELECT t.id, t.title, t.description, t.developerId, t.projectId, t.priority,
-               t.status, t.dueDate, t.estimatedHours, t.actualHours, t.assignedByAdminId,
+        SELECT t.id, t.title, t.description, t.developerId, t.projectId, t.departmentId,
+               COALESCE(t.department, d.department, 'Engineering & Technology') as department,
+               t.priority, t.status, t.dueDate, t.estimatedHours, t.actualHours, t.assignedByAdminId,
                t.assignedByAdminName, t.completedAt, t.notes, t.emailNotified, t.createdAt, t.updatedAt,
                d.name as developerName, d.email as developerEmail, d.roleTitle as developerRole,
                p.name as projectName, p.slug as projectSlug
@@ -328,6 +344,8 @@ if ($method === 'POST') {
     $description = trim($input['description'] ?? '');
     $developerId = (int)($input['developerId'] ?? 0);
     $projectId = !empty($input['projectId']) ? (int)$input['projectId'] : null;
+    $departmentId = !empty($input['departmentId']) ? (int)$input['departmentId'] : null;
+    $department = trim($input['department'] ?? '');
     $priority = strtolower(trim($input['priority'] ?? 'medium'));
     $status = strtolower(trim($input['status'] ?? 'pending'));
     $dueDate = !empty($input['dueDate']) ? trim($input['dueDate']) : null;
@@ -338,15 +356,23 @@ if ($method === 'POST') {
         sendJson(['success' => false, 'error' => 'Task title is required'], 400);
     }
     if ($developerId <= 0) {
-        sendJson(['success' => false, 'error' => 'A valid developer must be selected'], 400);
+        sendJson(['success' => false, 'error' => 'A valid staff member must be selected'], 400);
     }
 
-    // Validate developer exists
-    $devStmt = $pdo->prepare("SELECT id, name, email, roleTitle FROM developers WHERE id = ? LIMIT 1");
+    // Validate developer/staff exists
+    $devStmt = $pdo->prepare("SELECT id, name, email, roleTitle, departmentId, department FROM developers WHERE id = ? LIMIT 1");
     $devStmt->execute([$developerId]);
     $dev = $devStmt->fetch();
     if (!$dev) {
-        sendJson(['success' => false, 'error' => 'Developer not found in system'], 404);
+        sendJson(['success' => false, 'error' => 'Staff member not found in system'], 404);
+    }
+
+    // Default department from developer profile if not passed
+    if (!$departmentId && !empty($dev['departmentId'])) {
+        $departmentId = (int)$dev['departmentId'];
+    }
+    if (empty($department)) {
+        $department = $dev['department'] ?: 'Engineering & Technology';
     }
 
     // Validate project if provided
@@ -374,15 +400,17 @@ if ($method === 'POST') {
 
     $stmt = $pdo->prepare("
         INSERT INTO developer_tasks 
-            (title, description, developerId, projectId, priority, status, dueDate, estimatedHours, actualHours, assignedByAdminId, assignedByAdminName, completedAt, emailNotified, createdAt, updatedAt)
+            (title, description, developerId, projectId, departmentId, department, priority, status, dueDate, estimatedHours, actualHours, assignedByAdminId, assignedByAdminName, completedAt, emailNotified, createdAt, updatedAt)
         VALUES 
-            (?, ?, ?, ?, ?, ?, ?, ?, 0.00, ?, ?, ?, 0, NOW(3), NOW(3))
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0.00, ?, ?, ?, 0, NOW(3), NOW(3))
     ");
     $stmt->execute([
         $title,
         $description,
         $developerId,
         $projectId,
+        $departmentId,
+        $department,
         $priority,
         $status,
         $dueDate,
@@ -401,6 +429,7 @@ if ($method === 'POST') {
         'developerId' => $developerId,
         'projectId' => $projectId,
         'projectName' => $projectName,
+        'department' => $department,
         'priority' => $priority,
         'status' => $status,
         'dueDate' => $dueDate,
@@ -408,7 +437,7 @@ if ($method === 'POST') {
         'assignedByAdminName' => $adminName
     ];
 
-    // Send email confirmation to developer if enabled
+    // Send email confirmation to staff if enabled
     $emailSent = false;
     $emailError = null;
     if ($sendEmail && !empty($dev['email'])) {
@@ -428,6 +457,7 @@ if ($method === 'POST') {
     // Fetch newly created task with relations
     $fetchStmt = $pdo->prepare("
         SELECT t.*, d.name as developerName, d.email as developerEmail, d.roleTitle as developerRole,
+               COALESCE(t.department, d.department, 'Engineering & Technology') as department,
                p.name as projectName, p.slug as projectSlug
         FROM developer_tasks t
         LEFT JOIN developers d ON t.developerId = d.id
@@ -440,7 +470,7 @@ if ($method === 'POST') {
 
     sendJson([
         'success' => true,
-        'message' => "Task '{$title}' created and assigned to {$dev['name']}." . ($emailSent ? " Confirmation email dispatched." : ""),
+        'message' => "Task '{$title}' created and assigned to {$dev['name']} ({$department})." . ($emailSent ? " Confirmation email dispatched." : ""),
         'task' => $createdTask,
         'emailSent' => $emailSent,
         'emailError' => $emailError

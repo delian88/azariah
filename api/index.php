@@ -88,6 +88,15 @@ if ($path === 'developers' || $path === 'admin/developers' || str_starts_with($p
     exit(0);
 }
 
+// 5b. Departments & Organizational Units (/departments, /admin/departments)
+if ($path === 'departments' || $path === 'admin/departments' || str_starts_with($path, 'departments/') || str_starts_with($path, 'admin/departments/')) {
+    if (preg_match('#(?:admin/)?departments/([a-zA-Z0-9_-]+)#', $path, $matches)) {
+        $_GET['action'] = $matches[1];
+    }
+    require __DIR__ . '/departments.php';
+    exit(0);
+}
+
 // 6. Projects & Milestones Routes (/projects, /admin/projects)
 if ($path === 'projects' || $path === 'admin/projects' || str_starts_with($path, 'projects/') || str_starts_with($path, 'admin/projects/')) {
     if (preg_match('#(?:admin/)?projects/([a-zA-Z0-9_-]+)#', $path, $matches)) {

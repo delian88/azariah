@@ -34,7 +34,7 @@ if ($action === 'login' && $method === 'POST') {
         sendJson(['success' => false, 'error' => 'Email and password are required'], 400);
     }
 
-    $stmt = $pdo->prepare("SELECT id, name, email, passwordHash, roleTitle, hourlyRate, currency, phone, status, emailConfirmed FROM developers WHERE email = ? LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id, name, email, passwordHash, roleTitle, departmentId, department, hourlyRate, currency, phone, status, emailConfirmed FROM developers WHERE email = ? LIMIT 1");
     $stmt->execute([$email]);
     $dev = $stmt->fetch();
 
@@ -43,7 +43,7 @@ if ($action === 'login' && $method === 'POST') {
     }
 
     if ($dev['status'] === 'inactive') {
-        sendJson(['success' => false, 'error' => 'Your developer account is inactive. Please contact your manager.'], 403);
+        sendJson(['success' => false, 'error' => 'Your staff account is inactive. Please contact your manager.'], 403);
     }
 
     // Update last login
@@ -55,7 +55,8 @@ if ($action === 'login' && $method === 'POST') {
         'email' => $dev['email'],
         'name' => $dev['name'],
         'role' => 'developer',
-        'roleTitle' => $dev['roleTitle']
+        'roleTitle' => $dev['roleTitle'],
+        'department' => $dev['department'] ?: 'Engineering & Technology'
     ]);
 
     // Fetch assigned projects
@@ -76,6 +77,8 @@ if ($action === 'login' && $method === 'POST') {
             'name' => $dev['name'],
             'email' => $dev['email'],
             'roleTitle' => $dev['roleTitle'],
+            'departmentId' => $dev['departmentId'],
+            'department' => $dev['department'] ?: 'Engineering & Technology',
             'hourlyRate' => (float)$dev['hourlyRate'],
             'currency' => $dev['currency'],
             'phone' => $dev['phone'],
@@ -93,7 +96,7 @@ if ($action === 'me' && $method === 'GET') {
     $auth = requireDeveloperUser();
     $devId = $auth['id'];
 
-    $stmt = $pdo->prepare("SELECT id, name, email, roleTitle, hourlyRate, currency, phone, status, emailConfirmed, lastLoginAt, createdAt FROM developers WHERE id = ? LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id, name, email, roleTitle, departmentId, department, hourlyRate, currency, phone, status, emailConfirmed, lastLoginAt, createdAt FROM developers WHERE id = ? LIMIT 1");
     $stmt->execute([$devId]);
     $dev = $stmt->fetch();
 
@@ -192,17 +195,35 @@ if ($action === 'resend-invite' && $method === 'POST') {
 requireAdminUser();
 
 // -----------------------------------------------------------------------------
-// GET /api/developers: List all developers with project and hours aggregates
+// GET /api/developers: List all staff/developers with project and hours aggregates
 // -----------------------------------------------------------------------------
 if ($method === 'GET') {
-    $stmt = $pdo->query("
-        SELECT d.id, d.name, d.email, d.roleTitle, d.hourlyRate, d.currency, d.phone, d.status, d.emailConfirmed, d.lastLoginAt, d.createdAt,
+    $deptFilter = isset($_GET['department']) && $_GET['department'] !== 'all' ? trim($_GET['department']) : '';
+    $deptIdFilter = isset($_GET['departmentId']) ? (int)$_GET['departmentId'] : 0;
+
+    $where = [];
+    $params = [];
+    if ($deptIdFilter > 0) {
+        $where[] = "(d.departmentId = ?)";
+        $params[] = $deptIdFilter;
+    } elseif ($deptFilter !== '') {
+        $where[] = "(d.department = ? OR d.departmentId IN (SELECT id FROM departments WHERE name = ?))";
+        $params[] = $deptFilter;
+        $params[] = $deptFilter;
+    }
+
+    $whereSql = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+
+    $stmt = $pdo->prepare("
+        SELECT d.id, d.name, d.email, d.roleTitle, d.departmentId, d.department, d.hourlyRate, d.currency, d.phone, d.status, d.emailConfirmed, d.lastLoginAt, d.createdAt,
             (SELECT COUNT(*) FROM project_developers pd WHERE pd.developerId = d.id) as assignedProjectsCount,
             (SELECT COALESCE(SUM(totalMinutes), 0) FROM developer_time_logs tl WHERE tl.developerId = d.id) as totalMinutesLogged,
             (SELECT COUNT(*) FROM developer_time_logs tl WHERE tl.developerId = d.id AND tl.clockOut IS NULL) as isCurrentlyClockedIn
         FROM developers d 
+        $whereSql
         ORDER BY d.createdAt DESC
     ");
+    $stmt->execute($params);
     $developers = $stmt->fetchAll();
 
     // Attach assigned projects to each developer
@@ -217,19 +238,34 @@ if ($method === 'GET') {
         $d['projects'] = $projStmt->fetchAll();
         $d['totalHoursLogged'] = round($d['totalMinutesLogged'] / 60, 1);
         $d['isCurrentlyClockedIn'] = (bool)$d['isCurrentlyClockedIn'];
+        if (empty($d['department'])) {
+            $d['department'] = 'Engineering & Technology';
+        }
     }
 
     sendJson(['success' => true, 'developers' => $developers]);
 }
 
 // -----------------------------------------------------------------------------
-// POST /api/developers: Create a new developer profile and assign projects
+// POST /api/developers: Create a new developer/staff profile and assign projects
 // -----------------------------------------------------------------------------
 if ($method === 'POST') {
     $input = getJsonInput();
     $name = trim($input['name'] ?? '');
     $email = strtolower(trim($input['email'] ?? ''));
-    $roleTitle = trim($input['roleTitle'] ?? 'Full Stack Developer');
+    $roleTitle = trim($input['roleTitle'] ?? 'Team Member');
+    $departmentId = !empty($input['departmentId']) ? (int)$input['departmentId'] : null;
+    $department = trim($input['department'] ?? '');
+
+    // If departmentId is provided and department is empty, resolve name from departments table
+    if ($departmentId && empty($department)) {
+        $dStmt = $pdo->prepare("SELECT name FROM departments WHERE id = ? LIMIT 1");
+        $dStmt->execute([$departmentId]);
+        $department = $dStmt->fetchColumn() ?: 'General';
+    } elseif (empty($department)) {
+        $department = 'Engineering & Technology';
+    }
+
     $hourlyRate = (float)($input['hourlyRate'] ?? 0.00);
     $currency = trim($input['currency'] ?? 'USD');
     $phone = trim($input['phone'] ?? '');
@@ -243,7 +279,7 @@ if ($method === 'POST') {
     }
 
     if (!$name || !$email) {
-        sendJson(['success' => false, 'error' => 'Developer full name and email are required'], 400);
+        sendJson(['success' => false, 'error' => 'Staff full name and email are required'], 400);
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -254,21 +290,23 @@ if ($method === 'POST') {
     $checkStmt = $pdo->prepare("SELECT id FROM developers WHERE email = ?");
     $checkStmt->execute([$email]);
     if ($checkStmt->fetch()) {
-        sendJson(['success' => false, 'error' => "A developer with email '$email' already exists"], 409);
+        sendJson(['success' => false, 'error' => "A staff member with email '$email' already exists"], 409);
     }
 
     $passwordHash = password_hash($plainPassword, PASSWORD_BCRYPT);
     $confirmationToken = bin2hex(random_bytes(32));
 
     $insStmt = $pdo->prepare("
-        INSERT INTO developers (name, email, passwordHash, roleTitle, hourlyRate, currency, phone, status, emailConfirmed, confirmationToken, createdAt, updatedAt)
-        VALUES (:name, :email, :pass, :role, :rate, :curr, :phone, 'active', 0, :token, NOW(3), NOW(3))
+        INSERT INTO developers (name, email, passwordHash, roleTitle, departmentId, department, hourlyRate, currency, phone, status, emailConfirmed, confirmationToken, createdAt, updatedAt)
+        VALUES (:name, :email, :pass, :role, :deptId, :dept, :rate, :curr, :phone, 'active', 0, :token, NOW(3), NOW(3))
     ");
     $insStmt->execute([
         ':name' => $name,
         ':email' => $email,
         ':pass' => $passwordHash,
         ':role' => $roleTitle,
+        ':deptId' => $departmentId,
+        ':dept' => $department,
         ':rate' => $hourlyRate,
         ':curr' => $currency,
         ':phone' => $phone,
@@ -304,7 +342,7 @@ if ($method === 'POST') {
             $email,
             $name,
             $plainPassword,
-            $roleTitle,
+            $roleTitle . ($department ? " ($department)" : ""),
             $assignedProjectNames
         );
         $mailStatus = $mailResult['success'];
@@ -313,12 +351,14 @@ if ($method === 'POST') {
 
     sendJson([
         'success' => true,
-        'message' => 'Developer created successfully',
+        'message' => 'Staff profile created successfully',
         'developer' => [
             'id' => $newDevId,
             'name' => $name,
             'email' => $email,
             'roleTitle' => $roleTitle,
+            'departmentId' => $departmentId,
+            'department' => $department,
             'hourlyRate' => $hourlyRate,
             'currency' => $currency,
             'phone' => $phone,
@@ -343,11 +383,20 @@ if ($method === 'PUT') {
     $input = getJsonInput();
     $id = (int)($input['id'] ?? 0);
     if (!$id) {
-        sendJson(['success' => false, 'error' => 'Developer ID is required'], 400);
+        sendJson(['success' => false, 'error' => 'Staff ID is required'], 400);
     }
 
     $name = trim($input['name'] ?? '');
     $roleTitle = trim($input['roleTitle'] ?? '');
+    $departmentId = array_key_exists('departmentId', $input) ? (!empty($input['departmentId']) ? (int)$input['departmentId'] : null) : null;
+    $department = isset($input['department']) ? trim($input['department']) : null;
+
+    if ($departmentId && empty($department)) {
+        $dStmt = $pdo->prepare("SELECT name FROM departments WHERE id = ? LIMIT 1");
+        $dStmt->execute([$departmentId]);
+        $department = $dStmt->fetchColumn() ?: null;
+    }
+
     $hourlyRate = isset($input['hourlyRate']) ? (float)$input['hourlyRate'] : null;
     $currency = trim($input['currency'] ?? 'USD');
     $phone = trim($input['phone'] ?? '');
@@ -360,6 +409,8 @@ if ($method === 'PUT') {
 
     if ($name) { $updFields[] = 'name = :name'; $params[':name'] = $name; }
     if ($roleTitle) { $updFields[] = 'roleTitle = :role'; $params[':role'] = $roleTitle; }
+    if (array_key_exists('departmentId', $input)) { $updFields[] = 'departmentId = :deptId'; $params[':deptId'] = $departmentId; }
+    if ($department !== null) { $updFields[] = 'department = :dept'; $params[':dept'] = $department; }
     if ($hourlyRate !== null) { $updFields[] = 'hourlyRate = :rate'; $params[':rate'] = $hourlyRate; }
     if ($currency) { $updFields[] = 'currency = :curr'; $params[':curr'] = $currency; }
     if ($phone !== null) { $updFields[] = 'phone = :phone'; $params[':phone'] = $phone; }

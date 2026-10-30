@@ -15,36 +15,82 @@ import {
   ShieldAlert,
   Search,
   CheckCircle2,
-  DollarSign
+  DollarSign,
+  Building2,
+  Plus,
+  X,
+  Tag,
+  Layers,
+  ChevronRight,
+  Filter
 } from 'lucide-react';
 import {
   developerService,
   Developer,
-  Project
+  Project,
+  Department
 } from '../../services/developerService';
 
 interface AdminDevelopersTabProps {
   showToast: (msg: string, type?: 'success' | 'error' | 'info') => void;
 }
 
+const DEPARTMENT_COLORS = [
+  { name: 'Sky Blue', value: '#38bdf8' },
+  { name: 'Emerald Green', value: '#10b981' },
+  { name: 'Purple / Violet', value: '#a855f7' },
+  { name: 'Amber Gold', value: '#f59e0b' },
+  { name: 'Rose Red', value: '#f43f5e' },
+  { name: 'Cyan Tech', value: '#06b6d4' },
+  { name: 'Indigo Corporate', value: '#6366f1' },
+  { name: 'Lime Advisory', value: '#84cc16' }
+];
+
 export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToast }) => {
   const [developers, setDevelopers] = useState<Developer[]>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDeptFilter, setSelectedDeptFilter] = useState<string>('all');
 
-  // Add Developer Modal State
+  // Add Staff Modal State
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [roleTitle, setRoleTitle] = useState('Full Stack Engineer');
+  const [roleTitle, setRoleTitle] = useState('Senior Associate');
+  const [departmentId, setDepartmentId] = useState<number | ''>('');
+  const [departmentName, setDepartmentName] = useState<string>('Engineering & Technology');
+  const [customDeptInput, setCustomDeptInput] = useState(false);
   const [hourlyRate, setHourlyRate] = useState<number | ''>(45);
   const [currency, setCurrency] = useState('USD');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [assignedProjectIds, setAssignedProjectIds] = useState<number[]>([]);
   const [sendEmail, setSendEmail] = useState(true);
+
+  // Edit Staff Modal State
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingStaff, setEditingStaff] = useState<Developer | null>(null);
+  const [editSaving, setEditSaving] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editRoleTitle, setEditRoleTitle] = useState('');
+  const [editDeptId, setEditDeptId] = useState<number | ''>('');
+  const [editDeptName, setEditDeptName] = useState('');
+  const [editHourlyRate, setEditHourlyRate] = useState<number | ''>(45);
+  const [editCurrency, setEditCurrency] = useState('USD');
+  const [editPhone, setEditPhone] = useState('');
+  const [editStatus, setEditStatus] = useState<'active' | 'inactive' | 'pending'>('active');
+  const [editPassword, setEditPassword] = useState('');
+
+  // Department Management Modal State
+  const [deptModalOpen, setDeptModalOpen] = useState(false);
+  const [deptSaving, setDeptSaving] = useState(false);
+  const [newDeptName, setNewDeptName] = useState('');
+  const [newDeptDesc, setNewDeptDesc] = useState('');
+  const [newDeptColor, setNewDeptColor] = useState('#38bdf8');
+  const [editingDeptId, setEditingDeptId] = useState<number | null>(null);
 
   // Credentials Ready Modal State (for immediate Copy to Clipboard)
   const [credsModalOpen, setCredsModalOpen] = useState(false);
@@ -54,28 +100,29 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
     password: string;
     portalUrl: string;
     role?: string;
+    department?: string;
   } | null>(null);
   const [copied, setCopied] = useState(false);
-
-  // Edit Developer Modal State
-  const [editingDev, setEditingDev] = useState<Developer | null>(null);
-  const [editStatus, setEditStatus] = useState<'active' | 'inactive'>('active');
 
   const fetchAll = async () => {
     setLoading(true);
     try {
-      const [devsRes, projsRes] = await Promise.all([
+      const [devsRes, deptsRes, projsRes] = await Promise.all([
         developerService.adminGetDevelopers(),
+        developerService.adminGetDepartments(),
         developerService.adminGetProjects()
       ]);
       if (devsRes.success && devsRes.developers) {
         setDevelopers(devsRes.developers);
       }
+      if (deptsRes.success && deptsRes.departments) {
+        setDepartments(deptsRes.departments);
+      }
       if (projsRes.success && projsRes.projects) {
         setProjects(projsRes.projects);
       }
     } catch (e: any) {
-      showToast(e.message || 'Failed to fetch developers', 'error');
+      showToast(e.message || 'Failed to fetch staff directory', 'error');
     } finally {
       setLoading(false);
     }
@@ -97,7 +144,16 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
   const handleOpenAddModal = () => {
     setName('');
     setEmail('');
-    setRoleTitle('Full Stack Engineer');
+    setRoleTitle('Senior Associate');
+    const firstDept = departments.length > 0 ? departments[0] : null;
+    if (firstDept) {
+      setDepartmentId(firstDept.id);
+      setDepartmentName(firstDept.name);
+    } else {
+      setDepartmentId('');
+      setDepartmentName('Engineering & Technology');
+    }
+    setCustomDeptInput(false);
     setHourlyRate(45);
     setCurrency('USD');
     setPhone('');
@@ -105,6 +161,20 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
     setSendEmail(true);
     generatePassword();
     setModalOpen(true);
+  };
+
+  const handleOpenEditModal = (staff: Developer) => {
+    setEditingStaff(staff);
+    setEditName(staff.name);
+    setEditRoleTitle(staff.roleTitle || 'Associate');
+    setEditDeptId(staff.departmentId || '');
+    setEditDeptName(staff.department || 'Engineering & Technology');
+    setEditHourlyRate(staff.hourlyRate || 0);
+    setEditCurrency(staff.currency || 'USD');
+    setEditPhone(staff.phone || '');
+    setEditStatus(staff.status || 'active');
+    setEditPassword('');
+    setEditModalOpen(true);
   };
 
   const handleSaveDeveloper = async (e: React.FormEvent) => {
@@ -115,10 +185,14 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
     }
 
     setSaving(true);
+    const chosenDeptName = customDeptInput ? departmentName : (departments.find(d => d.id === departmentId)?.name || departmentName || 'Engineering & Technology');
+
     const res = await developerService.adminCreateDeveloper({
       name,
       email,
       roleTitle,
+      departmentId: typeof departmentId === 'number' ? departmentId : null,
+      department: chosenDeptName,
       hourlyRate: Number(hourlyRate) || 0,
       currency,
       phone,
@@ -130,32 +204,64 @@ export const AdminDevelopersTab: React.FC<AdminDevelopersTabProps> = ({ showToas
 
     if (res.success && res.developer) {
       setModalOpen(false);
-      showToast(`Developer ${res.developer.name} added successfully!`);
+      showToast(`Staff member "${res.developer.name}" onboarded successfully!`);
       if (res.credentials) {
         setLatestCreds({
           name: res.credentials.name,
           email: res.credentials.email,
           password: res.credentials.password,
           portalUrl: res.credentials.portalUrl,
-          role: roleTitle
+          role: roleTitle,
+          department: chosenDeptName
         });
         setCredsModalOpen(true);
       }
       fetchAll();
     } else {
-      showToast(res.error || 'Failed to create developer', 'error');
+      showToast(res.error || 'Failed to create staff member', 'error');
+    }
+  };
+
+  const handleSaveStaffEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingStaff) return;
+
+    setEditSaving(true);
+    const chosenDeptName = departments.find(d => d.id === editDeptId)?.name || editDeptName;
+
+    const res = await developerService.adminUpdateDeveloper({
+      id: editingStaff.id,
+      name: editName,
+      roleTitle: editRoleTitle,
+      departmentId: typeof editDeptId === 'number' ? editDeptId : null,
+      department: chosenDeptName,
+      hourlyRate: Number(editHourlyRate) || 0,
+      currency: editCurrency,
+      phone: editPhone,
+      status: editStatus,
+      password: editPassword.trim() || undefined
+    });
+    setEditSaving(false);
+
+    if (res.success) {
+      setEditModalOpen(false);
+      showToast(`Staff profile for "${editName}" updated successfully.`);
+      fetchAll();
+    } else {
+      showToast(res.error || 'Failed to update staff member', 'error');
     }
   };
 
   const handleCopyCredentials = () => {
     if (!latestCreds) return;
-    const text = `AZARIAH MANAGEMENT GROUP — DEVELOPER PORTAL ACCESS
+    const text = `AZARIAH MANAGEMENT GROUP — STAFF CREDENTIALS
+Department: ${latestCreds.department || 'Corporate'}
+Role: ${latestCreds.role || 'Staff Member'}
 Portal URL: ${latestCreds.portalUrl}
 Login Email: ${latestCreds.email}
 Password: ${latestCreds.password}
-Role: ${latestCreds.role || 'Developer'}
 
-Please sign in and verify your profile.`;
+Please sign in to access your assigned tasks, department records, and time tracker.`;
 
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -173,7 +279,8 @@ Please sign in and verify your profile.`;
           email: res.credentials.email,
           password: res.credentials.password,
           portalUrl: `${window.location.origin}/#dev-portal`,
-          role: dev.roleTitle
+          role: dev.roleTitle,
+          department: dev.department
         });
         setCredsModalOpen(true);
       }
@@ -183,44 +290,121 @@ Please sign in and verify your profile.`;
   };
 
   const handleDeleteDeveloper = async (dev: Developer) => {
-    if (!window.confirm(`Are you sure you want to remove developer "${dev.name}"? This will unlink their time logs.`)) {
+    if (!window.confirm(`Are you sure you want to remove staff member "${dev.name}"? This will unlink their tasks and time logs.`)) {
       return;
     }
     const res = await developerService.adminDeleteDeveloper(dev.id);
     if (res.success) {
-      showToast(`Developer "${dev.name}" removed.`);
+      showToast(`Staff member "${dev.name}" removed.`);
       fetchAll();
     } else {
-      showToast(res.error || 'Failed to delete developer', 'error');
+      showToast(res.error || 'Failed to delete staff member', 'error');
     }
   };
 
-  const filteredDevelopers = developers.filter(
-    (d) =>
+  // Department Management Operations
+  const handleSaveDepartment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newDeptName.trim()) {
+      showToast('Department name is required', 'error');
+      return;
+    }
+
+    setDeptSaving(true);
+    if (editingDeptId) {
+      const res = await developerService.adminUpdateDepartment({
+        id: editingDeptId,
+        name: newDeptName.trim(),
+        description: newDeptDesc.trim(),
+        color: newDeptColor
+      });
+      setDeptSaving(false);
+      if (res.success) {
+        showToast(`Department "${newDeptName}" updated!`);
+        setNewDeptName('');
+        setNewDeptDesc('');
+        setEditingDeptId(null);
+        fetchAll();
+      } else {
+        showToast(res.error || 'Failed to update department', 'error');
+      }
+    } else {
+      const res = await developerService.adminCreateDepartment({
+        name: newDeptName.trim(),
+        description: newDeptDesc.trim(),
+        color: newDeptColor
+      });
+      setDeptSaving(false);
+      if (res.success) {
+        showToast(`Department "${newDeptName}" created!`);
+        setNewDeptName('');
+        setNewDeptDesc('');
+        fetchAll();
+      } else {
+        showToast(res.error || 'Failed to create department', 'error');
+      }
+    }
+  };
+
+  const handleDeleteDepartment = async (dept: Department) => {
+    if (!window.confirm(`Delete department "${dept.name}"? Associated staff members will have their department unlinked safely.`)) {
+      return;
+    }
+    const res = await developerService.adminDeleteDepartment(dept.id);
+    if (res.success) {
+      showToast(`Department "${dept.name}" deleted.`);
+      if (selectedDeptFilter === dept.name) setSelectedDeptFilter('all');
+      fetchAll();
+    } else {
+      showToast(res.error || 'Failed to delete department', 'error');
+    }
+  };
+
+  const filteredDevelopers = developers.filter((d) => {
+    const matchesSearch =
       d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       d.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      d.roleTitle.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+      (d.roleTitle && d.roleTitle.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (d.department && d.department.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    const matchesDept =
+      selectedDeptFilter === 'all' ||
+      (d.department && d.department.toLowerCase() === selectedDeptFilter.toLowerCase()) ||
+      (!d.department && selectedDeptFilter === 'Engineering & Technology');
+
+    return matchesSearch && matchesDept;
+  });
 
   return (
     <div className="space-y-6">
       {/* Header & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/60 p-5 rounded-2xl border border-slate-800">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-900/60 p-5 sm:p-6 rounded-2xl border border-slate-800 shadow-xl">
         <div>
-          <h2 className="text-base font-black uppercase tracking-wider text-white flex items-center gap-2">
-            <Users className="w-5 h-5 text-sky-400" /> Developers & Engineering Team
-          </h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Provision developer profiles, assign project portfolios, dispatch credentials, and track attendance.
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-black uppercase tracking-wider text-white flex items-center gap-2">
+              <Users className="w-5 h-5 text-sky-400" /> Staff Directory & Departments
+            </h2>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-sky-500/10 text-sky-400 border border-sky-500/20">
+              {developers.length} Staff Across {departments.length} Departments
+            </span>
+          </div>
+          <p className="text-xs text-slate-400 mt-1 max-w-2xl">
+            Manage organization-wide departments (Engineering, Marketing, Operations, Finance, Legal, Creative, HR), onboard staff with credentials, assign roles, and allocate cross-functional project portfolios.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={() => setDeptModalOpen(true)}
+            className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 hover:border-sky-500/50 text-xs font-bold uppercase tracking-wider transition-all"
+          >
+            <Building2 className="w-4 h-4 text-sky-400" /> Manage Departments
+          </button>
           <button
             onClick={fetchAll}
             disabled={loading}
             className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors"
-            title="Refresh List"
+            title="Refresh Directory"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -228,9 +412,59 @@ Please sign in and verify your profile.`;
             onClick={handleOpenAddModal}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-emerald-600 hover:from-sky-500 hover:to-emerald-500 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-sky-600/25 transition-all"
           >
-            <UserPlus className="w-4 h-4" /> Add Developer
+            <UserPlus className="w-4 h-4" /> Add Staff Member
           </button>
         </div>
+      </div>
+
+      {/* Department Filter Pills */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+        <button
+          onClick={() => setSelectedDeptFilter('all')}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+            selectedDeptFilter === 'all'
+              ? 'bg-sky-500 text-slate-950 border-sky-400 shadow-md shadow-sky-500/20'
+              : 'bg-slate-900/80 text-slate-300 border-slate-800 hover:bg-slate-800'
+          }`}
+        >
+          <span>All Departments</span>
+          <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+            selectedDeptFilter === 'all' ? 'bg-slate-950/30 text-slate-950' : 'bg-slate-800 text-slate-400'
+          }`}>
+            {developers.length}
+          </span>
+        </button>
+
+        {departments.map((dept) => {
+          const isSelected = selectedDeptFilter.toLowerCase() === dept.name.toLowerCase();
+          const deptCount = developers.filter(
+            d => (d.department && d.department.toLowerCase() === dept.name.toLowerCase()) ||
+                 (!d.department && dept.name.toLowerCase().includes('engineering'))
+          ).length;
+
+          return (
+            <button
+              key={dept.id}
+              onClick={() => setSelectedDeptFilter(dept.name)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                isSelected
+                  ? 'bg-slate-100 text-slate-950 border-white shadow-md'
+                  : 'bg-slate-900/80 text-slate-300 border-slate-800 hover:bg-slate-800 hover:border-slate-700'
+              }`}
+            >
+              <span
+                className="w-2 h-2 rounded-full shrink-0"
+                style={{ backgroundColor: dept.color || '#38bdf8' }}
+              />
+              <span>{dept.name}</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                isSelected ? 'bg-slate-300 text-slate-900' : 'bg-slate-800 text-slate-400'
+              }`}>
+                {deptCount}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Search Bar */}
@@ -240,19 +474,20 @@ Please sign in and verify your profile.`;
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search developers by name, email, or role title..."
+          placeholder="Search staff by name, email, department, or role title..."
           className="w-full pl-11 pr-4 py-3 bg-slate-900/80 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
         />
       </div>
 
-      {/* Developers Table */}
+      {/* Staff Table */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-950/80 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
               <tr>
-                <th className="py-3.5 px-5">Developer</th>
-                <th className="py-3.5 px-5">Role</th>
+                <th className="py-3.5 px-5">Staff Member</th>
+                <th className="py-3.5 px-5">Department</th>
+                <th className="py-3.5 px-5">Role Title</th>
                 <th className="py-3.5 px-5">Hourly Rate</th>
                 <th className="py-3.5 px-5">Assigned Projects</th>
                 <th className="py-3.5 px-5">Work Status</th>
@@ -263,73 +498,103 @@ Please sign in and verify your profile.`;
             <tbody className="divide-y divide-slate-800/60 font-medium">
               {filteredDevelopers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500">
-                    No developers found. Click <strong>Add Developer</strong> above to onboard your first team member!
+                  <td colSpan={8} className="py-12 text-center text-slate-500">
+                    No staff found matching the selected filter. Click <strong>Add Staff Member</strong> above to onboard a team member.
                   </td>
                 </tr>
               ) : (
-                filteredDevelopers.map((dev) => (
-                  <tr key={dev.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="py-4 px-5">
-                      <div className="font-bold text-white text-sm">{dev.name}</div>
-                      <div className="text-[11px] text-slate-400 font-mono">{dev.email}</div>
-                    </td>
-                    <td className="py-4 px-5 text-sky-400 font-semibold">{dev.roleTitle}</td>
-                    <td className="py-4 px-5 text-white font-mono font-semibold">
-                      {dev.currency} {Number(dev.hourlyRate).toFixed(2)}/hr
-                    </td>
-                    <td className="py-4 px-5">
-                      {dev.projects && dev.projects.length > 0 ? (
-                        <div className="flex flex-wrap gap-1 max-w-xs">
-                          {dev.projects.map((p) => (
-                            <span
-                              key={p.id}
-                              className="px-2 py-0.5 rounded text-[10px] bg-slate-800 border border-slate-700 text-slate-300"
-                            >
-                              {p.name}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-slate-500 text-[11px]">Unassigned</span>
-                      )}
-                    </td>
-                    <td className="py-4 px-5">
-                      {dev.isCurrentlyClockedIn ? (
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 inline-flex items-center gap-1.5 animate-pulse">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Working Now
+                filteredDevelopers.map((dev) => {
+                  const deptObj = departments.find(
+                    d => d.name.toLowerCase() === (dev.department || 'engineering & technology').toLowerCase()
+                  );
+                  const deptBadgeColor = deptObj?.color || '#38bdf8';
+
+                  return (
+                    <tr key={dev.id} className="hover:bg-slate-800/30 transition-colors">
+                      <td className="py-4 px-5">
+                        <div className="font-bold text-white text-sm">{dev.name}</div>
+                        <div className="text-[11px] text-slate-400 font-mono">{dev.email}</div>
+                      </td>
+                      <td className="py-4 px-5">
+                        <span
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border"
+                          style={{
+                            borderColor: `${deptBadgeColor}40`,
+                            backgroundColor: `${deptBadgeColor}15`,
+                            color: deptBadgeColor
+                          }}
+                        >
+                          <span
+                            className="w-1.5 h-1.5 rounded-full"
+                            style={{ backgroundColor: deptBadgeColor }}
+                          />
+                          {dev.department || 'Engineering & Technology'}
                         </span>
-                      ) : dev.status === 'active' ? (
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-slate-800 text-slate-400 border border-slate-700">
-                          Offline
-                        </span>
-                      ) : (
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-red-500/15 text-red-400 border border-red-500/30">
-                          Inactive
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-4 px-5 text-white font-bold whitespace-nowrap">
-                      {dev.totalHoursLogged || 0} hrs
-                    </td>
-                    <td className="py-4 px-5 text-right whitespace-nowrap space-x-1.5">
-                      <button
-                        onClick={() => handleResendInvite(dev)}
-                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
-                        title="Resend Invitation & View Credentials"
-                      >
-                        <KeyRound className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteDeveloper(dev)}
-                        className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-900/40 transition-colors"
-                        title="Remove Developer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td className="py-4 px-5 text-slate-200 font-semibold">{dev.roleTitle}</td>
+                      <td className="py-4 px-5 text-white font-mono font-semibold">
+                        {dev.currency} {Number(dev.hourlyRate).toFixed(2)}/hr
+                      </td>
+                      <td className="py-4 px-5">
+                        {dev.projects && dev.projects.length > 0 ? (
+                          <div className="flex flex-wrap gap-1 max-w-xs">
+                            {dev.projects.map((p) => (
+                              <span
+                                key={p.id}
+                                className="px-2 py-0.5 rounded text-[10px] bg-slate-800 border border-slate-700 text-slate-300"
+                              >
+                                {p.name}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-slate-500 text-[11px]">Unassigned</span>
+                        )}
+                      </td>
+                      <td className="py-4 px-5">
+                        {dev.isCurrentlyClockedIn ? (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 inline-flex items-center gap-1.5 animate-pulse">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Working Now
+                          </span>
+                        ) : dev.status === 'active' ? (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-slate-800 text-slate-400 border border-slate-700">
+                            Offline
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-red-500/15 text-red-400 border border-red-500/30">
+                            Inactive
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-4 px-5 text-white font-bold whitespace-nowrap">
+                        {dev.totalHoursLogged || 0} hrs
+                      </td>
+                      <td className="py-4 px-5 text-right whitespace-nowrap space-x-1.5">
+                        <button
+                          onClick={() => handleOpenEditModal(dev)}
+                          className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-sky-300 transition-colors"
+                          title="Edit Staff Member"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleResendInvite(dev)}
+                          className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                          title="Resend Invitation & View Credentials"
+                        >
+                          <KeyRound className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteDeveloper(dev)}
+                          className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-900/40 transition-colors"
+                          title="Remove Staff Member"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -337,16 +602,190 @@ Please sign in and verify your profile.`;
       </div>
 
       {/* =======================================================================
-          MODAL: ADD DEVELOPER
+          MODAL: MANAGE DEPARTMENTS
+      ======================================================================= */}
+      {deptModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+              <div className="flex items-center gap-2.5">
+                <Building2 className="w-6 h-6 text-sky-400" />
+                <div>
+                  <h3 className="text-base font-black text-white uppercase tracking-wider">
+                    Organization Departments
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Add new functional departments or update existing business units.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setDeptModalOpen(false);
+                  setEditingDeptId(null);
+                  setNewDeptName('');
+                  setNewDeptDesc('');
+                }}
+                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Existing Departments List */}
+            <div className="space-y-3 mb-8">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                Active Departments ({departments.length})
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-56 overflow-y-auto p-1">
+                {departments.map((dept) => (
+                  <div
+                    key={dept.id}
+                    className="p-3.5 bg-slate-950 border border-slate-800 rounded-xl flex items-start justify-between gap-3 group hover:border-slate-700 transition-colors"
+                  >
+                    <div className="space-y-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{ backgroundColor: dept.color || '#38bdf8' }}
+                        />
+                        <span className="text-xs font-bold text-white truncate">{dept.name}</span>
+                      </div>
+                      {dept.description && (
+                        <p className="text-[11px] text-slate-400 line-clamp-2">{dept.description}</p>
+                      )}
+                      <div className="flex items-center gap-3 text-[10px] text-slate-500 font-mono pt-1">
+                        <span>{dept.staffCount || 0} Staff</span>
+                        <span>•</span>
+                        <span>{dept.tasksCount || 0} Tasks</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingDeptId(dept.id);
+                          setNewDeptName(dept.name);
+                          setNewDeptDesc(dept.description || '');
+                          setNewDeptColor(dept.color || '#38bdf8');
+                        }}
+                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-sky-300"
+                        title="Edit Department"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteDepartment(dept)}
+                        className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400"
+                        title="Delete Department"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Create / Edit Department Form */}
+            <form onSubmit={handleSaveDepartment} className="bg-slate-950/70 border border-slate-800 rounded-xl p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-2">
+                  <Plus className="w-3.5 h-3.5" />
+                  {editingDeptId ? 'Edit Department Details' : 'Create New Department'}
+                </h4>
+                {editingDeptId && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingDeptId(null);
+                      setNewDeptName('');
+                      setNewDeptDesc('');
+                    }}
+                    className="text-[11px] text-slate-400 hover:text-white"
+                  >
+                    Cancel Edit
+                  </button>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                  Department Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={newDeptName}
+                  onChange={(e) => setNewDeptName(e.target.value)}
+                  placeholder="e.g. Strategic Marketing & Media, Legal & Compliance, Operations..."
+                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                  Description / Function
+                </label>
+                <input
+                  type="text"
+                  value={newDeptDesc}
+                  onChange={(e) => setNewDeptDesc(e.target.value)}
+                  placeholder="e.g. Brand initiatives, market expansion, and communications strategy"
+                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+                  Department Accent Color
+                </label>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {DEPARTMENT_COLORS.map((c) => (
+                    <button
+                      key={c.value}
+                      type="button"
+                      onClick={() => setNewDeptColor(c.value)}
+                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                        newDeptColor === c.value
+                          ? 'border-white bg-slate-800 text-white shadow-sm'
+                          : 'border-slate-800 bg-slate-900 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: c.value }} />
+                      <span>{c.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  type="submit"
+                  disabled={deptSaving}
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-emerald-600 hover:from-sky-500 hover:to-emerald-500 text-white text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                >
+                  {deptSaving ? 'Saving...' : editingDeptId ? 'Save Changes' : 'Create Department'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =======================================================================
+          MODAL: ADD STAFF MEMBER
       ======================================================================= */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
             <h3 className="text-lg font-black text-white uppercase tracking-wider mb-1 flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-sky-400" /> Onboard New Developer
+              <UserPlus className="w-5 h-5 text-sky-400" /> Onboard New Staff Member
             </h3>
             <p className="text-xs text-slate-400 mb-6">
-              Create credentials, set compensation, and assign to ongoing corporate projects.
+              Create staff credentials, assign department affiliation, set compensation, and allocate to projects.
             </p>
 
             <form onSubmit={handleSaveDeveloper} className="space-y-4">
@@ -379,6 +818,49 @@ Please sign in and verify your profile.`;
                 </div>
               </div>
 
+              {/* Department Assignment */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                    Department Assignment *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setCustomDeptInput(!customDeptInput)}
+                    className="text-[11px] text-sky-400 hover:text-sky-300 font-semibold"
+                  >
+                    {customDeptInput ? 'Select from list' : '+ Custom Department'}
+                  </button>
+                </div>
+
+                {customDeptInput ? (
+                  <input
+                    type="text"
+                    value={departmentName}
+                    onChange={(e) => setDepartmentName(e.target.value)}
+                    placeholder="Enter custom department name..."
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
+                  />
+                ) : (
+                  <select
+                    value={departmentId}
+                    onChange={(e) => {
+                      const id = Number(e.target.value);
+                      setDepartmentId(id);
+                      const found = departments.find(d => d.id === id);
+                      if (found) setDepartmentName(found.name);
+                    }}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
+                  >
+                    {departments.map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
@@ -388,7 +870,7 @@ Please sign in and verify your profile.`;
                     type="text"
                     value={roleTitle}
                     onChange={(e) => setRoleTitle(e.target.value)}
-                    placeholder="e.g. Senior Backend Engineer"
+                    placeholder="e.g. Senior Marketing Specialist, Lead Architect, Financial Analyst..."
                     className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
                   />
                 </div>
@@ -510,7 +992,7 @@ Please sign in and verify your profile.`;
                     className="w-4 h-4 rounded border-slate-700 text-sky-600 focus:ring-0"
                   />
                   <span className="text-xs text-slate-300">
-                    Dispatch branded HTML welcome email with credentials & access link to developer
+                    Dispatch branded HTML welcome email with credentials & access link to staff member
                   </span>
                 </label>
               </div>
@@ -529,7 +1011,7 @@ Please sign in and verify your profile.`;
                   disabled={saving}
                   className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-emerald-600 hover:from-sky-500 hover:to-emerald-500 text-white text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
                 >
-                  {saving ? 'Creating Profile...' : 'Create & Onboard Developer'}
+                  {saving ? 'Creating Profile...' : 'Create & Onboard Staff'}
                 </button>
               </div>
             </form>
@@ -538,7 +1020,173 @@ Please sign in and verify your profile.`;
       )}
 
       {/* =======================================================================
-          MODAL: COPY CREDENTIALS TO CLIPBOARD (User requested requirement!)
+          MODAL: EDIT STAFF MEMBER
+      ======================================================================= */}
+      {editModalOpen && editingStaff && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+            <h3 className="text-lg font-black text-white uppercase tracking-wider mb-1 flex items-center gap-2">
+              <Edit2 className="w-5 h-5 text-sky-400" /> Edit Staff Profile: {editingStaff.name}
+            </h3>
+            <p className="text-xs text-slate-400 mb-6">
+              Update department, position title, compensation, or reset credentials.
+            </p>
+
+            <form onSubmit={handleSaveStaffEdit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Email (Read-Only)
+                  </label>
+                  <input
+                    type="email"
+                    disabled
+                    value={editingStaff.email}
+                    className="w-full px-3.5 py-2.5 bg-slate-950/50 border border-slate-800 rounded-xl text-xs text-slate-500 cursor-not-allowed font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Department Assignment
+                  </label>
+                  <select
+                    value={editDeptId}
+                    onChange={(e) => {
+                      const id = Number(e.target.value);
+                      setEditDeptId(id);
+                      const found = departments.find(d => d.id === id);
+                      if (found) setEditDeptName(found.name);
+                    }}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
+                  >
+                    {departments.map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Role / Position Title
+                  </label>
+                  <input
+                    type="text"
+                    value={editRoleTitle}
+                    onChange={(e) => setEditRoleTitle(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Hourly Rate
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={editHourlyRate}
+                    onChange={(e) => setEditHourlyRate(e.target.value ? Number(e.target.value) : '')}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Currency
+                  </label>
+                  <select
+                    value={editCurrency}
+                    onChange={(e) => setEditCurrency(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
+                  >
+                    <option value="USD">USD ($)</option>
+                    <option value="GHS">GHS (GH₵)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Phone / WhatsApp
+                  </label>
+                  <input
+                    type="text"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Account Status
+                  </label>
+                  <select
+                    value={editStatus}
+                    onChange={(e) => setEditStatus(e.target.value as any)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-sky-500"
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                  Reset Password (Leave blank to keep existing password)
+                </label>
+                <input
+                  type="text"
+                  value={editPassword}
+                  onChange={(e) => setEditPassword(e.target.value)}
+                  placeholder="Enter new password if resetting..."
+                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-emerald-400 font-mono focus:outline-none focus:border-sky-500"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setEditModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editSaving}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-emerald-600 hover:from-sky-500 hover:to-emerald-500 text-white text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                >
+                  {editSaving ? 'Updating...' : 'Save Profile Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =======================================================================
+          MODAL: COPY CREDENTIALS TO CLIPBOARD
       ======================================================================= */}
       {credsModalOpen && latestCreds && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
@@ -546,20 +1194,25 @@ Please sign in and verify your profile.`;
             <div className="flex items-center gap-3 mb-3 text-emerald-400">
               <CheckCircle2 className="w-6 h-6" />
               <h3 className="text-base font-black uppercase tracking-wider text-white">
-                Developer Credentials Ready
+                Staff Credentials Ready
               </h3>
             </div>
             <p className="text-xs text-slate-400 mb-6">
-              The developer account has been generated. You can copy the credentials below to send them via WhatsApp, Slack, or SMS:
+              The staff account has been provisioned. You can copy the credentials below to dispatch them via WhatsApp, Slack, or SMS:
             </p>
 
-            {/* Credentials Card Box */}
             <div className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3 font-mono text-xs">
               <div>
                 <span className="text-[10px] uppercase font-sans text-slate-500 tracking-wider block">
-                  Developer Name
+                  Staff Member
                 </span>
                 <span className="text-white font-bold">{latestCreds.name}</span>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-sans text-slate-500 tracking-wider block">
+                  Department & Role
+                </span>
+                <span className="text-sky-400 font-bold">{latestCreds.department} — {latestCreds.role}</span>
               </div>
               <div>
                 <span className="text-[10px] uppercase font-sans text-slate-500 tracking-wider block">

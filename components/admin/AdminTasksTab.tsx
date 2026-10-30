@@ -25,7 +25,8 @@ import {
   Sparkles,
   HelpCircle,
   Shield,
-  FileText
+  FileText,
+  Building2
 } from 'lucide-react';
 import {
   developerService,
@@ -35,6 +36,7 @@ import {
   TaskMetrics,
   Developer,
   Project,
+  Department,
   formatLocalDate
 } from '../../services/developerService';
 
@@ -62,12 +64,14 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
   const [tasks, setTasks] = useState<DeveloperTask[]>([]);
   const [metrics, setMetrics] = useState<TaskMetrics | null>(null);
   const [developers, setDevelopers] = useState<Developer[]>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   // Filters State
   const [search, setSearch] = useState('');
+  const [departmentFilter, setDepartmentFilter] = useState<string | 'all'>('all');
   const [developerFilter, setDeveloperFilter] = useState<number | 'all'>('all');
   const [projectFilter, setProjectFilter] = useState<number | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all');
@@ -83,6 +87,8 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
   const [formTitle, setFormTitle] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [formDeveloperId, setFormDeveloperId] = useState<number | ''>('');
+  const [formDepartmentId, setFormDepartmentId] = useState<number | ''>('');
+  const [formDepartment, setFormDepartment] = useState<string>('');
   const [formProjectId, setFormProjectId] = useState<number | ''>('');
   const [formPriority, setFormPriority] = useState<TaskPriority>('medium');
   const [formStatus, setFormStatus] = useState<TaskStatus>('pending');
@@ -108,8 +114,9 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
     else setLoading(true);
 
     try {
-      const [tasksRes, statsRes, devsRes, projsRes] = await Promise.all([
+      const [tasksRes, statsRes, devsRes, deptsRes, projsRes] = await Promise.all([
         developerService.adminGetTasks({
+          department: departmentFilter !== 'all' ? departmentFilter : undefined,
           developerId: developerFilter !== 'all' ? developerFilter : undefined,
           projectId: projectFilter !== 'all' ? projectFilter : undefined,
           status: statusFilter !== 'all' ? statusFilter : undefined,
@@ -118,6 +125,7 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
         }),
         developerService.adminGetTaskStats(),
         developerService.adminGetDevelopers(),
+        developerService.adminGetDepartments(),
         developerService.adminGetProjects()
       ]);
 
@@ -135,6 +143,10 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
         setDevelopers(devsRes.developers || []);
       }
 
+      if (deptsRes.success) {
+        setDepartments(deptsRes.departments || []);
+      }
+
       if (projsRes.success) {
         setProjects(projsRes.projects || []);
       }
@@ -144,7 +156,7 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [developerFilter, projectFilter, statusFilter, priorityFilter, search, showToast]);
+  }, [departmentFilter, developerFilter, projectFilter, statusFilter, priorityFilter, search, showToast]);
 
   useEffect(() => {
     loadData();
@@ -157,7 +169,11 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
     setEditingTask(null);
     setFormTitle('');
     setFormDescription('');
-    setFormDeveloperId(developers.length > 0 ? developers[0].id : '');
+    const firstDev = developers.length > 0 ? developers[0] : null;
+    const initialDevId = firstDev ? firstDev.id : '';
+    setFormDeveloperId(initialDevId);
+    setFormDepartmentId(firstDev?.departmentId || '');
+    setFormDepartment(firstDev?.department || (departments.length > 0 ? departments[0].name : 'Engineering & Technology'));
     setFormProjectId('');
     setFormPriority('medium');
     setFormStatus('pending');
@@ -177,6 +193,8 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
     setFormTitle(task.title || '');
     setFormDescription(task.description || '');
     setFormDeveloperId(task.developerId || '');
+    setFormDepartmentId(task.departmentId || '');
+    setFormDepartment(task.department || '');
     setFormProjectId(task.projectId || '');
     setFormPriority(task.priority || 'medium');
     setFormStatus(task.status || 'pending');
@@ -198,11 +216,12 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
       return;
     }
     if (!formDeveloperId) {
-      showToast('Please select a developer to assign this task to', 'error');
+      showToast('Please select a staff member to assign this task to', 'error');
       return;
     }
 
     setModalSaving(true);
+    const resolvedDept = formDepartment || departments.find(d => d.id === formDepartmentId)?.name || 'Engineering & Technology';
 
     if (editingTask) {
       // Update
@@ -210,6 +229,8 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
         title: formTitle.trim(),
         description: formDescription.trim(),
         developerId: Number(formDeveloperId),
+        departmentId: formDepartmentId !== '' ? Number(formDepartmentId) : null,
+        department: resolvedDept,
         projectId: formProjectId ? Number(formProjectId) : null,
         priority: formPriority,
         status: formStatus,
@@ -234,6 +255,8 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
         title: formTitle.trim(),
         description: formDescription.trim(),
         developerId: Number(formDeveloperId),
+        departmentId: formDepartmentId !== '' ? Number(formDepartmentId) : null,
+        department: resolvedDept,
         projectId: formProjectId ? Number(formProjectId) : null,
         priority: formPriority,
         status: formStatus,
@@ -469,18 +492,35 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
         </div>
 
         {/* Dropdown Filters Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2 border-t border-slate-800/80">
-          {/* Filter: Developer */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-2 border-t border-slate-800/80">
+          {/* Filter: Department */}
           <div>
             <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
-              Developer
+              Department
+            </label>
+            <select
+              value={departmentFilter}
+              onChange={(e) => setDepartmentFilter(e.target.value)}
+              className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none"
+            >
+              <option value="all">All Departments ({departments.length})</option>
+              {departments.map((dept) => (
+                <option key={dept.id} value={dept.name}>{dept.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Filter: Staff Member */}
+          <div>
+            <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
+              Staff Member
             </label>
             <select
               value={developerFilter}
               onChange={(e) => setDeveloperFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}
               className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-800 text-white rounded-sm text-xs focus:border-lime-500 focus:outline-none"
             >
-              <option value="all">All Developers ({developers.length})</option>
+              <option value="all">All Staff ({developers.length})</option>
               {developers.map(d => (
                 <option key={d.id} value={d.id}>{d.name} ({d.roleTitle})</option>
               ))}
@@ -584,8 +624,8 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
               <thead>
                 <tr className="bg-slate-950/80 border-b border-slate-800 text-[10px] font-black uppercase tracking-wider text-slate-400">
                   <th className="py-3 px-4">Task & Scope</th>
-                  <th className="py-3 px-4">Assigned Developer</th>
-                  <th className="py-3 px-4">Project</th>
+                  <th className="py-3 px-4">Assigned Staff</th>
+                  <th className="py-3 px-4">Department & Project</th>
                   <th className="py-3 px-4">Priority</th>
                   <th className="py-3 px-4">Status & Quick Change</th>
                   <th className="py-3 px-4">Due Date</th>
@@ -624,33 +664,45 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
                         )}
                       </td>
 
-                      {/* Developer Assignee */}
+                      {/* Staff Assignee */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-black text-[11px] text-lime-400">
-                            {task.developerName ? task.developerName.charAt(0).toUpperCase() : 'D'}
+                            {task.developerName ? task.developerName.charAt(0).toUpperCase() : 'S'}
                           </div>
                           <div>
                             <div className="font-bold text-slate-200">
-                              {task.developerName || `Dev #${task.developerId}`}
+                              {task.developerName || `Staff #${task.developerId}`}
                             </div>
                             <div className="text-[10px] text-slate-400">
-                              {task.developerRole || task.developerEmail || 'Developer'}
+                              {task.developerRole || task.developerEmail || 'Staff Member'}
                             </div>
                           </div>
                         </div>
                       </td>
 
-                      {/* Project */}
+                      {/* Department & Project */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
-                        {task.projectName ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-950 border border-slate-800 rounded text-[11px] font-bold text-slate-300">
-                            <Folder className="w-3 h-3 text-sky-400" />
-                            {task.projectName}
-                          </span>
-                        ) : (
-                          <span className="text-slate-500 text-[11px]">General</span>
-                        )}
+                        <div className="space-y-1">
+                          {task.department && (
+                            <div>
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 text-sky-300 border border-sky-500/20">
+                                <Building2 className="w-2.5 h-2.5 text-sky-400" />
+                                {task.department}
+                              </span>
+                            </div>
+                          )}
+                          <div>
+                            {task.projectName ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-950 border border-slate-800 rounded text-[11px] font-bold text-slate-300">
+                                <Folder className="w-3 h-3 text-sky-400" />
+                                {task.projectName}
+                              </span>
+                            ) : (
+                              <span className="text-slate-500 text-[11px]">General Assignment</span>
+                            )}
+                          </div>
+                        </div>
                       </td>
 
                       {/* Priority */}
@@ -797,15 +849,23 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
                           key={task.id}
                           className="bg-slate-950 border border-slate-800/90 hover:border-slate-700 rounded-sm p-3 space-y-2.5 shadow-sm transition-all hover:shadow-md group"
                         >
-                          {/* Priority & Project Header */}
-                          <div className="flex items-center justify-between gap-2">
-                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider border ${pBadge.bg} ${pBadge.text} ${pBadge.border}`}>
-                              {pBadge.label}
-                            </span>
-                            {task.projectName && (
-                              <span className="text-[10px] font-bold text-sky-400 truncate max-w-[120px]">
-                                {task.projectName}
+                          {/* Priority, Department & Project Header */}
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-1.5">
+                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider border ${pBadge.bg} ${pBadge.text} ${pBadge.border}`}>
+                                {pBadge.label}
                               </span>
+                              {task.projectName && (
+                                <span className="text-[10px] font-bold text-sky-400 truncate max-w-[120px]">
+                                  {task.projectName}
+                                </span>
+                              )}
+                            </div>
+                            {task.department && (
+                              <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-sky-500/10 text-sky-300 border border-sky-500/20 max-w-full truncate">
+                                <Building2 className="w-2.5 h-2.5 text-sky-400 shrink-0" />
+                                <span className="truncate">{task.department}</span>
+                              </div>
                             )}
                           </div>
 
@@ -931,24 +991,53 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
                 />
               </div>
 
-              {/* Developer & Project Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Developer */}
+              {/* Staff Member, Department & Project Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Staff Member */}
                 <div>
                   <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block mb-1.5">
-                    Assign To Developer <span className="text-lime-400">*</span>
+                    Assign To Staff Member <span className="text-lime-400">*</span>
                   </label>
                   <select
                     required
                     value={formDeveloperId}
-                    onChange={(e) => setFormDeveloperId(Number(e.target.value))}
+                    onChange={(e) => {
+                      const newDevId = Number(e.target.value);
+                      setFormDeveloperId(newDevId);
+                      const dev = developers.find(d => d.id === newDevId);
+                      if (dev) {
+                        setFormDepartmentId(dev.departmentId || '');
+                        setFormDepartment(dev.department || 'Engineering & Technology');
+                      }
+                    }}
                     className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-sm focus:border-lime-500 focus:outline-none"
                   >
-                    <option value="" disabled>Select Developer...</option>
+                    <option value="" disabled>Select Staff Member...</option>
                     {developers.map(d => (
                       <option key={d.id} value={d.id}>
-                        {d.name} ({d.roleTitle}) — {d.email}
+                        {d.name} ({d.department || 'Engineering'} — {d.roleTitle})
                       </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Department */}
+                <div>
+                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block mb-1.5">
+                    Department
+                  </label>
+                  <select
+                    value={formDepartment}
+                    onChange={(e) => {
+                      const deptName = e.target.value;
+                      setFormDepartment(deptName);
+                      const found = departments.find(d => d.name === deptName);
+                      setFormDepartmentId(found ? found.id : '');
+                    }}
+                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-sm focus:border-lime-500 focus:outline-none"
+                  >
+                    {departments.map(d => (
+                      <option key={d.id} value={d.name}>{d.name}</option>
                     ))}
                   </select>
                 </div>
@@ -1170,9 +1259,18 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
               {/* Assignment Details */}
               <div className="bg-slate-950 border border-slate-800 rounded-sm p-4 space-y-3">
                 <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-800/80">
-                  <span className="text-slate-400 font-bold uppercase text-[10px]">Assigned Developer</span>
-                  <span className="text-white font-bold">{detailTask.developerName || `Dev #${detailTask.developerId}`}</span>
+                  <span className="text-slate-400 font-bold uppercase text-[10px]">Assigned Staff Member</span>
+                  <span className="text-white font-bold">{detailTask.developerName || `Staff #${detailTask.developerId}`}</span>
                 </div>
+                {detailTask.department && (
+                  <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-800/80">
+                    <span className="text-slate-400 font-bold uppercase text-[10px]">Department</span>
+                    <span className="text-sky-300 font-bold flex items-center gap-1.5">
+                      <Building2 className="w-3 h-3 text-sky-400" />
+                      {detailTask.department}
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-800/80">
                   <span className="text-slate-400 font-bold uppercase text-[10px]">Project</span>
                   <span className="text-sky-400 font-bold">{detailTask.projectName || 'General Assignment'}</span>

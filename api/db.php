@@ -383,13 +383,66 @@ function ensureDevModuleTables($pdo) {
               INDEX `idx_tasks_proj` (`projectId`),
               INDEX `idx_tasks_due` (`dueDate`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            CREATE TABLE IF NOT EXISTS `departments` (
+              `id` INT NOT NULL AUTO_INCREMENT,
+              `name` VARCHAR(191) NOT NULL,
+              `slug` VARCHAR(191) NOT NULL,
+              `description` TEXT NULL,
+              `color` VARCHAR(64) NULL DEFAULT '#38bdf8',
+              `leadStaffId` INT NULL,
+              `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+              `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `idx_dept_name` (`name`),
+              UNIQUE KEY `idx_dept_slug` (`slug`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ");
+
+        // Safely migrate existing developers table to have departmentId & department
+        try {
+            $pdo->exec("ALTER TABLE `developers` ADD COLUMN `departmentId` INT NULL AFTER `roleTitle`");
+        } catch (Exception $e) {}
+        try {
+            $pdo->exec("ALTER TABLE `developers` ADD COLUMN `department` VARCHAR(191) NULL DEFAULT 'Engineering & Technology' AFTER `departmentId`");
+        } catch (Exception $e) {}
+
+        // Safely migrate existing developer_tasks table to have departmentId & department
+        try {
+            $pdo->exec("ALTER TABLE `developer_tasks` ADD COLUMN `departmentId` INT NULL AFTER `projectId`");
+        } catch (Exception $e) {}
+        try {
+            $pdo->exec("ALTER TABLE `developer_tasks` ADD COLUMN `department` VARCHAR(191) NULL AFTER `departmentId`");
+        } catch (Exception $e) {}
 
         // Safely migrate existing developer_time_logs table to have clientTimezone column
         try {
             $pdo->exec("ALTER TABLE `developer_time_logs` ADD COLUMN `clientTimezone` VARCHAR(64) NULL AFTER `ipAddress`");
         } catch (Exception $colEx) {
             // Column already exists
+        }
+
+        // Auto-seed standard enterprise departments if table is empty
+        try {
+            $deptCount = (int)$pdo->query("SELECT COUNT(*) FROM `departments`")->fetchColumn();
+            if ($deptCount === 0) {
+                $defaultDepts = [
+                    ['Engineering & Technology', 'engineering-technology', 'Software engineering, cloud infrastructure, AI architecture, and full stack development.', '#38bdf8'],
+                    ['Strategic Marketing & Media', 'strategic-marketing-media', 'Media production, strategic communications, brand campaigns, and audience intelligence.', '#a855f7'],
+                    ['Operations & Advisory', 'operations-advisory', 'Executive consulting, cross-border business execution, and strategic resource coordination.', '#10b981'],
+                    ['Corporate Finance & Accounting', 'corporate-finance-accounting', 'Financial analysis, investor relations, budgeting, and capital allocation.', '#fbbf24'],
+                    ['Legal & Compliance', 'legal-compliance', 'Corporate governance, contracts, intellectual property, and regulatory affairs.', '#f97316'],
+                    ['Creative Direction & Design', 'creative-direction-design', 'Visual branding, UI/UX interface design, multimedia art, and digital assets.', '#ec4899'],
+                    ['Human Resources & Talent', 'human-resources-talent', 'People operations, talent acquisition, culture development, and organizational growth.', '#06b6d4']
+                ];
+
+                $insStmt = $pdo->prepare("INSERT INTO `departments` (`name`, `slug`, `description`, `color`, `createdAt`, `updatedAt`) VALUES (?, ?, ?, ?, NOW(3), NOW(3))");
+                foreach ($defaultDepts as $d) {
+                    $insStmt->execute($d);
+                }
+            }
+        } catch (Exception $deptErr) {
+            // Logged gracefully
         }
 
         $tablesChecked = true;

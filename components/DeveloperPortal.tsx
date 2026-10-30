@@ -397,11 +397,11 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
               <ArrowLeft className="w-4 h-4" /> Back to Website
             </button>
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold">
-              <Shield className="w-3.5 h-3.5" /> Engineer Portal
+              <Shield className="w-3.5 h-3.5" /> Staff Portal
             </div>
           </div>
 
-          {/* Portal Toggle Switch (Developer Active) */}
+          {/* Portal Toggle Switch (Staff/Developer Active) */}
           <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-950 rounded-lg border border-slate-800 mb-6">
             <button
               type="button"
@@ -418,7 +418,7 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
               className="flex items-center justify-center gap-2 py-2 px-3 rounded text-[10px] sm:text-[11px] font-black uppercase tracking-[0.18em] bg-slate-900 text-sky-400 border border-sky-500/60 shadow-[0_0_12px_rgba(56,189,248,0.18)]"
             >
               <Code2 className="w-3.5 h-3.5 text-sky-400" />
-              <span>Developer Portal</span>
+              <span>Staff & Dev Portal</span>
             </button>
           </div>
 
@@ -426,8 +426,8 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
             <div className="inline-flex justify-center mb-4">
               <Logo />
             </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Developer Command</h1>
-            <p className="text-xs text-slate-400 mt-1">Sign in with the credentials dispatched to your email</p>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Staff & Team Command</h1>
+            <p className="text-xs text-slate-400 mt-1">Sign in with the staff credentials dispatched to your email</p>
           </div>
 
           {loginError && (
@@ -519,18 +519,25 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({ onBackToHome }
           <div className="h-5 w-px bg-slate-800 hidden sm:block" />
           <div className="flex items-center gap-2">
             <span className="font-extrabold tracking-tight text-white text-base">
-              AZARIAH <span className="text-sky-400">ENGINEERING</span>
+              AZARIAH <span className="text-sky-400">STAFF & ENG</span>
             </span>
             <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 text-sky-400 border border-sky-500/20">
-              Developer Portal
+              Staff Portal
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex flex-col text-right">
-            <span className="text-xs font-bold text-white">{developer?.name || 'Developer'}</span>
-            <span className="text-[11px] text-slate-400">{developer?.roleTitle || 'Team Engineer'}</span>
+            <span className="text-xs font-bold text-white">{developer?.name || 'Staff Member'}</span>
+            <div className="flex items-center gap-1.5 justify-end">
+              <span className="text-[11px] text-slate-400">{developer?.roleTitle || 'Associate'}</span>
+              {developer?.department && (
+                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-sky-500/15 text-sky-300 border border-sky-500/30">
+                  {developer.department}
+                </span>
+              )}
+            </div>
           </div>
           <button
             onClick={handleLogout}
