@@ -681,8 +681,8 @@ Please sign in to access your assigned tasks, department records, and time track
           MODAL: MANAGE DEPARTMENTS
       ======================================================================= */}
       {deptModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md overflow-y-auto p-3 sm:p-6 flex justify-center items-start">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative my-4 sm:my-8">
             <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
               <div className="flex items-center gap-2.5">
                 <Building2 className="w-6 h-6 text-sky-400" />
@@ -855,16 +855,29 @@ Please sign in to access your assigned tasks, department records, and time track
           MODAL: ADD STAFF MEMBER
       ======================================================================= */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
-            <h3 className="text-lg font-black text-white uppercase tracking-wider mb-1 flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-sky-400" /> Onboard New Staff Member
-            </h3>
-            <p className="text-xs text-slate-400 mb-6">
-              Create staff credentials, assign department affiliation, set compensation, and allocate to projects.
-            </p>
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md overflow-y-auto p-3 sm:p-6 flex justify-center items-start">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full shadow-2xl relative my-4 sm:my-8 overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-800 px-6 sm:px-8 py-5 bg-slate-950/80 sticky top-0 z-10 backdrop-blur-md">
+              <div>
+                <h3 className="text-lg font-black text-white uppercase tracking-wider flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-sky-400" /> Onboard New Staff Member
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Create staff credentials, assign department affiliation, set compensation, and allocate to projects.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setModalOpen(false)}
+                className="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors shrink-0 ml-4"
+                title="Close modal"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
 
-            <form onSubmit={handleSaveDeveloper} className="space-y-4">
+            <form onSubmit={handleSaveDeveloper} className="p-6 sm:p-8 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
@@ -1305,16 +1318,29 @@ Please sign in to access your assigned tasks, department records, and time track
           MODAL: EDIT STAFF MEMBER
       ======================================================================= */}
       {editModalOpen && editingStaff && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
-            <h3 className="text-lg font-black text-white uppercase tracking-wider mb-1 flex items-center gap-2">
-              <Edit2 className="w-5 h-5 text-sky-400" /> Edit Staff Profile: {editingStaff.name}
-            </h3>
-            <p className="text-xs text-slate-400 mb-6">
-              Update department, position title, compensation, or reset credentials.
-            </p>
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md overflow-y-auto p-3 sm:p-6 flex justify-center items-start">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full shadow-2xl relative my-4 sm:my-8 overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-800 px-6 sm:px-8 py-5 bg-slate-950/80 sticky top-0 z-10 backdrop-blur-md">
+              <div>
+                <h3 className="text-lg font-black text-white uppercase tracking-wider flex items-center gap-2">
+                  <Edit2 className="w-5 h-5 text-sky-400" /> Edit Staff Profile: {editingStaff.name}
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Update department, position title, compensation, or reset credentials.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditModalOpen(false)}
+                className="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors shrink-0 ml-4"
+                title="Close modal"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
 
-            <form onSubmit={handleSaveStaffEdit} className="space-y-4">
+            <form onSubmit={handleSaveStaffEdit} className="p-6 sm:p-8 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
@@ -1678,8 +1704,8 @@ Please sign in to access your assigned tasks, department records, and time track
           MODAL: COPY CREDENTIALS TO CLIPBOARD
       ======================================================================= */}
       {credsModalOpen && latestCreds && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-emerald-500/40 rounded-2xl max-w-md w-full p-7 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md overflow-y-auto p-4 flex justify-center items-start">
+          <div className="bg-slate-900 border border-emerald-500/40 rounded-2xl max-w-md w-full p-7 shadow-2xl relative my-auto sm:my-12">
             <div className="flex items-center gap-3 mb-3 text-emerald-400">
               <CheckCircle2 className="w-6 h-6" />
               <h3 className="text-base font-black uppercase tracking-wider text-white">
