@@ -978,11 +978,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
       {toast && (
         <div className="fixed top-6 right-6 z-[250] max-w-sm animate-in fade-in slide-in-from-top-4 duration-300">
           <div
-            className={`p-4 rounded-sm shadow-2xl flex items-center gap-3 border ${
-              toast.type === 'success'
+            className={`p-4 rounded-sm shadow-2xl flex items-center gap-3 border ${toast.type === 'success'
                 ? 'bg-slate-900 border-lime-500 text-white'
                 : 'bg-slate-900 border-red-500 text-red-200'
-            }`}
+              }`}
           >
             {toast.type === 'success' ? (
               <CheckCircle2 className="w-5 h-5 text-lime-400 shrink-0" />
@@ -1124,9 +1123,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to Logo & Brand Identity.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'branding' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'branding' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <ImageIcon className="w-3.5 h-3.5" /> Logo & Brand Identity
                     </button>
@@ -1137,9 +1135,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to Sections Text & CMS.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'sections' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'sections' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <FileText className="w-3.5 h-3.5" /> Sections Text & CMS
                     </button>
@@ -1150,9 +1147,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to Media Gallery.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'media' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'media' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <Upload className="w-3.5 h-3.5" /> Media & Storage Gallery
                     </button>
@@ -1163,9 +1159,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to Blog & Editorial Manager.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'blog' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'blog' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <BookOpen className="w-3.5 h-3.5" /> Blog & Editorial Manager
                     </button>
@@ -1176,9 +1171,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to Projects & Milestones.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'projects' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'projects' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <Folder className="w-3.5 h-3.5" /> Projects & Milestones
                     </button>
@@ -1189,9 +1183,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to Developers & Team.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'developers' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'developers' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <Users className="w-3.5 h-3.5" /> Developers & Credentials
                     </button>
@@ -1202,9 +1195,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to Task Management.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'tasks' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'tasks' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <CheckSquare className="w-3.5 h-3.5" /> Task Management
                     </button>
@@ -1215,9 +1207,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to Time Tracking & Hours.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'timetracking' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'timetracking' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <Clock className="w-3.5 h-3.5" /> Time Logs & Attendance
                     </button>
@@ -1228,9 +1219,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to Payroll & Payslips.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'payroll' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'payroll' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <DollarSign className="w-3.5 h-3.5" /> Payroll & Payslips
                     </button>
@@ -1241,9 +1231,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to Management Team & Permissions.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'team' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'team' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <ShieldCheck className="w-3.5 h-3.5 text-lime-400" /> Management Team & Roles
                     </button>
@@ -1254,9 +1243,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileTabPickerOpen(false);
                         showToast('Switched to System Security & Devices.', 'info');
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${
-                        activeTab === 'system' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
-                      }`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors ${activeTab === 'system' ? 'bg-lime-500/20 text-lime-400 font-bold' : 'text-slate-300 hover:bg-slate-800'
+                        }`}
                     >
                       <ShieldCheck className="w-3.5 h-3.5" /> System & Security
                     </button>
@@ -1359,11 +1347,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to Logo & Brand Identity configuration.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'branding'
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'branding'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <ImageIcon className="w-4 h-4" /> Logo & Brand
@@ -1378,11 +1365,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to Dynamic Sections Content editor.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'sections'
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'sections'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <FileText className="w-4 h-4" /> Sections Text
@@ -1399,11 +1385,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to Media & Asset Gallery.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'media'
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'media'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <Upload className="w-4 h-4" /> Media Gallery
@@ -1418,11 +1403,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to Blog & Editorial Manager.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'blog'
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'blog'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <BookOpen className="w-4 h-4" /> Blog & Editorial
@@ -1437,11 +1421,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to Projects & Milestones.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'projects'
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'projects'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <Folder className="w-4 h-4" /> Projects & Milestones
@@ -1456,11 +1439,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to Staff & Departments.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'developers'
+                  className={`w-full flex items-center justify-betweis en px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'developers'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <Users className="w-4 h-4" /> Staff & Departments
@@ -1475,11 +1457,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to Task Management & Assignments.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'tasks'
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'tasks'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <CheckSquare className="w-4 h-4" /> Task Management
@@ -1494,11 +1475,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to Time Tracking & Hours.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'timetracking'
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'timetracking'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <Clock className="w-4 h-4" /> Time Logs & Attendance
@@ -1513,11 +1493,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to Payroll & Payslips.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'payroll'
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'payroll'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <DollarSign className="w-4 h-4" /> Payroll & Payslips
@@ -1532,11 +1511,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to Management Team & Permissions.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'team'
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'team'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <ShieldCheck className="w-4 h-4 text-lime-400" /> Management Team & Roles
@@ -1551,11 +1529,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                     setMobileDrawerOpen(false);
                     showToast('Switched to System Security & Devices.', 'info');
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                    activeTab === 'system'
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'system'
                       ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <ShieldCheck className="w-4 h-4" /> System & Security
@@ -1685,11 +1662,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         setMobileSectionView('editor');
                         showToast(`Switched to '${sec.label}'.`, 'info');
                       }}
-                      className={`w-full text-left p-2.5 rounded-sm border transition-all flex items-center justify-between ${
-                        isSelected
+                      className={`w-full text-left p-2.5 rounded-sm border transition-all flex items-center justify-between ${isSelected
                           ? 'bg-lime-500/15 border-lime-500/50 text-white font-bold'
                           : 'bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
-                      }`}
+                        }`}
                     >
                       <div className="space-y-0.5 truncate pr-2">
                         <div className="flex items-center gap-2">
@@ -1731,11 +1707,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('branding');
                 showToast('Switched to Logo & Brand Identity configuration.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'branding'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'branding'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <ImageIcon className="w-4 h-4" /> Logo & Brand
             </button>
@@ -1745,11 +1720,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('sections');
                 showToast('Switched to Dynamic Sections Content editor.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'sections'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'sections'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <FileText className="w-4 h-4" /> Sections Text
             </button>
@@ -1759,11 +1733,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('media');
                 showToast('Switched to Media & Asset Gallery.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'media'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'media'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <Upload className="w-4 h-4" /> Media Gallery
             </button>
@@ -1773,11 +1746,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('blog');
                 showToast('Switched to Blog & Editorial Manager.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'blog'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'blog'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <BookOpen className="w-4 h-4" /> Blog & Editorial
             </button>
@@ -1787,11 +1759,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('projects');
                 showToast('Switched to Projects & Milestones.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'projects'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'projects'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <Folder className="w-4 h-4" /> Projects & Milestones
             </button>
@@ -1801,11 +1772,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('developers');
                 showToast('Switched to Staff & Departments.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'developers'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'developers'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <Users className="w-4 h-4" /> Staff & Departments
             </button>
@@ -1815,11 +1785,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('tasks');
                 showToast('Switched to Task Management & Assignments.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'tasks'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'tasks'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <CheckSquare className="w-4 h-4" /> Task Management
             </button>
@@ -1829,11 +1798,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('timetracking');
                 showToast('Switched to Time Tracking & Hours.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'timetracking'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'timetracking'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <Clock className="w-4 h-4" /> Time Logs & Attendance
             </button>
@@ -1843,11 +1811,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('payroll');
                 showToast('Switched to Payroll & Payslips.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'payroll'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'payroll'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <DollarSign className="w-4 h-4" /> Payroll & Payslips
             </button>
@@ -1857,11 +1824,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('team');
                 showToast('Switched to Management Team & Permissions.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'team'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'team'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <ShieldCheck className="w-4 h-4 text-lime-400" /> Management Team & Roles
             </button>
@@ -1871,11 +1837,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                 setActiveTab('system');
                 showToast('Switched to System Security & Devices.', 'info');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${
-                activeTab === 'system'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all text-left ${activeTab === 'system'
                   ? 'bg-lime-500 text-slate-950 font-black shadow-lg shadow-lime-500/10'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+                }`}
             >
               <ShieldCheck className="w-4 h-4" /> System & Security
             </button>
@@ -2198,16 +2163,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                         key={cat.key}
                         type="button"
                         onClick={() => setSectionCategoryFilter(cat.key as any)}
-                        className={`px-3.5 py-1.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 ${
-                          sectionCategoryFilter === cat.key
+                        className={`px-3.5 py-1.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 ${sectionCategoryFilter === cat.key
                             ? 'bg-lime-500 text-slate-950 shadow-md font-black'
                             : 'bg-slate-950 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-                        }`}
+                          }`}
                       >
                         <span>{cat.label}</span>
-                        <span className={`text-[10px] px-1.5 py-0.2 rounded-sm ${
-                          sectionCategoryFilter === cat.key ? 'bg-slate-950/20 text-slate-950 font-bold' : 'bg-slate-800 text-slate-400'
-                        }`}>
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-sm ${sectionCategoryFilter === cat.key ? 'bg-slate-950/20 text-slate-950 font-bold' : 'bg-slate-800 text-slate-400'
+                          }`}>
                           {cat.count}
                         </span>
                       </button>
@@ -2242,11 +2205,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   <button
                     type="button"
                     onClick={() => setMobileSectionView('editor')}
-                    className={`flex-1 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all flex items-center justify-center gap-1.5 ${
-                      mobileSectionView === 'editor'
+                    className={`flex-1 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all flex items-center justify-center gap-1.5 ${mobileSectionView === 'editor'
                         ? 'bg-lime-500 text-slate-950 shadow-md font-black'
                         : 'text-slate-400 hover:text-white'
-                    }`}
+                      }`}
                   >
                     <FileText className="w-3.5 h-3.5" />
                     <span>Edit: {currentSectionMeta.tag}</span>
@@ -2254,11 +2216,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                   <button
                     type="button"
                     onClick={() => setMobileSectionView('directory')}
-                    className={`flex-1 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all flex items-center justify-center gap-1.5 ${
-                      mobileSectionView === 'directory'
+                    className={`flex-1 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all flex items-center justify-center gap-1.5 ${mobileSectionView === 'directory'
                         ? 'bg-lime-500 text-slate-950 shadow-md font-black'
                         : 'text-slate-400 hover:text-white'
-                    }`}
+                      }`}
                   >
                     <Folder className="w-3.5 h-3.5" />
                     <span>Directory ({filteredSections.length})</span>
@@ -2288,10 +2249,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                             sec.category === 'header'
                               ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
                               : sec.category === 'footer'
-                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                              : sec.category === 'page'
-                              ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
-                              : 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                                : sec.category === 'page'
+                                  ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                                  : 'bg-blue-500/20 text-blue-300 border-blue-500/30';
 
                           return (
                             <button
@@ -2303,11 +2264,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                                 setMobileSectionView('editor');
                                 showToast(`Loaded '${sec.label}' into editor.`, 'info');
                               }}
-                              className={`w-full text-left p-3.5 rounded-sm border transition-all flex flex-col gap-1.5 group ${
-                                isSelected
+                              className={`w-full text-left p-3.5 rounded-sm border transition-all flex flex-col gap-1.5 group ${isSelected
                                   ? 'bg-slate-900 border-lime-500 shadow-lg shadow-lime-500/10'
                                   : 'bg-slate-950/80 border-slate-800/80 hover:bg-slate-900 hover:border-slate-700'
-                              }`}
+                                }`}
                             >
                               <div className="flex items-center justify-between gap-2">
                                 <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-sm border ${tagColor}`}>
@@ -2319,9 +2279,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                               </div>
 
                               <div className="space-y-0.5">
-                                <p className={`text-xs font-black transition-colors ${
-                                  isSelected ? 'text-lime-400' : 'text-white group-hover:text-lime-300'
-                                }`}>
+                                <p className={`text-xs font-black transition-colors ${isSelected ? 'text-lime-400' : 'text-white group-hover:text-lime-300'
+                                  }`}>
                                   {sec.label}
                                 </p>
                                 <p className="text-[11px] text-slate-400 line-clamp-1 leading-relaxed">
@@ -3193,18 +3152,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome, on
                       return (
                         <div
                           key={dev.id}
-                          className={`p-4 rounded-sm border transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 ${
-                            isCurrent
+                          className={`p-4 rounded-sm border transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 ${isCurrent
                               ? 'bg-slate-900/80 border-lime-500/40'
                               : 'bg-slate-900/40 border-slate-800/80 hover:border-slate-700'
-                          }`}
+                            }`}
                         >
                           <div className="flex items-start gap-3.5">
-                            <div className={`p-2.5 rounded-sm border shrink-0 ${
-                              isCurrent
+                            <div className={`p-2.5 rounded-sm border shrink-0 ${isCurrent
                                 ? 'bg-lime-500/10 border-lime-500/30 text-lime-400'
                                 : 'bg-slate-800 border-slate-700 text-slate-400'
-                            }`}>
+                              }`}>
                               <Laptop className="w-5 h-5" />
                             </div>
                             <div className="space-y-1">
