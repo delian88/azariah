@@ -226,6 +226,58 @@ if ($action === 'resend-email' && $method === 'POST') {
 }
 
 // -----------------------------------------------------------------------------
+// 4b. POST /api/tasks/test-email: SEND SAMPLE HTML EMAIL TO VERIFY LIVE DELIVERY
+// -----------------------------------------------------------------------------
+if ($action === 'test-email' && $method === 'POST') {
+    $input = getJsonInput();
+    $targetEmail = trim($input['email'] ?? '');
+    if (!$targetEmail || !filter_var($targetEmail, FILTER_VALIDATE_EMAIL)) {
+        sendJson(['success' => false, 'error' => 'A valid recipient email address is required'], 400);
+    }
+
+    $templateType = strtolower(trim($input['type'] ?? 'task'));
+    $sampleDepartment = trim($input['department'] ?? 'Engineering & Technology');
+
+    if ($templateType === 'welcome') {
+        $mailResult = sendDeveloperWelcomeEmail(
+            $targetEmail,
+            'Azariah Team Member',
+            'AMG-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6)) . '!',
+            'Senior Specialist',
+            ['Apex Strategic Command', 'Enterprise Infrastructure'],
+            '',
+            $sampleDepartment
+        );
+    } else {
+        $sampleTask = [
+            'id' => 999,
+            'title' => 'HTML Email Verification & Department Pipeline Audit',
+            'description' => "This is a verified HTML test dispatch confirming full rich email delivery from the Azariah Management Group workflow engine.\n\n• MIME: text/html (UTF-8, Base64)\n• Responsive Dark Mode: Active\n• Department Integration: Active\n• Cross-Client Compatibility: Gmail, Apple Mail, Outlook, Thunderbird verified.",
+            'department' => $sampleDepartment,
+            'projectName' => 'AMG Enterprise Portal v2.0',
+            'priority' => 'high',
+            'status' => 'in_progress',
+            'dueDate' => date('Y-m-d', strtotime('+3 days')),
+            'estimatedHours' => 4.5,
+            'assignedByAdminName' => 'Azariah System Operations'
+        ];
+        $mailResult = sendDeveloperTaskEmail(
+            $targetEmail,
+            'Azariah Team Member',
+            $sampleTask
+        );
+    }
+
+    sendJson([
+        'success' => !empty($mailResult['success']),
+        'message' => !empty($mailResult['success']) 
+            ? "Rich HTML test email successfully dispatched to {$targetEmail} via " . ($mailResult['transport'] ?? 'SMTP')
+            : "Failed to dispatch test email: " . ($mailResult['error'] ?? 'Unknown error'),
+        'details' => $mailResult
+    ]);
+}
+
+// -----------------------------------------------------------------------------
 // 5. GET /api/tasks: LIST ALL TASKS WITH COMPREHENSIVE FILTERS
 // -----------------------------------------------------------------------------
 if ($method === 'GET') {
@@ -513,9 +565,12 @@ if ($method === 'PUT') {
         $completedAt = null;
     }
 
+    $department = array_key_exists('department', $input) ? trim($input['department'] ?? '') : ($existing['department'] ?? null);
+    $departmentId = array_key_exists('departmentId', $input) ? (!empty($input['departmentId']) ? (int)$input['departmentId'] : null) : ($existing['departmentId'] ?? null);
+
     $stmt = $pdo->prepare("
         UPDATE developer_tasks
-        SET title = ?, description = ?, developerId = ?, projectId = ?, priority = ?,
+        SET title = ?, description = ?, developerId = ?, projectId = ?, department = ?, departmentId = ?, priority = ?,
             status = ?, dueDate = ?, estimatedHours = ?, actualHours = ?, notes = ?,
             completedAt = ?, updatedAt = NOW(3)
         WHERE id = ?
@@ -525,6 +580,8 @@ if ($method === 'PUT') {
         $description,
         $developerId,
         $projectId,
+        $department,
+        $departmentId,
         $priority,
         $status,
         $dueDate,
@@ -538,7 +595,7 @@ if ($method === 'PUT') {
     // If reassigned to a new developer, optionally send notification email
     $emailSent = false;
     if (!empty($input['sendEmail']) && $developerId !== (int)$existing['developerId']) {
-        $devStmt = $pdo->prepare("SELECT id, name, email FROM developers WHERE id = ? LIMIT 1");
+        $devStmt = $pdo->prepare("SELECT id, name, email, department FROM developers WHERE id = ? LIMIT 1");
         $devStmt->execute([$developerId]);
         $newDev = $devStmt->fetch();
         if ($newDev && !empty($newDev['email'])) {
@@ -556,6 +613,7 @@ if ($method === 'PUT') {
                 'developerId' => $developerId,
                 'projectId' => $projectId,
                 'projectName' => $pName,
+                'department' => $department ?: ($newDev['department'] ?? 'Corporate & Technology'),
                 'priority' => $priority,
                 'status' => $status,
                 'dueDate' => $dueDate,
@@ -572,6 +630,7 @@ if ($method === 'PUT') {
 
     $fetchStmt = $pdo->prepare("
         SELECT t.*, d.name as developerName, d.email as developerEmail, d.roleTitle as developerRole,
+               COALESCE(t.department, d.department, 'Engineering & Technology') as department,
                p.name as projectName, p.slug as projectSlug
         FROM developer_tasks t
         LEFT JOIN developers d ON t.developerId = d.id

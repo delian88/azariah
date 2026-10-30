@@ -756,6 +756,19 @@ export const developerService = {
     }
   },
 
+  async adminSendTestEmail(email: string, type: 'task' | 'welcome' = 'task', department?: string): Promise<{ success: boolean; message?: string; details?: any; error?: string }> {
+    try {
+      const res = await fetch(getApiUrl('api/tasks/test-email'), {
+        method: 'POST',
+        headers: getAdminHeaders(),
+        body: JSON.stringify({ email, type, department })
+      });
+      return await res.json();
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    }
+  },
+
   async devGetMyTasks(): Promise<{ success: boolean; tasks: DeveloperTask[]; error?: string }> {
     try {
       const res = await fetch(getApiUrl('api/tasks/my-tasks'), {

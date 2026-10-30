@@ -106,6 +106,13 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
   // Selected Task Detail Drawer
   const [detailTask, setDetailTask] = useState<DeveloperTask | null>(null);
 
+  // Test HTML Email Modal State
+  const [testEmailOpen, setTestEmailOpen] = useState(false);
+  const [testRecipientEmail, setTestRecipientEmail] = useState('');
+  const [testEmailType, setTestEmailType] = useState<'task' | 'welcome'>('task');
+  const [testDepartment, setTestDepartment] = useState('Engineering & Technology');
+  const [testSending, setTestSending] = useState(false);
+
   // ---------------------------------------------------------------------------
   // Load Tasks & Relations
   // ---------------------------------------------------------------------------
@@ -345,6 +352,31 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
     }
   };
 
+  // ---------------------------------------------------------------------------
+  // Dispatch Test HTML Email
+  // ---------------------------------------------------------------------------
+  const handleSendTestEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!testRecipientEmail || !testRecipientEmail.includes('@')) {
+      showToast('A valid recipient email address is required', 'error');
+      return;
+    }
+    setTestSending(true);
+    try {
+      const res = await developerService.adminSendTestEmail(testRecipientEmail, testEmailType, testDepartment);
+      if (res.success) {
+        showToast(res.message || 'Rich HTML test email successfully dispatched!');
+        setTestEmailOpen(false);
+      } else {
+        showToast(res.error || 'Failed to dispatch test email', 'error');
+      }
+    } catch (err: any) {
+      showToast(err.message || 'Error sending test email', 'error');
+    } finally {
+      setTestSending(false);
+    }
+  };
+
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
       {/* ===================================================================== */}
@@ -361,11 +393,24 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
             </h1>
           </div>
           <p className="text-xs text-slate-400 mt-1 max-w-2xl">
-            Create and assign engineering tasks to developers, trigger automated email confirmations, and track live status and execution hours in real-time.
+            Create and assign tasks across all departments, trigger automated responsive HTML email confirmations, and track execution status in real-time.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          <button
+            type="button"
+            onClick={() => {
+              setTestRecipientEmail('');
+              setTestEmailOpen(true);
+            }}
+            className="p-2 sm:px-3 sm:py-2 bg-slate-900 hover:bg-slate-800 text-sky-400 hover:text-sky-300 border border-sky-500/30 rounded-sm text-xs font-bold flex items-center gap-1.5 transition-colors"
+            title="Dispatch Sample HTML Email"
+          >
+            <Mail className="w-3.5 h-3.5 text-sky-400" />
+            <span className="hidden sm:inline">Test HTML Email</span>
+          </button>
+
           <button
             type="button"
             onClick={() => loadData(true)}
@@ -1336,6 +1381,153 @@ export const AdminTasksTab: React.FC<AdminTasksTabProps> = ({ showToast }) => {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* TEST HTML EMAIL MODAL                                                */}
+      {/* ===================================================================== */}
+      {testEmailOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-slate-900 border border-slate-800 rounded-sm shadow-2xl max-w-md w-full overflow-hidden">
+            {/* Top Accent */}
+            <div className="h-1 bg-gradient-to-r from-sky-500 to-lime-500" />
+
+            {/* Header */}
+            <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-sky-500/10 border border-sky-500/20 rounded-sm text-sky-400">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-white">
+                    Dispatch Test HTML Email
+                  </h3>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    Verify live HTML email delivery, styling &amp; headers
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setTestEmailOpen(false)}
+                className="text-slate-500 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSendTestEmail} className="p-4 sm:p-5 space-y-4">
+              <div>
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block mb-1.5">
+                  Recipient Email Address <span className="text-lime-400">*</span>
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={testRecipientEmail}
+                  onChange={(e) => setTestRecipientEmail(e.target.value)}
+                  placeholder="your-email@example.com"
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-sm focus:border-sky-500 focus:outline-none font-mono placeholder:text-slate-600"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block mb-1.5">
+                  Email Template
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setTestEmailType('task')}
+                    className={`p-2.5 rounded-sm border text-xs font-bold text-left transition-all ${
+                      testEmailType === 'task'
+                        ? 'bg-sky-500/10 border-sky-500 text-sky-400'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    📋 Task Assignment (HTML)
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setTestEmailType('welcome')}
+                    className={`p-2.5 rounded-sm border text-xs font-bold text-left transition-all ${
+                      testEmailType === 'welcome'
+                        ? 'bg-lime-500/10 border-lime-500 text-lime-400'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    ⚡ Staff Credentials (HTML)
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block mb-1.5">
+                  Sample Department Context
+                </label>
+                <select
+                  value={testDepartment}
+                  onChange={(e) => setTestDepartment(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 text-white rounded-sm text-sm focus:border-sky-500 focus:outline-none"
+                >
+                  {departments.length > 0 ? (
+                    departments.map((dept) => (
+                      <option key={dept.id} value={dept.name}>
+                        {dept.name}
+                      </option>
+                    ))
+                  ) : (
+                    <>
+                      <option value="Engineering & Technology">Engineering &amp; Technology</option>
+                      <option value="Strategic Marketing & Media">Strategic Marketing &amp; Media</option>
+                      <option value="Operations & Advisory">Operations &amp; Advisory</option>
+                      <option value="Corporate Finance & Accounting">Corporate Finance &amp; Accounting</option>
+                    </>
+                  )}
+                </select>
+              </div>
+
+              <div className="p-3 bg-slate-950 border border-slate-800/80 rounded-sm text-[11px] text-slate-400 space-y-1 leading-relaxed">
+                <div className="font-bold text-slate-300 flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-lime-400" /> Verified Delivery Pipeline:
+                </div>
+                <div>• MIME: <code className="text-sky-400">text/html; charset=UTF-8</code> (Base64 transfer)</div>
+                <div>• Multi-Tier: Port 465 SSL &rarr; Port 587 TLS &rarr; Native Exim Fallback</div>
+                <div>• Inlined Dark Theme, responsive tables &amp; verified button CTAs</div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setTestEmailOpen(false)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-sm text-xs font-bold transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={testSending}
+                  className="px-5 py-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black uppercase text-xs tracking-wider rounded-sm flex items-center gap-2 transition-all shadow-lg shadow-sky-500/20 disabled:opacity-50"
+                >
+                  {testSending ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Send HTML Test</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

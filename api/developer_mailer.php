@@ -44,9 +44,10 @@ function dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $h
         $mail->addAddress($recipientEmail, $recipientName ?: 'Developer');
         $mail->addReplyTo('support@azariahmg.com', 'Azariah Support');
         $mail->isHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body    = $htmlBody;
-        $mail->AltBody = $altBody ?: strip_tags($htmlBody);
+        $mail->Encoding = 'base64';
+        $mail->Subject  = $subject;
+        $mail->Body     = $htmlBody;
+        $mail->AltBody  = $altBody ?: strip_tags($htmlBody);
 
         $mail->send();
         return ['success' => true, 'transport' => 'smtp_465_ssl'];
@@ -77,22 +78,28 @@ function dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $h
             $mail2->addAddress($recipientEmail, $recipientName ?: 'Developer');
             $mail2->addReplyTo('support@azariahmg.com', 'Azariah Support');
             $mail2->isHTML(true);
-            $mail2->Subject = $subject;
-            $mail2->Body    = $htmlBody;
-            $mail2->AltBody = $altBody ?: strip_tags($htmlBody);
+            $mail2->Encoding = 'base64';
+            $mail2->Subject  = $subject;
+            $mail2->Body     = $htmlBody;
+            $mail2->AltBody  = $altBody ?: strip_tags($htmlBody);
 
             $mail2->send();
             return ['success' => true, 'transport' => 'smtp_587_tls'];
         } catch (Exception $e2) {
             $err2 = $mail2->ErrorInfo ?: $e2->getMessage();
 
-            // Tier 3: Native PHP mail() fallback
+            // Tier 3: Native PHP mail() fallback with RFC-compliant UTF-8 base64 HTML headers
+            $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+            $encodedFrom    = '=?UTF-8?B?' . base64_encode('Azariah Management Group') . '?= <' . $smtpUser . '>';
             $headers  = "MIME-Version: 1.0\r\n";
             $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-            $headers .= "From: Azariah Management Group <$smtpUser>\r\n";
+            $headers .= "Content-Transfer-Encoding: base64\r\n";
+            $headers .= "From: " . $encodedFrom . "\r\n";
             $headers .= "Reply-To: support@azariahmg.com\r\n";
+            $headers .= "X-Mailer: Azariah Enterprise Mailer/2.0\r\n";
 
-            $sentNative = @mail($recipientEmail, $subject, $htmlBody, $headers);
+            $bodyChunked = rtrim(chunk_split(base64_encode($htmlBody)));
+            $sentNative  = @mail($recipientEmail, $encodedSubject, $bodyChunked, $headers, "-f" . $smtpUser);
             if ($sentNative) {
                 return ['success' => true, 'transport' => 'native_mail_fallback'];
             }
@@ -106,12 +113,14 @@ function dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $h
 /**
  * Send Welcome Email with Login Credentials and Confirmation Link to New Developer
  */
-function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPassword, $roleTitle = 'Developer', $projectNames = [], $portalUrl = '') {
+function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPassword, $roleTitle = 'Developer', $projectNames = [], $portalUrl = '', $department = 'Engineering & Technology') {
     if (!$portalUrl) {
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
         $host = $_SERVER['HTTP_HOST'] ?? 'azariahmg.com';
         $portalUrl = $protocol . $host . '/#dev-portal';
     }
+
+    $departmentClean = htmlspecialchars($department ?: 'Engineering & Technology');
 
     $projectsHtml = '';
     if (!empty($projectNames)) {
@@ -121,7 +130,7 @@ function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPasswo
         $projectsHtml .= '</div>';
     }
 
-    $subject = "🚀 Welcome to Azariah Management Group — Developer Account Credentials";
+    $subject = "🚀 Welcome to Azariah Management Group — Staff Account Credentials";
 
     $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -148,7 +157,7 @@ function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPasswo
                 <span style="color: #38bdf8;">AZARI</span><span style="color: #a3e635;">AH</span>
               </h1>
               <p style="margin: 4px 0 0; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: #94a3b8; font-weight: 700;">
-                MANAGEMENT GROUP &bull; ENGINEERING COMMAND
+                MANAGEMENT GROUP &bull; WORKFORCE OPERATIONS
               </p>
             </td>
           </tr>
@@ -157,28 +166,34 @@ function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPasswo
             <td style="padding: 32px 35px 25px;">
               <div style="text-align: center; margin-bottom: 20px;">
                 <span style="display: inline-block; padding: 6px 14px; background-color: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 20px; font-size: 11px; font-weight: 700; color: #34d399; text-transform: uppercase; letter-spacing: 0.1em;">
-                  ⚡ Developer Account Provisioned
+                  ⚡ Staff Account Provisioned
                 </span>
               </div>
               <h2 style="margin: 0 0 10px; font-size: 20px; font-weight: 700; color: #ffffff; text-align: center;">
-                Welcome to the Engineering Team, {$recipientName}!
+                Welcome to the Team, {$recipientName}!
               </h2>
               <p style="margin: 0 0 22px; font-size: 14px; line-height: 1.6; color: #cbd5e1; text-align: center;">
-                Your developer profile has been created for the role of <strong style="color: #38bdf8;">{$roleTitle}</strong>. Use the credentials below to log into the Developer Portal to clock in your work hours, track milestones, and view payslips.
+                Your staff profile has been created for the role of <strong style="color: #38bdf8;">{$roleTitle}</strong> in the <strong style="color: #a3e635;">{$departmentClean}</strong> department. Use the credentials below to log into the Staff & Dev Portal to view assigned tasks, log work hours, and track disbursements.
               </p>
 
               <!-- Credentials Box -->
-              <table role="presentation" width="100%" style="background-color: #030712; border: 1px solid #1e293b; border-radius: 8px; margin-bottom: 24px;">
+              <table role="presentation" width="100%" style="background-color: #030712; border: 1px solid #1e293b; border-radius: 8px; margin-bottom: 24px; border-collapse: collapse;">
                 <tr>
-                  <td style="padding: 20px;">
-                    <div style="margin-bottom: 12px;">
-                      <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">Developer Email / Username</div>
-                      <div style="font-size: 15px; color: #ffffff; font-weight: 700; font-family: monospace; margin-top: 4px;">{$recipientEmail}</div>
-                    </div>
-                    <div>
-                      <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">Temporary Password</div>
-                      <div style="font-size: 16px; color: #34d399; font-weight: 800; font-family: monospace; letter-spacing: 0.05em; margin-top: 4px; padding: 6px 10px; background: rgba(16, 185, 129, 0.1); border-radius: 4px; display: inline-block;">{$plainPassword}</div>
-                    </div>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #1e293b;">
+                    <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">Access Email / Username</div>
+                    <div style="font-size: 15px; color: #ffffff; font-weight: 700; font-family: monospace; margin-top: 4px;">{$recipientEmail}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #1e293b;">
+                    <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">Temporary Password</div>
+                    <div style="font-size: 16px; color: #34d399; font-weight: 800; font-family: monospace; letter-spacing: 0.05em; margin-top: 4px; padding: 6px 10px; background: rgba(16, 185, 129, 0.1); border-radius: 4px; display: inline-block;">{$plainPassword}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 14px 18px;">
+                    <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">Assigned Department</div>
+                    <div style="font-size: 14px; color: #38bdf8; font-weight: 700; margin-top: 4px;">{$departmentClean}</div>
                   </td>
                 </tr>
               </table>
@@ -188,7 +203,7 @@ function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPasswo
               <!-- CTA Button -->
               <div style="text-align: center; margin: 30px 0 15px;">
                 <a href="{$portalUrl}" target="_blank" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; font-size: 14px; font-weight: 700; text-decoration: none; border-radius: 6px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4); text-transform: uppercase; letter-spacing: 0.08em;">
-                  Access Developer Portal &rarr;
+                  Access Staff Portal &rarr;
                 </a>
               </div>
               <p style="text-align: center; font-size: 11px; color: #64748b; margin-top: 10px;">
@@ -213,7 +228,16 @@ function sendDeveloperWelcomeEmail($recipientEmail, $recipientName, $plainPasswo
 </html>
 HTML;
 
-    return dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $htmlBody);
+    $plainAlt = "AZARIAH MANAGEMENT GROUP - WORKFORCE ONBOARDING\n\n"
+        . "Welcome to the Team, {$recipientName}!\n"
+        . "Role: {$roleTitle}\n"
+        . "Department: {$departmentClean}\n\n"
+        . "Access Credentials:\n"
+        . "Email: {$recipientEmail}\n"
+        . "Temporary Password: {$plainPassword}\n\n"
+        . "Login Portal: {$portalUrl}\n";
+
+    return dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $htmlBody, $plainAlt);
 }
 
 /**
@@ -334,7 +358,17 @@ function sendPayslipEmail($recipientEmail, $recipientName, $payslipData, $portal
 </html>
 HTML;
 
-    return dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $htmlBody);
+    $plainAlt = "AZARIAH MANAGEMENT GROUP - PAYMENT VOUCHER\n\n"
+        . "Payment Statement for {$recipientName}\n"
+        . "Voucher Reference: {$ref}\n"
+        . "Billing Period: {$period}\n"
+        . "Hours Billed: {$hours} hrs @ {$currency} {$rate}/hr\n"
+        . "Total Net Amount: {$currency} {$total}\n"
+        . "Payment Method: {$method}\n"
+        . "Memo: {$notes}\n\n"
+        . "Confirm Receipt at: {$portalUrl}\n";
+
+    return dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $htmlBody, $plainAlt);
 }
 
 /**
@@ -347,10 +381,11 @@ function sendDeveloperTaskEmail($recipientEmail, $recipientName, $taskData, $por
         $portalUrl = $protocol . $host . '/#dev-portal';
     }
 
-    $taskTitle = htmlspecialchars($taskData['title'] ?? 'New Engineering Task');
+    $taskTitle = htmlspecialchars($taskData['title'] ?? 'New Assigned Task');
+    $department = htmlspecialchars($taskData['department'] ?? 'Corporate & Technology');
     $rawDesc = $taskData['description'] ?? '';
     $taskDescHtml = !empty($rawDesc) ? nl2br(htmlspecialchars($rawDesc)) : '<em style="color:#64748b;">No detailed description provided.</em>';
-    $projectName = htmlspecialchars($taskData['projectName'] ?? ($taskData['projectId'] ? 'Project #' . $taskData['projectId'] : 'General Assignment / Engineering'));
+    $projectName = htmlspecialchars($taskData['projectName'] ?? ($taskData['projectId'] ? 'Project #' . $taskData['projectId'] : 'General Assignment / Operations'));
     $priority = strtolower($taskData['priority'] ?? 'medium');
 
     $priorityColor = match($priority) {
@@ -399,7 +434,7 @@ function sendDeveloperTaskEmail($recipientEmail, $recipientName, $taskData, $por
                 <span style="color: #38bdf8;">AZARI</span><span style="color: #a3e635;">AH</span>
               </h1>
               <p style="margin: 4px 0 0; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: #94a3b8; font-weight: 700;">
-                MANAGEMENT GROUP &bull; TASK MANAGEMENT & ENGINEERING COMMAND
+                MANAGEMENT GROUP &bull; TASK & WORKFORCE COMMAND
               </p>
             </td>
           </tr>
@@ -421,7 +456,11 @@ function sendDeveloperTaskEmail($recipientEmail, $recipientName, $taskData, $por
               <!-- Task Details Summary Card -->
               <table role="presentation" width="100%" style="background-color: #030712; border: 1px solid #1e293b; border-radius: 8px; margin-bottom: 22px; border-collapse: collapse;">
                 <tr>
-                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 12px; color: #94a3b8; font-weight: 600; width: 38%;">Assigned Project</td>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 12px; color: #94a3b8; font-weight: 600; width: 38%;">Department</td>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 13px; color: #38bdf8; font-weight: 700; text-align: right;">{$department}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 12px; color: #94a3b8; font-weight: 600;">Assigned Project</td>
                   <td style="padding: 13px 18px; border-bottom: 1px solid #1e293b; font-size: 13px; color: #ffffff; font-weight: 700; text-align: right;">{$projectName}</td>
                 </tr>
                 <tr>
@@ -459,7 +498,7 @@ function sendDeveloperTaskEmail($recipientEmail, $recipientName, $taskData, $por
               <!-- CTA Button -->
               <div style="text-align: center; margin: 30px 0 15px;">
                 <a href="{$portalUrl}" target="_blank" style="display: inline-block; padding: 14px 34px; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; font-size: 14px; font-weight: 800; text-decoration: none; border-radius: 6px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.45); text-transform: uppercase; letter-spacing: 0.08em;">
-                  Open Developer Portal &rarr;
+                  Open Staff & Dev Portal &rarr;
                 </a>
               </div>
               <p style="text-align: center; font-size: 11px; color: #64748b; margin-top: 10px;">
@@ -471,7 +510,7 @@ function sendDeveloperTaskEmail($recipientEmail, $recipientName, $taskData, $por
           <tr>
             <td style="padding: 20px 30px; background-color: #0b1120; border-top: 1px solid #1e293b; text-align: center;">
               <p style="margin: 0; font-size: 11px; color: #64748b; line-height: 1.5;">
-                Azariah Management Group &bull; Corporate Engineering Operations &bull; Upper Marlboro, MD, USA<br>
+                Azariah Management Group &bull; Corporate &amp; Workforce Operations &bull; Upper Marlboro, MD, USA<br>
                 For technical questions regarding this task, communicate directly with your project administrator.
               </p>
             </td>
@@ -484,6 +523,18 @@ function sendDeveloperTaskEmail($recipientEmail, $recipientName, $taskData, $por
 </html>
 HTML;
 
-    return dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $htmlBody);
+    $plainAlt = "AZARIAH MANAGEMENT GROUP - NEW TASK ASSIGNMENT\n\n"
+        . "Task: {$taskData['title']}\n"
+        . "Department: {$department}\n"
+        . "Project: {$projectName}\n"
+        . "Priority: {$priorityLabel}\n"
+        . "Due Date: {$dueDate}\n"
+        . "Estimated Hours: {$estHours}\n"
+        . "Assigned By: {$assignedBy}\n"
+        . "Status: {$status}\n\n"
+        . "Scope of Work & Instructions:\n" . ($taskData['description'] ?? 'No description provided') . "\n\n"
+        . "Access Portal: {$portalUrl}\n";
+
+    return dispatchAMGDeveloperEmail($recipientEmail, $recipientName, $subject, $htmlBody, $plainAlt);
 }
 

@@ -175,7 +175,9 @@ if ($action === 'resend-invite' && $method === 'POST') {
         $dev['name'],
         $plainPassword,
         $dev['roleTitle'],
-        $projectNames
+        $projectNames,
+        '',
+        $dev['department'] ?: 'Engineering & Technology'
     );
 
     sendJson([
@@ -342,8 +344,10 @@ if ($method === 'POST') {
             $email,
             $name,
             $plainPassword,
-            $roleTitle . ($department ? " ($department)" : ""),
-            $assignedProjectNames
+            $roleTitle,
+            $assignedProjectNames,
+            '',
+            $department ?: 'Engineering & Technology'
         );
         $mailStatus = $mailResult['success'];
         $mailTransport = $mailResult['transport'] ?? null;

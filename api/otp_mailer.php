@@ -168,6 +168,7 @@ HTML;
         }
 
         $mail->isHTML(true);
+        $mail->Encoding = 'base64';
         $mail->Subject = $subject;
         $mail->Body    = $htmlBody;
         $mail->AltBody = $altBody;
@@ -207,6 +208,7 @@ HTML;
             }
 
             $mail2->isHTML(true);
+            $mail2->Encoding = 'base64';
             $mail2->Subject = $subject;
             $mail2->Body    = $htmlBody;
             $mail2->AltBody = $altBody;
@@ -217,14 +219,18 @@ HTML;
             $err2 = $mail2->ErrorInfo ?: $e2->getMessage();
 
             // --- ATTEMPT 3: Local Exim/PHP mail() Fallback ---
+            $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+            $encodedFrom    = '=?UTF-8?B?' . base64_encode('Azariah Security Command') . '?= <' . $smtpUser . '>';
             $headers  = "MIME-Version: 1.0\r\n";
             $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-            $headers .= "From: Azariah Security Command <$smtpUser>\r\n";
+            $headers .= "Content-Transfer-Encoding: base64\r\n";
+            $headers .= "From: " . $encodedFrom . "\r\n";
             $headers .= "Reply-To: support@azariahmg.com\r\n";
             $headers .= "Cc: support@azariahmg.com\r\n";
-            $headers .= "Bcc: $smtpUser\r\n";
+            $headers .= "X-Mailer: Azariah Security Service/2.0\r\n";
 
-            $sentNative = @mail($recipientEmail, $subject, $htmlBody, $headers);
+            $bodyChunked = rtrim(chunk_split(base64_encode($htmlBody)));
+            $sentNative  = @mail($recipientEmail, $encodedSubject, $bodyChunked, $headers, "-f" . $smtpUser);
             if ($sentNative) {
                 return ['success' => true, 'transport' => 'cpanel_exim_mail_fallback'];
             }
@@ -381,6 +387,7 @@ HTML;
         }
 
         $mail->isHTML(true);
+        $mail->Encoding = 'base64';
         $mail->Subject = $subject;
         $mail->Body    = $htmlBody;
         $mail->AltBody = $altBody;
@@ -388,11 +395,18 @@ HTML;
         $mail->send();
         return ['success' => true, 'transport' => 'smtp_465_ssl'];
     } catch (Exception $e) {
+        $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+        $encodedFrom    = '=?UTF-8?B?' . base64_encode('Azariah Security Command') . '?= <' . $smtpUser . '>';
         $headers  = "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $headers .= "From: Azariah Security Command <$smtpUser>\r\n";
+        $headers .= "Content-Transfer-Encoding: base64\r\n";
+        $headers .= "From: " . $encodedFrom . "\r\n";
+        $headers .= "Reply-To: support@azariahmg.com\r\n";
         $headers .= "Cc: support@azariahmg.com\r\n";
-        @mail($recipientEmail, $subject, $htmlBody, $headers);
+        $headers .= "X-Mailer: Azariah Security Service/2.0\r\n";
+
+        $bodyChunked = rtrim(chunk_split(base64_encode($htmlBody)));
+        @mail($recipientEmail, $encodedSubject, $bodyChunked, $headers, "-f" . $smtpUser);
         return ['success' => true, 'transport' => 'cpanel_exim_mail_fallback'];
     }
 }
